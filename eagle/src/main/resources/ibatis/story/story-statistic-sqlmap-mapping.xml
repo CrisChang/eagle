@@ -1,0 +1,99 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd" >
+<sqlMap namespace="storyStatistic">
+
+    <typeAlias alias="StoryStatistic" type="com.poison.story.model.StoryStatistic"/>
+    <!--   小说详情 -->
+    <resultMap id="storyStatisticResult" class="StoryStatistic">
+        <result column="id" property="id" jdbcType="BIGINT"/>
+        <result column="resource_id" property="resourceId" jdbcType="BIGINT"/>
+        <result column="type" property="type" jdbcType="VARCHAR"/>
+        <result column="channel" property="channel" jdbcType="VARCHAR"/>
+        <result column="click_rate" property="clickRate" jdbcType="BIGINT"/>
+        <result column="click_rate_operation" property="clickRateOperation" jdbcType="BIGINT"/>
+        <result column="recomment_vote" property="recommentVote" jdbcType="BIGINT"/>
+        <result column="recomment_vote_operation" property="recommentVoteOperation" jdbcType="BIGINT"/>
+        <result column="is_delete" property="isDelete" jdbcType="TINYINT"/>
+        <result column="create_date" property="createDate" jdbcType="BIGINT"/>
+        <result column="latest_revision_date" property="latestRevisionDate" jdbcType="BIGINT"/>
+        <result column="pay_total" property="payTotal" jdbcType="BIGINT"/>
+        <result column="onshelf_total" property="onshelfTotal" jdbcType="BIGINT"/>
+        <result column="onshelf_total_operation" property="onshelfTotalOperation" jdbcType="BIGINT"/>
+    </resultMap>
+
+    <!-- 查找点击榜-->
+    <select id="findStatisticByClickRate"  parameterClass="java.util.Map" resultMap="storyStatisticResult">
+        select id,resource_id,type,channel,click_rate,click_rate_operation,recomment_vote,recomment_vote_operation,is_delete,create_date,latest_revision_date,pay_total,onshelf_total,onshelf_total_operation from story_statistic where channel=#channel# and is_delete = 0
+        order by click_rate_operation desc limit #pageIndex#,#pageSize#
+    </select>
+
+    <!-- 查找小说详情根据类型-->
+    <select id="findStatisticByRecommentVote"  parameterClass="java.util.Map" resultMap="storyStatisticResult">
+        select id,resource_id,type,channel,click_rate,click_rate_operation,recomment_vote,recomment_vote_operation,is_delete,create_date,latest_revision_date,pay_total,onshelf_total,onshelf_total_operation from story_statistic where channel=#channel# and is_delete = 0
+        order by recomment_vote_operation desc limit #pageIndex#,#pageSize#
+    </select>
+
+    <!-- 查找付费排行榜-->
+    <select id="findStatisticByPayTotal"  parameterClass="java.util.Map" resultMap="storyStatisticResult">
+        select id,resource_id,type,channel,click_rate,click_rate_operation,recomment_vote,recomment_vote_operation,is_delete,create_date,latest_revision_date,pay_total,onshelf_total,onshelf_total_operation from story_statistic where channel=#channel# and is_delete = 0
+        order by pay_total desc limit #pageIndex#,#pageSize#
+    </select>
+
+    <!-- 查找加入书架排行榜-->
+    <select id="findStatisticByOnshelfTotal"  parameterClass="java.util.Map" resultMap="storyStatisticResult">
+        select id,resource_id,type,channel,click_rate,click_rate_operation,recomment_vote,recomment_vote_operation,is_delete,create_date,latest_revision_date,pay_total,onshelf_total,onshelf_total_operation from story_statistic where channel=#channel# and is_delete = 0
+        order by onshelf_total_operation desc limit #pageIndex#,#pageSize#
+    </select>
+
+    <!-- 查找小说详情根据资源id-->
+    <select id="findStatisticByResourceId"  parameterClass="long" resultMap="storyStatisticResult">
+        select id,resource_id,type,channel,click_rate,click_rate_operation,recomment_vote,recomment_vote_operation,is_delete,create_date,latest_revision_date,pay_total,onshelf_total,onshelf_total_operation from story_statistic where is_delete = 0
+        and resource_id = #resourceId#
+    </select>
+
+    <!-- 增加点击量-->
+    <update id="addClickRateByResourceId" parameterClass="long">
+        update story_statistic set click_rate=click_rate+1,click_rate_operation=click_rate_operation+1 where resource_id=#resourceId#
+    </update>
+
+    <!-- 增加推荐量-->
+    <update id="addRecommendVoteByResourceId" parameterClass="long">
+        update story_statistic set recomment_vote=recomment_vote+1,recomment_vote_operation=recomment_vote_operation+1 where resource_id=#resourceId#
+    </update>
+
+    <!-- 增加收藏量-->
+    <update id="addOnShelfByResourceId" parameterClass="long">
+        update story_statistic set onshelf_total=onshelf_total+1,onshelf_total_operation=onshelf_total_operation+1 where resource_id=#resourceId#
+    </update>
+
+    <!-- 增加付款总数-->
+    <update id="addPayByResourceId" parameterClass="java.util.Map">
+        update story_statistic set pay_total=pay_total+#price# where resource_id=#resourceId#
+    </update>
+
+    <!-- 插入统计信息-->
+    <insert id="insertStatisticByResId" parameterClass="java.util.Map">
+        insert into story_statistic(resource_id,type,channel,create_date,latest_revision_date)
+        values(#resourceId#,#type#,#channel#,#createDate#,#latestRevisionDate#)
+    </insert>
+
+    <typeAlias alias="StoryEnumerate" type="com.poison.story.model.StoryEnumerate"/>
+    <!--   小说枚举类型 -->
+    <resultMap id="storyEnumerateResult" class="StoryEnumerate">
+        <result column="id" property="id" jdbcType="BIGINT"/>
+        <result column="channel" property="channel" jdbcType="VARCHAR"/>
+        <result column="auto_type" property="autoType" jdbcType="INT"/>
+        <result column="case_type" property="caseType" jdbcType="INT"/>
+        <result column="style" property="style" jdbcType="INT"/>
+        <result column="name" property="name" jdbcType="VARCHAR"/>
+        <result column="custom_key" property="customKey" jdbcType="VARCHAR"/>
+        <result column="interface_name" property="interfaceName" jdbcType="VARCHAR"/>
+        <result column="para" property="para" jdbcType="VARCHAR"/>
+    </resultMap>
+
+    <!-- 根据频道查询-->
+    <select id="findStoryEnumerateByChanel"  parameterClass="java.lang.String" resultMap="storyEnumerateResult">
+        select id,channel,auto_type,case_type,style,`name`,custom_key,interface_name,para from story_enumerate where channel = #channel#
+    </select>
+
+</sqlMap>

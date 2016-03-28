@@ -1,0 +1,305 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd" >
+<sqlMap namespace="mv">
+
+    <typeAlias alias="MvComment" type="com.poison.resource.model.MvComment"/>   
+	<!-- 评论表信息 -->
+	<resultMap class="MvComment" id="resultComment">
+		<result column="id" property="id" jdbcType="BIGINT"/>
+		<result column="user_id" property="userId" jdbcType="BIGINT"/>
+    	<result column="movie_id" property="movieId" jdbcType="INT"/>
+     	<result column="content" property="content" jdbcType="VARCHAR"/>
+     	<result column="score" property="score" jdbcType="VARCHAR"/>
+      	<result column="is_db" property="isDB" jdbcType="INT"/>
+      	<result column="is_opposition" property="isOpposition" jdbcType="INT"/>
+      	<result column="is_delete" property="isDel" jdbcType="INT"/>
+      	<result column="big_value" property="bigValue" jdbcType="FLOAT"/>
+      	<result column="type" property="type" jdbcType="VAHRCHAR"/>
+      	<result column="description" property="description" jdbcType="VAHRCHAR"/>
+        <result column="create_date" property="createDate" jdbcType="BIGINT"/>
+        <result column="latest_revision_date" property="latestRevisionDate" jdbcType="Long"/>
+        <result column="lon" property="lon" jdbcType="VARCHAR"/>
+		<result column="lat" property="lat" jdbcType="VARCHAR"/>
+		<result column="location_name" property="locationName" jdbcType="VARCHAR"/>
+		<result column="location_city" property="locationCity" jdbcType="VARCHAR"/>
+		<result column="location_area" property="locationArea" jdbcType="VARCHAR"/>
+		<result column="title" property="title" jdbcType="VARCHAR"/>
+		<result column="cover" property="cover" jdbcType="VARCHAR"/>
+		<result column="resource_type" property="resourceType" jdbcType="VARCHAR"/>
+		<result column="stageid" property="stageid" jdbcType="BIGINT"/>
+		<result column="point" property="point" jdbcType="FLOAT"/>
+		<result column="tag" property="tag" jdbcType="VARCHAR"/>
+	</resultMap>
+	
+	<!-- 插入一条评论 -->
+	<insert id="addMvComment" parameterClass="MvComment">
+		insert into mv_comment(id,user_id,movie_id,content,score,is_db,is_opposition,is_delete,type,create_date,latest_revision_date,lon,lat,location_name,location_city,location_area,title,cover,resource_type,stageid,point)
+		values(#id#,#userId#,#movieId#,#content#,#score#,#isDB#,#isOpposition#,#isDel#,#type#,#createDate#,#latestRevisionDate#,#lon#,#lat#,#locationName#,#locationCity#,#locationArea#,#title#,#cover#,#resourceType#,#stageid#,#point#)
+	</insert>
+	
+	<!-- 查询这部电影的评论信息 -->
+	<select id="findAllMvComment"  parameterClass="java.util.Map" resultMap="resultComment">
+		select id,user_id,movie_id,content,score,is_db,is_opposition,is_delete,create_date,latest_revision_date,type,big_value,description,lon,lat,location_name,location_city,location_area,title,cover,resource_type,stageid,point,tag from mv_comment where is_delete = 0  and movie_id =#movieId#
+		and content != '' and content is not null
+		<isNotNull prepend="AND" property="type">
+			type= #type#
+		</isNotNull>
+		<isNotNull prepend="AND" property="resourceType">
+			resource_type= #resourceType#
+		</isNotNull>
+		<isNotNull prepend="AND" property="id">
+			<![CDATA[ id< #id# ]]>
+		</isNotNull>
+		order by id desc limit 0,10
+	</select>
+	
+	<!-- 查询这部电影的评论信息，根据有无标题判断是否是长短影评，旧版app使用，只查资源类型为7的 -->
+	<select id="findAllMvCommentForOld"  parameterClass="java.util.Map" resultMap="resultComment">
+		select id,user_id,movie_id,content,score,is_db,is_opposition,is_delete,create_date,latest_revision_date,type,big_value,description,lon,lat,location_name,location_city,location_area,title,cover,resource_type,stageid,point,tag from mv_comment where is_delete = 0  and movie_id =#movieId#
+		and content != '' and content is not null and resource_type='7'
+		<isNotNull prepend="AND" property="type">
+			type= #type#
+		</isNotNull>
+		<!-- <isNotNull prepend="AND" property="resourceType">
+			resource_type= #resourceType#
+		</isNotNull> -->
+		<isNotNull prepend="AND" property="title">
+			<!-- <![CDATA[ title< >'' ]]> -->
+			title !=''
+		</isNotNull>
+		<isNull prepend="AND" property="title">
+			title = ''
+		</isNull>
+		<isNotNull prepend="AND" property="id">
+			<![CDATA[ id< #id# ]]>
+		</isNotNull>
+		order by id desc
+		<isNotNull property="pageIndex">
+			limit #pageIndex#,#pageSize#
+		</isNotNull>
+		<isNull property="pageIndex">
+			limit 0,10
+		</isNull>
+	</select>
+	
+	<!-- 查询所有电影的评论 -->
+	<select id="findAllComment"  resultMap="resultComment" parameterClass="long">
+		select id,user_id,movie_id,content,score,is_db,is_opposition,is_delete,create_date,latest_revision_date,type,big_value,description,lon,lat,location_name,location_city,location_area,title,cover,resource_type,stageid,point,tag from mv_comment where is_delete = 0 and stageid=0
+		<isNotNull prepend="AND">
+			<![CDATA[ id< #id# ]]>
+		</isNotNull> 
+		order by id desc limit 0,50
+	</select>
+	
+	<!-- 根据type查询电影的评论 -->
+	<select id="findMvCommentListByType"  parameterClass="java.util.Map" resultMap="resultComment">
+		select id,user_id,movie_id,content,score,is_db,is_opposition,is_delete,create_date,latest_revision_date,type,big_value,description,lon,lat,location_name,location_city,location_area,title,cover,resource_type,stageid,point,tag from mv_comment where is_delete = 0
+		and content is not null and content != ''
+		<isNotNull prepend="AND" property="userId">
+			<![CDATA[ user_id= #userId# ]]>
+		</isNotNull>
+		<isNotNull prepend="AND" property="type">
+			<![CDATA[ type= #type# ]]>
+		</isNotNull>
+		<isNotNull prepend="AND" property="resId">
+			<![CDATA[ id< #resId# ]]>
+		</isNotNull>
+		order by id desc limit 0,10
+	</select>
+	
+	<!-- 根据userId查询电影的评论 -->
+	<select id="findMvCommentListByUserId"  parameterClass="java.util.Map" resultMap="resultComment">
+		select id,user_id,movie_id,content,score,is_db,is_opposition,is_delete,create_date,latest_revision_date,type,big_value,description,lon,lat,location_name,location_city,location_area,title,cover,resource_type,stageid,point,tag from mv_comment where is_delete = 0 and stageid=0
+		<isNotNull prepend="AND" property="resId">
+			type =#type# 
+		</isNotNull>
+		<isNotNull prepend="AND" property="resId">
+			<![CDATA[ id< #resId# ]]>
+		</isNotNull>
+		and user_id in
+		<iterate property="usersId" open="(" close=")"  conjunction=",">
+		#usersId[]#
+		</iterate>
+		order by id desc limit 0,10
+	</select>
+	
+	<!-- 根据userId查询这个用户的长影评 -->
+	<select id="findUserLongMvCommentListByUserId"  parameterClass="java.util.Map" resultMap="resultComment">
+		select id,user_id,movie_id,content,score,is_db,is_opposition,is_delete,create_date,latest_revision_date,type,big_value,description,lon,lat,location_name,location_city,location_area,title,cover,resource_type,stageid,point,tag from mv_comment where is_delete = 0 and user_id = #userId# and stageid=0 and resource_type = 24
+		<isNotNull prepend="AND" property="resId">
+			<![CDATA[ id< #resId# ]]>
+		</isNotNull>
+		order by id desc limit 0,10
+	</select>
+
+	<!-- 根据查询这个电影的长影评 -->
+	<select id="findOneMvCommentListByResTypeAndPage"  parameterClass="java.util.Map" resultMap="resultComment">
+		select id,user_id,movie_id,content,score,is_db,is_opposition,is_delete,create_date,latest_revision_date,type,big_value,description,lon,lat,location_name,location_city,location_area,title,cover,resource_type,stageid,point,tag from mv_comment where
+		movie_id=#movieId#
+		and is_delete = 0
+		and stageid=0
+		and resource_type = #resourceType#
+		order by id desc
+		limit #pageIndex#,#pageSize#
+	</select>
+	
+		<!-- 查询用户对电影的评论 -->
+	<select id="findUserMvComment"  resultMap="resultComment" parameterClass="MvComment">
+		select id,user_id,movie_id,content,score,is_db,is_opposition,is_delete,create_date,latest_revision_date,type,big_value,description,lon,lat,location_name,location_city,location_area,title,cover,resource_type,stageid,point,tag from mv_comment where user_id=#userId# and movie_id=#movieId# and is_delete = 0 and stageid=#stageid# order by id desc
+	</select>
+	
+	<!-- 查询电影的评论总数 -->
+	<select id="findMvCommentCount"  resultClass="int" parameterClass="long">
+		select count(1) from mv_comment where movie_id=#movieId# and is_delete = 0
+	</select>
+	
+	<select id="findMvCommentCountByUid"  resultClass="int" parameterClass="long">
+		select count(1) from mv_comment where user_id=#userId# and is_delete = 0 and content != '' and content is not null and stageid=0
+	</select>
+	
+	<!-- 查询电影是否存在 -->
+	<select id="findMvCommentIsExist"  resultMap="resultComment" parameterClass="long">
+		select id,user_id,movie_id,content,score,is_db,is_opposition,is_delete,create_date,latest_revision_date,type,big_value,description,lon,lat,location_name,location_city,location_area,title,cover,resource_type,stageid,point,tag from mv_comment where id=#id#
+		and is_delete = 0
+	</select>
+	
+	<!-- 更改用户对电影的评论 -->
+	<update id="updateMyCommentByMovie" parameterClass="MvComment">
+		update mv_comment set content=#content#,score=#score#,is_delete = #isDel#,latest_revision_date=#latestRevisionDate#,title=#title#,cover=#cover# where id=#id#
+	</update>
+	
+	<!-- 更改影评的逼格值 -->
+	<update id="updateMvCommentBigValue" parameterClass="java.util.Map">
+		update mv_comment set big_value=#bigValue# where id=#id# and is_delete = 0
+	</update>
+	
+	<!-- 查询某个用户某个时间段的影评 -->
+	<select id="findUserMvCommentsByTime"  parameterClass="java.util.Map" resultMap="resultComment">
+		select id,user_id,movie_id,content,score,is_db,is_opposition,is_delete,create_date,latest_revision_date,type,big_value,description,lon,lat,location_name,location_city,location_area,title,cover,resource_type,stageid,point,tag from mv_comment where user_id=#userId# and is_delete = 0 and stageid=0 and create_date > #starttime# and <![CDATA[ create_date <= #endtime# ]]>
+	</select>
+	
+	
+	<!-- 根据标题和内容模糊查询，查询某个时间段的 -->
+	<select id="searchMvCommentByLike" parameterClass="java.util.Map" resultMap="resultComment">
+		select id,user_id,movie_id,content,score,is_db,is_opposition,is_delete,create_date,latest_revision_date,type,big_value,description,lon,lat,location_name,location_city,location_area,title,cover,resource_type,stageid,point,tag from mv_comment where user_id=#userId# and is_delete = 0 and stageid=0
+		<isNotNull prepend="AND" property="keyword">
+		 (title like concat('%', #keyword#, '%') or content like concat('%', #keyword#, '%'))
+		 </isNotNull>
+		<isNotNull prepend="AND" property="starttime">
+			<![CDATA[ create_date>=#starttime# ]]>
+		</isNotNull>
+		<isNotNull prepend="AND" property="endtime">
+			<![CDATA[ create_date<=#endtime# ]]>
+		</isNotNull>
+		 order by id desc limit #start#,#pageSize#
+	</select>
+	<!-- 根据模糊查询的条件查询数量 -->
+	<select id="findMvCommentCountByLike"  resultClass="int" parameterClass="java.util.Map">
+		select count(1) from mv_comment where user_id=#userId# and is_delete = 0 and stageid=0
+		<isNotNull prepend="AND" property="keyword">
+		 (title like concat('%', #keyword#, '%') or content like concat('%', #keyword#, '%'))
+		 </isNotNull>
+		<isNotNull prepend="AND" property="starttime">
+			<![CDATA[ create_date>=#starttime# ]]>
+		</isNotNull>
+		<isNotNull prepend="AND" property="endtime">
+			<![CDATA[ create_date<=#endtime# ]]>
+		</isNotNull>
+	</select>
+	
+	<!-- 根据阶段id查询影评列表根据评委评分排序 -->
+	<select id="findMvCommentsByStageidOrderbyPoint"  resultMap="resultComment" parameterClass="java.util.Map">
+		select id,user_id,movie_id,content,score,is_db,is_opposition,is_delete,create_date,latest_revision_date,type,big_value,description,lon,lat,location_name,location_city,location_area,title,cover,resource_type,stageid,point,tag from mv_comment where is_delete = 0 and stageid=#stageid#
+		order by point desc limit #start#,#pagesize#
+	</select>
+	
+	<!-- 根据阶段id查询影评列表根据评论时间排序 -->
+	<select id="findMvCommentsByStageidOrderbyId"  resultMap="resultComment" parameterClass="java.util.Map">
+		select id,user_id,movie_id,content,score,is_db,is_opposition,is_delete,create_date,latest_revision_date,type,big_value,description,lon,lat,location_name,location_city,location_area,title,cover,resource_type,stageid,point,tag from mv_comment where is_delete = 0 and stageid=#stageid#
+		order by latest_revision_date desc limit #start#,#pagesize#
+	</select>
+	
+	
+	<!-- 根据阶段id查询用户影评得分排行榜按评委评分排序 -->
+	<select id="findMvCommentUserRankByStageid"  resultMap="resultComment" parameterClass="java.util.Map">
+		select id,user_id,movie_id,content,score,is_db,is_opposition,is_delete,create_date,latest_revision_date,type,big_value,description,lon,lat,location_name,location_city,location_area,title,cover,resource_type,stageid,MAX(point),tag from mv_comment where is_delete = 0 and stageid=#stageid#
+		GROUP BY user_id order by point desc limit #start#,#pagesize#
+	</select>
+	
+	<!-- 根据阶段id查询某个人的影评列表根据评委评分排序 -->
+	<select id="findMvCommentsByUseridAndStageid"  resultMap="resultComment" parameterClass="java.util.Map">
+		select id,user_id,movie_id,content,score,is_db,is_opposition,is_delete,create_date,latest_revision_date,type,big_value,description,lon,lat,location_name,location_city,location_area,title,cover,resource_type,stageid,point,tag from mv_comment where user_id=#userId# and is_delete = 0 and stageid=#stageid#
+		order by point desc limit #start#,#pagesize#
+	</select>
+	
+	<!-- 根据阶段id查询某个电影的影评列表 -->
+	<select id="findMvCommentsByMovieidAndStageid"  resultMap="resultComment" parameterClass="java.util.Map">
+		select id,user_id,movie_id,content,score,is_db,is_opposition,is_delete,create_date,latest_revision_date,type,big_value,description,lon,lat,location_name,location_city,location_area,title,cover,resource_type,stageid,point,tag from mv_comment where movie_id=#movieId# and is_delete = 0 and stageid=#stageid#
+		<isNotNull prepend="AND" property="resId">
+			<![CDATA[ id< #resId# ]]>
+		</isNotNull>
+		order by id desc limit 0,#pagesize#
+	</select>
+	
+	<!-- 根据影评id集合查询影评列表 -->
+	<select id="findMvCommentsByIdsAndStageid"  resultMap="resultComment" parameterClass="java.util.Map">
+		select id,user_id,movie_id,content,score,is_db,is_opposition,is_delete,create_date,latest_revision_date,type,big_value,description,lon,lat,location_name,location_city,location_area,title,cover,resource_type,stageid,point,tag from mv_comment where is_delete = 0 and stageid=#stageid#
+		and id in 
+		<iterate property="commentids" open="(" close=")"  conjunction=",">
+		#commentids[]#
+		</iterate>
+	</select>
+	<!-- 查询有无影评发表记录（包含已经删除的） ，用于任务打赏-->
+	<select id="findMvCommentRecord"  resultClass="long" parameterClass="long">
+		select id from mv_comment where user_id=#userid# limit 0,1
+	</select>
+	
+	<!-- 根据影评id集合查询影评列表 -->
+	<select id="findMvCommentsByIds"  resultMap="resultComment" parameterClass="java.util.Map">
+		select id,user_id,movie_id,content,score,is_db,is_opposition,is_delete,create_date,latest_revision_date,type,big_value,description,lon,lat,location_name,location_city,location_area,title,cover,resource_type,stageid,point,tag from mv_comment where is_delete = 0 
+		and id in 
+		<iterate property="commentids" open="(" close=")"  conjunction=",">
+		#commentids[]#
+		</iterate>
+	</select>
+	
+	<typeAlias alias="MvAvgMarkClass" type="com.poison.resource.model.MvAvgMark"/>   
+   <!--   书的平均打分 -->
+	<resultMap id="mvAvgMarkResult" class="MvAvgMarkClass">
+		<result column="id" property="id" jdbcType="BIGINT"/>
+		<result column="mv_id" property="mvId" jdbcType="BIGINT"/>
+		<result column="mv_avg_mark" property="mvAvgMark" jdbcType="FLOAT"/>
+		<result column="mv_total_num" property="mvTotalNum" jdbcType="INT"/>
+		<result column="experts_avg_mark" property="expertsAvgMark" jdbcType="FLOAT"/>
+		<result column="experts_total_num" property="expertsTotalNum" jdbcType="INT"/>
+		<result column="is_delete" property="isDelete" jdbcType="INT"/>
+		<result column="latest_revision_date" property="latestRevisionDate" jdbcType="BIGINT"/>
+	</resultMap>
+	
+	<!-- 创建书的评论-->
+	<insert id="insertMvAvgMark" parameterClass="MvAvgMarkClass">
+		insert into mv_avg_mark(id,mv_id,mv_avg_mark,mv_total_num,experts_avg_mark,experts_total_num,is_delete,latest_revision_date)
+		values(#id#,#mvId#,#mvAvgMark#,#mvTotalNum#,#expertsAvgMark#,#expertsTotalNum#,#isDelete#,#latestRevisionDate#)
+	</insert>
+	
+	<select id="findMvAvgMarkByMvId"  parameterClass="long" resultMap="mvAvgMarkResult">
+		select id,mv_id,mv_avg_mark,mv_total_num,experts_avg_mark,experts_total_num,is_delete,latest_revision_date from mv_avg_mark where mv_id=#mvId# and is_delete = 0
+	</select>
+	
+	<!-- 根据电影的id集合查询评分信息 -->
+	<select id="findMvAvgMarkByMvIds"  parameterClass="java.util.Map" resultMap="mvAvgMarkResult">
+		select id,mv_id,mv_avg_mark,mv_total_num,experts_avg_mark,experts_total_num,is_delete,latest_revision_date from mv_avg_mark where mv_id in
+		<iterate property="mvids" open="(" close=")"  conjunction=",">
+		#mvids[]#
+		</iterate>
+		and is_delete = 0
+	</select>
+	
+	<update id="updateMvAvgMark" parameterClass="MvAvgMarkClass">
+		update mv_avg_mark set mv_avg_mark=#mvAvgMark#,mv_total_num=#mvTotalNum#,latest_revision_date=#latestRevisionDate# where mv_id=#mvId# and is_delete = 0
+	</update>
+	
+	<update id="updateExpertsAvgMark" parameterClass="MvAvgMarkClass">
+		update mv_avg_mark set experts_avg_mark=#expertsAvgMark#,experts_total_num=#expertsTotalNum#,latest_revision_date=#latestRevisionDate# where mv_id=#mvId# and is_delete = 0
+	</update>
+</sqlMap>

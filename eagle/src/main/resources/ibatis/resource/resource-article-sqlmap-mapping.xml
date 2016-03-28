@@ -1,0 +1,307 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd" >
+<sqlMap namespace="article">
+
+    <typeAlias alias="Article" type="com.poison.resource.model.Article"/>   
+   <!--   长文章表信息 -->
+	<resultMap id="resultArticle" class="Article">
+		<result column="id" property="id" jdbcType="BIGINT"/>
+		<result column="uid" property="uid" jdbcType="BIGINT"/>
+		<result column="begin_date" property="beginDate" jdbcType="BIGINT"/>
+		<result column="end_date" property="endDate" jdbcType="BIGINT"/>
+		<result column="name" property="name" jdbcType="VARCHAR"/>
+		<result column="cover" property="cover" jdbcType="VARCHAR"/>
+		<result column="isDel" property="isDel" jdbcType="TINYINT"/>
+		<result column="content" property="content" jdbcType="VARCHAR"/>
+		<result column="type" property="type" jdbcType="VARCHAR"/>
+		<result column="summary" property="summary" jdbcType="VARCHAR"/>
+		<result column="reading_count" property="readingCount" jdbcType="INT"/>
+		<result column="falsereading" property="falsereading" jdbcType="INT"/>
+		<result column="atype" property="atype" jdbcType="TINYINT"/>
+		<result column="tag" property="tag" jdbcType="VARCHAR"/>
+	</resultMap>
+	
+	<!-- 创建帖子-->
+	<insert id="addArticle" parameterClass="Article">
+		insert into article(id,uid,begin_date,end_date,name,cover,isDel,content,reading_count,falsereading,type,summary,atype)
+		values(#id#,#uid#,#beginDate#,#endDate#,#name#,#cover#,#isDel#,#content#,#readingCount#,#falsereading#,#type#,#summary#,#atype#)
+	</insert>
+	
+	<!-- 根据类型修改当前帖子 -->
+	<update id="updateByIdArticle" parameterClass="com.poison.resource.model.Article">
+		update article set end_date=#endDate# ,name=#name#,cover=#cover#,content=#content#,summary=#summary# where id=#id# and uid=#uid# and isDel=0
+	</update>
+	<update id="updateArticleReadingCount" parameterClass="Article">
+		update article set reading_count=reading_count+1,falsereading=falsereading+#falsereading# where id=#id# and isDel=0
+	</update>
+	<!-- 删除当前帖子 -->
+	<update id="deleteByIdArticle" parameterClass="long">
+		update article set isDel=1 where id=#id# 
+	</update>
+	<!-- 修改帖子内容 -->
+	<update id="updateArticleContentByID" parameterClass="com.poison.resource.model.Article">
+		update article set content=#content# ,end_date=#endDate# where isDel=0 and id=#id#
+	</update>
+	<!-- 根据uid查询所需帖子 -->
+	<select id="queryByUidArticle"  resultMap="resultArticle">
+		select id,uid,begin_date,end_date,`name`,cover,isDel,content,type,reading_count,falsereading,summary,atype,tag from article where uid=#uid#
+		and isDel=0 order by begin_date desc limit 0,10
+	</select>
+	
+	<select id="findArticleCount"  resultClass="int" parameterClass="java.util.Map">
+		select count(1) from article where uid=#userId# and isDel=0
+		<isNotNull prepend="AND" property="type">
+			<![CDATA[ type= #type# ]]>
+		</isNotNull>
+	</select>
+	
+	<!-- 根据id查询所需帖子 -->
+	<select id="queryArticleById"  resultMap="resultArticle" parameterClass="long">
+		select id,uid,begin_date,end_date,`name`,cover,isDel,content,type,reading_count,falsereading,summary,atype,tag from article where id=#id# and isDel=0
+	</select>
+	
+	<!-- 根据类别查询 -->
+	<select id="queryByTypeArticle"  resultMap="resultArticle" parameterClass="java.util.Map">
+		select id,uid,begin_date,end_date,`name`,cover,isDel,content,type,reading_count,falsereading,summary,atype,tag from article where isDel=0
+		<isNotNull prepend="AND" property="id">
+			<![CDATA[ id< #id# ]]>
+		</isNotNull>
+		<isNotNull prepend="AND" property="type">
+			<![CDATA[ type=#type# ]]>
+		</isNotNull>
+		order by id desc limit 0,10
+	</select>
+	
+	<!-- 根据类别和用户名 -->
+	<select id="queryArticleByTypeUid" parameterClass="java.util.Map" resultMap="resultArticle">
+		select id,uid,begin_date,end_date,`name`,cover,isDel,content,type,reading_count,falsereading,summary,atype,tag from article where uid=#uid# and isDel=0
+		<isNotNull prepend="AND" property="type">
+			type=#type#
+		</isNotNull>
+		order by begin_date desc limit #start#,#pageSize#
+	</select>
+	
+		<!-- 按时间查询最新书单列表 -->
+	<select id="findArticleListByDate" resultClass="com.poison.resource.model.Article" resultMap="resultArticle">
+		select id,uid,begin_date,end_date,`name`,cover,isDel,content,type,reading_count,falsereading,summary,atype,tag from article where isDel = 0 order by id desc limit 0,10
+	</select>
+	
+	<select  id="findArticleListById" resultClass="com.poison.resource.model.Article" resultMap="resultArticle" >
+		select id,uid,begin_date,end_date,`name`,cover,isDel,content,type,reading_count,falsereading,summary,atype,tag from article where isDel = 0 and  <![CDATA[ id< #id# ]]>  order by id desc limit 0,10
+	</select>
+	
+	<select id="findArticleListByUsersId"  parameterClass="java.util.Map" resultMap="resultArticle">
+		select id,uid,begin_date,end_date,`name`,cover,isDel,content,type,reading_count,falsereading,summary,atype,tag from article where isDel = 0 and uid in
+		<iterate property="usersIdList" open="(" close=")"  conjunction=",">
+			#usersIdList[]#
+		</iterate>
+		<isNotNull prepend="AND" property="resId">
+			<![CDATA[ id< #resId# ]]>
+		</isNotNull>
+		<isNotNull prepend="AND" property="type">
+			<![CDATA[ type= #type# ]]>
+		</isNotNull>
+		order by id desc limit 0,10
+	</select>
+	
+	<!--根据用户的id查询新长文章列表  -->
+	<select id="findArticleListByUserId"  parameterClass="java.util.Map" resultMap="resultArticle">
+		select id,uid,begin_date,end_date,`name`,cover,isDel,content,type,reading_count,falsereading,summary,atype,tag from article where isDel = 0 and
+		uid =#userId#
+		<isNotNull prepend="AND" property="resId">
+			<![CDATA[ id< #resId# ]]>
+		</isNotNull>
+		<isNotNull prepend="AND" property="type">
+			<![CDATA[ type= #type# ]]>
+		</isNotNull>
+		order by id desc limit 0,10
+	</select>
+	
+	<!-- 根据文章id集合查询文章集合 -->
+	<select id="findArticlesByIds"  parameterClass="java.util.Map" resultMap="resultArticle">
+		select id,uid,begin_date,end_date,`name`,cover,isDel,content,type,reading_count,falsereading,summary,atype,tag from article where isDel = 0 and id in
+		<iterate property="aids" open="(" close=")"  conjunction=",">
+			#aids[]#
+		</iterate>
+		<isNotNull prepend="AND" property="type">
+			type= #type#
+		</isNotNull>
+	</select>
+	
+	<!-- 根据标题模糊查询，查询某个时间段的 -->
+	<select id="searchArticleByTitle" parameterClass="java.util.Map" resultMap="resultArticle">
+		select id,uid,begin_date,end_date,`name`,cover,isDel,content,type,reading_count,falsereading,summary,atype,tag from article where uid=#uid# and isDel=0
+		<isNotNull prepend="AND" property="type">
+			type=#type#
+		</isNotNull>
+		<isNotNull prepend="AND" property="name">
+		 name like concat('%', #name#, '%')
+		 </isNotNull>
+		<isNotNull prepend="AND" property="starttime">
+			<![CDATA[ begin_date>=#starttime# ]]>
+		</isNotNull>
+		<isNotNull prepend="AND" property="endtime">
+			<![CDATA[ begin_date<=#endtime# ]]>
+		</isNotNull>
+		 order by begin_date desc limit #start#,#pageSize#
+	</select>
+	<!-- 根据模糊查询的条件查询数量 -->
+	<select id="findArticleCountByLike"  resultClass="int" parameterClass="java.util.Map">
+		select count(1) from article where uid=#uid# and isDel=0 
+		<isNotNull prepend="AND" property="type">
+			type=#type#
+		</isNotNull>
+		<isNotNull prepend="AND" property="name">
+		 name like concat('%', #name#, '%')
+		 </isNotNull>
+		<isNotNull prepend="AND" property="starttime">
+			<![CDATA[ begin_date>=#starttime# ]]>
+		</isNotNull>
+		<isNotNull prepend="AND" property="endtime">
+			<![CDATA[ begin_date<=#endtime# ]]>
+		</isNotNull>
+	</select>
+	
+	<!-- 日历中动态使用 -->
+	<resultMap id="resultArticleTime" class="Article">
+		<result column="id" property="id" jdbcType="BIGINT"/>
+		<result column="begin_date" property="beginDate" jdbcType="BIGINT"/>
+	</resultMap>
+	<!-- 根据用户id查询一个时间段的文章id和时间信息 -->
+	<select id="findUserArticleTime"  resultMap="resultArticleTime" parameterClass="java.util.Map">
+		select id,begin_date from article where uid=#uid# and isDel=0 and begin_date>=#starttime# and <![CDATA[ begin_date<=#endtime# ]]>
+	</select>
+	<!-- 根据用户id查询一个时间段的文章信息列表 -->
+	<select id="findUserArticlesByTime"  resultMap="resultArticle" parameterClass="java.util.Map">
+		select id,uid,begin_date,end_date,`name`,cover,isDel,content,type,reading_count,falsereading,summary,atype from article where uid=#uid# and isDel=0 and begin_date>=#starttime# and <![CDATA[ begin_date<=#endtime# ]]>
+	</select>
+	
+	
+	<typeAlias alias="ArticleDraft" type="com.poison.resource.model.ArticleDraft"/>
+   <!--   长文章草稿表信息 -->
+	<resultMap id="resultArticleDraft" class="ArticleDraft">
+		<result column="id" property="id" jdbcType="BIGINT"/>
+		<result column="uid" property="uid" jdbcType="BIGINT"/>
+		<result column="begin_date" property="beginDate" jdbcType="BIGINT"/>
+		<result column="end_date" property="endDate" jdbcType="BIGINT"/>
+		<result column="name" property="name" jdbcType="VARCHAR"/>
+		<result column="cover" property="cover" jdbcType="VARCHAR"/>
+		<result column="isDel" property="isDel" jdbcType="TINYINT"/>
+		<result column="content" property="content" jdbcType="VARCHAR"/>
+		<result column="type" property="type" jdbcType="VARCHAR"/>
+		<result column="summary" property="summary" jdbcType="VARCHAR"/>
+		<result column="reading_count" property="readingCount" jdbcType="INT"/>
+		<result column="atype" property="atype" jdbcType="TINYINT"/>
+		<result column="aid" property="aid" jdbcType="BIGINT"/>
+	</resultMap>
+	
+	<!-- 创建帖子-->
+	<insert id="addArticleDraft" parameterClass="ArticleDraft">
+		insert into article_draft(id,uid,begin_date,end_date,name,cover,isDel,content,reading_count,type,summary,atype,aid)
+		values(#id#,#uid#,#beginDate#,#endDate#,#name#,#cover#,#isDel#,#content#,#readingCount#,#type#,#summary#,#atype#,#aid#)
+	</insert>
+	
+	<!-- 根据类型修改当前帖子 -->
+	<update id="updateByIdArticleDraft" parameterClass="com.poison.resource.model.ArticleDraft">
+		update article_draft set end_date=#endDate# ,name=#name#,cover=#cover#,content=#content#,summary=#summary# where id=#id# and uid=#uid# and isDel=0
+	</update>
+	<update id="updateArticleDraftReadingCount" parameterClass="long">
+		update article_draft set reading_count=reading_count+1 where id=#id# and isDel=0
+	</update>
+	<!-- 删除当前帖子 -->
+	<update id="deleteByIdArticleDraft" parameterClass="long">
+		update article_draft set isDel=1 where id=#id# 
+	</update>
+	
+	<!-- 根据所属文章id删除草稿 -->
+	<update id="deleteArticleDraftByAid" parameterClass="long">
+		update article_draft set isDel=1 where aid=#aid# 
+	</update>
+	<!-- 根据所属文章id查询草稿 -->
+	<select id="queryArticleDraftByAid"  resultMap="resultArticleDraft" parameterClass="long">
+		select id,uid,begin_date,end_date,`name`,cover,isDel,content,type,reading_count,summary,atype,aid from article_draft where aid=#aid# and isDel=0
+	</select>
+	
+	<!-- 修改帖子内容 -->
+	<update id="updateArticleDraftContentByID" parameterClass="com.poison.resource.model.ArticleDraft">
+		update article_draft set content=#content# ,end_date=#endDate# where isDel=0 and id=#id#
+	</update>
+	<!-- 根据uid查询所需帖子 -->
+	<select id="queryByUidArticleDraft"  resultMap="resultArticleDraft">
+		select id,uid,begin_date,end_date,`name`,cover,isDel,content,type,reading_count,summary,atype,aid from article_draft where uid=#uid#
+		and isDel=0 order by begin_date desc limit 0,10
+	</select>
+	
+	<select id="findArticleDraftCount"  resultClass="int" parameterClass="long">
+		select count(1) from article_draft where uid=#userId# and isDel=0
+	</select>
+	
+	<!-- 根据id查询所需帖子 -->
+	<select id="queryArticleDraftById"  resultMap="resultArticleDraft" parameterClass="long">
+		select id,uid,begin_date,end_date,`name`,cover,isDel,content,type,reading_count,summary,atype,aid from article_draft where id=#id# and isDel=0
+	</select>
+	
+	<!-- 根据类别查询 -->
+	<select id="queryByTypeArticleDraft"  resultMap="resultArticleDraft" parameterClass="java.util.Map">
+		select id,uid,begin_date,end_date,`name`,cover,isDel,content,type,reading_count,summary,atype,aid from article_draft where isDel=0 
+		<isNotNull prepend="AND" property="id">
+			<![CDATA[ id< #id# ]]>
+		</isNotNull>
+		<isNotNull prepend="AND" property="type">
+			<![CDATA[ type=#type# ]]>
+		</isNotNull>
+		order by id desc limit 0,10
+	</select>
+	
+	<!-- 根据类别和用户名 -->
+	<select id="queryArticleDraftByTypeUid" parameterClass="java.util.Map" resultMap="resultArticleDraft">
+		select id,uid,begin_date,end_date,`name`,cover,isDel,content,type,reading_count,summary,atype,aid from article_draft where uid=#uid# and isDel=0 
+		<isNotNull prepend="AND" property="type">
+			type=#type#
+		</isNotNull>
+		order by begin_date desc limit #start#,#pageSize#
+	</select>
+	
+	<!-- 按时间查询最新书单列表 -->
+	<select id="findArticleDraftListByDate" resultClass="com.poison.resource.model.ArticleDraft" resultMap="resultArticleDraft">
+		select id,uid,begin_date,end_date,`name`,cover,isDel,content,type,reading_count,summary,atype,aid from article_draft where isDel = 0 order by id desc limit 0,10
+	</select>
+	
+	<select  id="findArticleDraftListById" resultClass="com.poison.resource.model.ArticleDraft" resultMap="resultArticleDraft" >
+		select id,uid,begin_date,end_date,`name`,cover,isDel,content,type,reading_count,summary,atype,aid from article_draft where isDel = 0 and  <![CDATA[ id< #id# ]]>  order by id desc limit 0,10
+	</select>
+	
+	<!-- 根据标题模糊查询，查询某个时间段的 -->
+	<select id="searchArticleDraftByTitle" parameterClass="java.util.Map" resultMap="resultArticleDraft">
+		select id,uid,begin_date,end_date,`name`,cover,isDel,content,type,reading_count,summary,atype,aid from article_draft where uid=#uid# and isDel=0 
+		<isNotNull prepend="AND" property="type">
+			type=#type#
+		</isNotNull>
+		<isNotNull prepend="AND" property="name">
+		 name like concat('%', #name#, '%')
+		 </isNotNull>
+		<isNotNull prepend="AND" property="starttime">
+			<![CDATA[ begin_date>=#starttime# ]]>
+		</isNotNull>
+		<isNotNull prepend="AND" property="endtime">
+			<![CDATA[ begin_date<=#endtime# ]]>
+		</isNotNull>
+		 order by begin_date desc limit #start#,#pageSize#
+	</select>
+	<!-- 根据模糊查询的条件查询数量 -->
+	<select id="findArticleDraftCountByLike"  resultClass="int" parameterClass="java.util.Map">
+		select count(1) from article_draft where uid=#uid# and isDel=0 
+		<isNotNull prepend="AND" property="type">
+			type=#type#
+		</isNotNull>
+		<isNotNull prepend="AND" property="name">
+		 name like concat('%', #name#, '%')
+		 </isNotNull>
+		<isNotNull prepend="AND" property="starttime">
+			<![CDATA[ begin_date>=#starttime# ]]>
+		</isNotNull>
+		<isNotNull prepend="AND" property="endtime">
+			<![CDATA[ begin_date<=#endtime# ]]>
+		</isNotNull>
+	</select>
+</sqlMap>

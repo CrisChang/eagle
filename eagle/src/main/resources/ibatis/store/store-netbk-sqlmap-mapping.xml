@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd" >
+<sqlMap namespace="storebk">
+	
+	<typeAlias alias="netbk" type="com.poison.store.model.NetBook" />
+	
+	<resultMap id="netBkResult" class="netbk">
+		<result column="id" property="id" jdbcType="BIGINT" />
+		<result column="source" property="source" jdbcType="VARCHAR" />
+		<result column="book_id" property="bookId" jdbcType="BIGINT" />
+		<result column="name" property="name" jdbcType="VARCHAR" />
+		<result column="author_id" property="authorId" jdbcType="BIGINT" />
+		<result column="author_name" property="authorName" jdbcType="VARCHAR" />
+		<result column="book_url" property="bookUrl" jdbcType="VARCHAR" />
+		<result column="type" property="type" jdbcType="VARCHAR" />
+		<result column="tags" property="tags" jdbcType="VARCHAR" />
+		<result column="pagePic_url" property="pagePicUrl" jdbcType="VARCHAR" />
+		<result column="pagePic" property="pagePic" jdbcType="VARCHAR" />
+		<result column="introduction" property="introduction" jdbcType="TEXT" />
+		<result column="coll_time" property="collTime" jdbcType="INT" />
+		<result column="state" property="state" jdbcType="TINYINT" />
+	</resultMap>
+	
+	<select id="findNetBkInfo" resultMap="netBkResult" parameterClass="long">
+		select id,source,book_id,`name`,author_id,author_name,book_url,type,tags,pagePic_url,pagePic,introduction,coll_time,state from c_db_netbk where id = #id#
+	</select>
+	<select id="findNetBkInfosByIds" resultMap="netBkResult" parameterClass="java.util.Map">
+		select id,source,book_id,`name`,author_id,author_name,book_url,type,tags,pagePic_url,pagePic,introduction,coll_time,state from c_db_netbk where id in ($ids$)
+	</select>
+</sqlMap>

@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd" >
+<sqlMap namespace="bksearch">
+	
+	<typeAlias alias="bkSearch" type="com.poison.store.model.BkSearch" />
+	
+	<resultMap id="bkSearchResult" class="bkSearch">
+		<result column="id" property="id" jdbcType="BIGINT" />
+		<result column="createtime" property="createtime" jdbcType="VARCHAR" />
+		<result column="method" property="method" jdbcType="VARCHAR" />
+		<result column="isDel" property="isDel" jdbcType="INT" />
+		<result column="bookId" property="bookId" jdbcType="BIGINT" />
+		<result column="bookType" property="bookType" jdbcType="VARCHAR" />
+		<result column="bookName" property="bookName" jdbcType="VARCHAR" />
+		<result column="searchNum" property="searchNum" jdbcType="INT" />
+	</resultMap>
+	
+	
+	<resultMap id="bkSearchNumResult" class="bkSearch">
+		<result column="bookId" property="bookId" jdbcType="BIGINT" />
+		<result column="bookType" property="bookType" jdbcType="VARCHAR" />
+		<result column="bookName" property="bookName" jdbcType="VARCHAR" />
+		<result column="searchNumSum" property="searchNum" jdbcType="INT" />
+	</resultMap>
+	
+	<select id="findBkRanking" resultMap="bkSearchNumResult" parameterClass="java.util.Map">
+		<!-- select bookId,bookType,bookName,sum(searchNum) as searchNumSum from bk_search where isDel=0 and bookType='27' and createtime>=#starttime# and <![CDATA[ createtime<=#endtime# ]]> group by bookId,bookType order by searchNumSum desc limit #start#,#pagesize# -->
+		select bookId,bookType,bookName,sum(searchNum) as searchNumSum from bk_search where isDel=0 and bookType='27' and createtime='2015-07-21' group by bookId,bookType order by searchNumSum desc limit #start#,#pagesize#
+	</select>
+	
+</sqlMap>

@@ -1,0 +1,97 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd" >
+<sqlMap namespace="selectedres">
+
+    <typeAlias alias="SelectedRes" type="com.poison.resource.model.SelectedRes"/>   
+   <!--  精选资源表 -->
+	<resultMap id="selectedResResult" class="SelectedRes">
+		<result column="id" property="id" jdbcType="BIGINT" />
+		<result column="resid" property="resid" jdbcType="BIGINT" />
+		<result column="restype" property="restype" jdbcType="VARCHAR" />
+		<result column="type" property="type" jdbcType="VARCHAR" />
+		<result column="score" property="score" jdbcType="BIGINT" />
+		<result column="isdel" property="isdel" jdbcType="INT" />
+		<result column="createtime" property="createtime" jdbcType="BIGINT" />
+		<result column="updatetime" property="updatetime" jdbcType="BIGINT" />
+		<result column="info" property="info" jdbcType="VARCHAR" />
+		<result column="image" property="image" jdbcType="VARCHAR" />
+		<result column="userid" property="userid" jdbcType="BIGINT" />
+		<result column="topshow" property="topshow" jdbcType="BIGINT" />
+ 	</resultMap>
+	
+	<!-- 根据精选值排序 查询精选资源列表 -->
+	<select id="findSelectedResByScore"  resultMap="selectedResResult"  parameterClass="java.util.Map">
+		select * from selected_res where isdel=0 and restype=#restype#
+		<isNotNull prepend="AND" property="type">
+			type = #type#
+		</isNotNull>
+		<isNotNull prepend="AND" property="score">
+			<![CDATA[ score< #score# ]]>
+		</isNotNull>
+		order by score desc limit 0,#pageSize#
+	</select>
+	
+	<!-- 根据精选值排序 查询精选列表 不包含置顶的-->
+	<select id="findSelectedResByScoreWithoutTopshow"  resultMap="selectedResResult"  parameterClass="java.util.Map">
+		select * from selected_res where isdel=0 and restype=#restype# and topshow=0
+		<isNotNull prepend="AND" property="type">
+			type = #type#
+		</isNotNull>
+		<isNotNull prepend="AND" property="score">
+			<![CDATA[ score< #score# ]]>
+		</isNotNull>
+		order by score desc limit 0,#pageSize#
+	</select>
+	
+	<!-- 根据精选id排序 查询精选资源列表 -->
+	<select id="findSelectedResById"  resultMap="selectedResResult"  parameterClass="java.util.Map">
+		select * from selected_res where isdel=0 and restype=#restype#
+		<isNotNull prepend="AND" property="type">
+			type = #type#
+		</isNotNull>
+		<isNotNull prepend="AND" property="id">
+			<![CDATA[ id< #id# ]]>
+		</isNotNull>
+		order by id desc limit 0,#pageSize#
+	</select>
+	
+	
+	<!-- 根据精选id排序 查询精选列表 不包含置顶的-->
+	<select id="findSelectedResByIdWithoutTopshow"  resultMap="selectedResResult"  parameterClass="java.util.Map">
+		select * from selected_res where isdel=0 and restype=#restype# and topshow=0
+		<isNotNull prepend="AND" property="type">
+			type = #type#
+		</isNotNull>
+		<isNotNull prepend="AND" property="id">
+			<![CDATA[ id< #id# ]]>
+		</isNotNull>
+		order by id desc limit 0,#pageSize#
+	</select>
+	
+	
+	
+	<!-- 根据置顶值排序 查询精选资源列表 (只是置顶的资源)-->
+	<select id="findSelectedResByTopshow"  resultMap="selectedResResult">
+		select * from selected_res where isdel=0 and restype=#restype# and topshow>0
+		<isNotNull prepend="AND" property="type">
+			type = #type#
+		</isNotNull>
+		order by topshow desc
+	</select>
+	
+	<!-- 查询精选资源的数量根据资源类型 -->
+	<select id="getSelectedResCountByType"  parameterClass="java.util.Map" resultClass="long">
+		select count(1) from selected_res where isdel=0 and restype=#restype#
+		<isNotNull prepend="AND" property="type">
+			type = #type#
+		</isNotNull>
+	</select>
+	
+	<!-- 根据资源id和资源类型查询 -->
+	<select id="findSelectedResByResidAndType"  resultMap="selectedResResult"  parameterClass="java.util.Map">
+		select * from selected_res where resid=#resid# and restype=#restype# and isdel=0
+		<isNotNull prepend="AND" property="type">
+			type = #type#
+		</isNotNull>
+	</select>
+</sqlMap>

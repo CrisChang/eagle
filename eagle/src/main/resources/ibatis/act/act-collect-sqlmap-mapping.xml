@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd" >
+<sqlMap namespace="actcollect">
+	
+	<typeAlias alias="actcollect" type="com.poison.act.model.ActCollect" />
+	
+	<resultMap id="collectResult" class="actcollect">
+		<result column="id" property="id" jdbcType="BIGINT" />
+		<result column="user_id" property="userId" jdbcType="BIGINT" />
+		<result column="resource_id" property="resourceId" jdbcType="BIGINT" />
+		<result column="is_collect" property="isCollect" jdbcType="INT" />
+		<result column="type" property="type" jdbcType="VARCHAR" />
+		<result column="collect_date" property="collectDate" jdbcType="BIGINT" />
+		<result column="latest_revision_date" property="latestRevisionDate" jdbcType="BIGINT" />
+	</resultMap>
+	
+	<select id="findActCollect" parameterClass="java.util.Map" resultMap="collectResult" >
+		select id,user_id,resource_id,is_collect,type,collect_date,latest_revision_date from act_collect where user_id = #userId# and is_collect = 1
+		<isNotNull prepend="AND" property="type">
+			<![CDATA[ type = #type# ]]>
+		</isNotNull>
+	</select>
+	
+	<!--用户的收藏列表  -->
+	<select id="findUserCollectedList" parameterClass="java.util.Map" resultMap="collectResult" >
+		select id,user_id,resource_id,is_collect,type,collect_date,latest_revision_date from act_collect where user_id = #userId# and is_collect = 1
+		<isNotNull prepend="AND" property="resId">
+			<![CDATA[ id< #resId# ]]>
+		</isNotNull>
+		and <![CDATA[  type <> 0]]>
+		and <![CDATA[  type <> 1]]>
+		order by id desc limit 0,10
+	</select>
+	
+	<select id="findActCollectCount" parameterClass="long" resultClass="int" >
+		select count(1) from act_collect where resource_id = #resourceId# and is_collect=1
+	</select>
+	
+	<!--查询用户收藏的总数  -->
+	<select id="findUserActCollectCount" parameterClass="long" resultClass="int" >
+		select count(1) from act_collect where user_id = #userId# and is_collect=1
+		and <![CDATA[  type <> 0]]>
+		and <![CDATA[  type <> 1]]>
+		and <![CDATA[  type <> 22]]>
+	</select>
+	
+	<select id="findCollectIsExist" parameterClass="java.util.Map" resultMap="collectResult" >
+		select id,user_id,resource_id,is_collect,type,collect_date,latest_revision_date from act_collect where user_id=#userId# and resource_id = #resId#
+	</select>
+	
+	<select id="findCollectById" parameterClass="long" resultMap="collectResult" >
+		select id,user_id,resource_id,is_collect,type,collect_date,latest_revision_date from act_collect where id=#id#
+	</select>
+	
+	<update id="updateActCollect" parameterClass="actCollect" >
+		update act_collect set is_collect =#isCollect#,latest_revision_date =#latestRevisionDate# where user_id=#userId# and resource_id = #resourceId#
+	</update>
+	
+	<insert id="insertintoActCollect" parameterClass="actCollect">
+		insert into act_collect(id,user_id,resource_id,is_collect,type,collect_date,latest_revision_date) values(#id#,#userId#,#resourceId#,#isCollect#,#type#,#collectDate#,#latestRevisionDate#)
+	</insert>
+</sqlMap>

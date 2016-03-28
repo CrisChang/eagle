@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd" >
+<sqlMap namespace="acthot">
+	
+	<typeAlias alias="acthot" type="com.poison.act.model.ActHot" />
+	
+	<resultMap id="hotResult" class="acthot">
+		<result column="id" property="id" jdbcType="BIGINT" />
+		<result column="user_id" property="userId" jdbcType="BIGINT" />
+		<result column="resource_id" property="resourceId" jdbcType="BIGINT" />
+		<result column="is_hot" property="isHot" jdbcType="INT" />
+		<result column="type" property="type" jdbcType="VARCHAR" />
+		<result column="create_date" property="createDate" jdbcType="BIGINT" />
+		<result column="latest_revision_date" property="latestRevisionDate" jdbcType="BIGINT" />
+		<result column="ip_address" property="ipAddress" jdbcType="VARCHAR" />
+	</resultMap>
+	
+	<insert id="insertintoActHot" parameterClass="acthot">
+		insert into act_hot(id,user_id,resource_id,is_hot,type,create_date,latest_revision_date,ip_address) values(#id#,#userId#,#resourceId#,#isHot#,#type#,#createDate#,#latestRevisionDate#,#ipAddress#)
+	</insert>
+	
+	
+	<select id="findActHotById" parameterClass="long" resultMap="hotResult" >
+		select id,user_id,resource_id,is_hot,create_date,latest_revision_date,type,ip_address from act_hot where id = #id#
+	</select>
+	
+	<select id="findIsHotByUserIdAndResIdType" parameterClass="java.util.Map" resultMap="hotResult" >
+		select id,user_id,resource_id,is_hot,create_date,latest_revision_date,type,ip_address from act_hot where user_id = #userId# and resource_id=#resourceId# and type = #type#
+		order by latest_revision_date desc limit 0,1
+	</select>
+
+	<select id="findIsHotByIpAddressAndResIdType" parameterClass="java.util.Map" resultMap="hotResult" >
+		select id,user_id,resource_id,is_hot,create_date,latest_revision_date,type,ip_address from act_hot where ip_address = #ipAddress# and resource_id=#resourceId# and type = #type#
+		order by latest_revision_date desc limit 0,1
+	</select>
+	
+	<select id="findHotCountByResIdAndType" parameterClass="java.util.Map" resultClass="int" >
+		select count(1) from act_hot where resource_id=#resourceId# and type = #type#
+	</select>
+</sqlMap>

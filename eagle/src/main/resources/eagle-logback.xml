@@ -1,0 +1,154 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<configuration>
+	<!-- 自己添加的在控制台打印的日志 -->
+	<appender name="STDOUT"  class="ch.qos.logback.core.ConsoleAppender">  
+	    <layout class="ch.qos.logback.classic.PatternLayout">  
+	       <pattern>%d{HH:mm:ss}-%-4relative [%thread] %-5level %class - %msg%n</pattern>  
+	    </layout>  
+    </appender>  
+	<!-- 默认日志 -->
+	<appender name="DEFAULT-APPENDER" class="ch.qos.logback.core.rolling.RollingFileAppender">
+    	<file>${loggingRoot}/default/common-default.log</file>
+        <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+      		<fileNamePattern>${loggingRoot}/default/common-default.log.%d{yyyyMMdd}</fileNamePattern>
+    	</rollingPolicy>
+		<encoder charset="UTF-8">
+			<pattern>%d [%t] %-5p %c{2} [%X{CLIENT}] [%X{A}/%X{B}/%X{C}/] - [%m]%n</pattern>
+		</encoder>
+    </appender>
+    
+	<!-- 错误日志 -->
+	<appender name="ERROR-APPENDER" class="ch.qos.logback.core.rolling.RollingFileAppender">
+    	<file>${loggingRoot}/error/common-error.log</file>
+    	<filter class="ch.qos.logback.classic.filter.ThresholdFilter">
+    		<level>ERROR</level>
+    	</filter>
+        <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+      		<fileNamePattern>${loggingRoot}/error/common-error.log.%d{yyyyMMdd}</fileNamePattern>
+    	</rollingPolicy>	                                                                                         
+		<encoder charset="UTF-8">
+			<pattern>%d [%t] %-5p %c{2} [%X{CLIENT}] [%X{A}/%X{B}/%X{C}/] - [%m]%n</pattern>
+		</encoder>
+    </appender>
+
+	<!-- 数据访问层日志 -->
+	<appender name="DAO-APPENDER" class="ch.qos.logback.core.rolling.RollingFileAppender">
+    	<file>${loggingRoot}/dao/common-dao.log</file>
+    	<rollingPolicy class="ch.qos.logback.core.rolling.FixedWindowRollingPolicy">
+	      <fileNamePattern>${loggingRoot}/dao/common-dao.log.%i</fileNamePattern>
+	      <minIndex>1</minIndex>
+	      <maxIndex>5</maxIndex>
+	    </rollingPolicy>>
+		<triggeringPolicy class="ch.qos.logback.core.rolling.SizeBasedTriggeringPolicy">
+          <maxFileSize>10MB</maxFileSize>
+        </triggeringPolicy>
+		<encoder charset="UTF-8">
+			<pattern>%d [%t] %-5p %c{2} [%X{CLIENT}] [%X{A}/%X{B}/%X{C}/] - [%m]%n</pattern>
+		</encoder>
+    </appender>
+
+    <!-- 业务日志 -->
+	<appender name="COMMON-BUSINESS-APPENDER" class="ch.qos.logback.core.rolling.RollingFileAppender">
+    	<file>${loggingRoot}/business/common-business.log</file>
+        <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+      		<fileNamePattern>${loggingRoot}/business/common-business.log.%d{yyyyMMdd}</fileNamePattern>
+    	</rollingPolicy>
+		<encoder charset="UTF-8">
+			<pattern>%d [%t] %-5p %c{2} [%X{CLIENT}] [%X{A}/%X{B}/%X{C}/] - [%m]%n</pattern>
+		</encoder>
+    </appender>
+    <!-- 报警日志 预留 -->
+    <appender name="COMMON-ALARM-APPENDER" class="ch.qos.logback.core.rolling.RollingFileAppender">
+    	<file>${loggingRoot}/alarm/common-alarm.log</file>
+        <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+      		<fileNamePattern>${loggingRoot}/alarm/common-alarm.log.%d{yyyyMMdd}</fileNamePattern>
+    	</rollingPolicy>	                                                                                         
+		<encoder charset="UTF-8">
+			<pattern>%d [%t] %-5p %c{2} [%X{CLIENT}] [%X{A}/%X{B}/%X{C}/] - [%m]%n</pattern>
+		</encoder>
+    </appender>                                                                                                                                                                                                                                                                                                                
+    <!-- 接口出入日志 -->
+    <appender name="COMMON-SERVICE-APPENDER" class="ch.qos.logback.core.rolling.RollingFileAppender">
+    	<file>${loggingRoot}/service/common-service.log</file>
+        <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+      		<fileNamePattern>${loggingRoot}/service/common-service.log.%d{yyyyMMdd}</fileNamePattern>
+    	</rollingPolicy>	                                                                                         
+		<encoder charset="UTF-8">
+			<pattern>%d [%t] %-5p %c{2} [%X{CLIENT}] [%X{A}/%X{B}/%X{C}/] - [%m]%n</pattern>
+		</encoder>
+    </appender>
+    <!-- 性能日志 -->
+    <appender name="PERF-APPENDER" class="ch.qos.logback.core.rolling.RollingFileAppender">                                                                           
+    	<file>${loggingRoot}/perf/common-perf.log</file>     
+        <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy"> 
+      		<fileNamePattern>${loggingRoot}/perf/common-perf.log.%d{yyyyMMdd}</fileNamePattern>
+      		<maxHistory>15</maxHistory>
+    	</rollingPolicy>
+    	<encoder charset="UTF-8">
+			<pattern>%d [%t] %-5p %c{2} [%X{CLIENT}] [%X{A}/%X{B}/%X{C}/] - [%m]%n</pattern>
+		</encoder>                                                                                                                                                                                                                                                                                    
+    </appender>
+    <!-- 空洞日志 -->
+    <appender name="NULL-APPENDER" class="ch.qos.logback.core.rolling.RollingFileAppender">                                                                           
+    	<file>${loggingRoot}/null/common-null.log</file>     
+        <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy"> 
+      		<fileNamePattern>${loggingRoot}/null/common-null.log.%d{yyyyMMdd}</fileNamePattern>
+      		<maxHistory>5</maxHistory>
+    	</rollingPolicy>
+    	<encoder charset="UTF-8">
+			<pattern>%d [%t] %-5p %c{2} [%X{CLIENT}] [%X{A}/%X{B}/%X{C}/] - [%m]%n</pattern>
+		</encoder>                                                                                                                                                                                                                                                                                    
+    </appender>
+                                                                                                                                                                                                                                                                                             
+	<!-- ===================================================================== -->
+	<!-- Loggers                                                               -->
+	<!-- ===================================================================== -->
+
+	<logger name="com.ibatis" additivity="false">
+		<level value="debug"/>
+		<appender-ref ref="DAO-APPENDER"/>
+		<appender-ref ref="ERROR-APPENDER"/>
+		<!-- <appender-ref ref="STDOUT"/> -->
+	</logger>
+	<logger name="java.sql" additivity="false">
+		<level value="debug"/>
+		<appender-ref ref="DAO-APPENDER"/>
+		<appender-ref ref="ERROR-APPENDER"/>
+		<!-- <appender-ref ref="STDOUT"/> -->
+	</logger>
+
+    <logger name="COMMON.BUSINESS" additivity="false">
+		<level value="INFO"/>
+		<appender-ref ref="COMMON-BUSINESS-APPENDER"/>
+	</logger>
+	<logger name="COMMON.ALARM" additivity="false">
+		<level value="INFO"/>
+		<appender-ref ref="COMMON-ALARM-APPENDER"/>
+	</logger>
+	<logger name="COMMON.SERVICE" additivity="false">
+		<level value="INFO"/>
+		<appender-ref ref="COMMON-SERVICE-APPENDER"/>
+	</logger>
+	<logger name="com.keel.common.aop.perf.PerformanceMonitorInterceptor" additivity="false">
+		<level value="INFO"/>
+		<appender-ref ref="PERF-APPENDER"/>
+	</logger>
+	<logger name="com.keel.framework.web.filter.PerformanceMonitorFilter" additivity="false">
+		<level value="INFO"/>
+		<appender-ref ref="PERF-APPENDER"/>
+	</logger>
+	<logger name="RocketmqClient" additivity="false">
+		<level value="INFO"/>
+		<appender-ref ref="NULL-APPENDER"/>
+	</logger>
+
+	<!-- ===================================================================== -->
+	<!-- Root logger                                                           -->
+	<!-- ===================================================================== -->
+	
+	<root level="${loggingLevel}">
+	    <appender-ref ref="DEFAULT-APPENDER"/>
+		<appender-ref ref="ERROR-APPENDER"/>
+		<!-- <appender-ref ref="STDOUT"/> -->
+	</root>
+ </configuration>

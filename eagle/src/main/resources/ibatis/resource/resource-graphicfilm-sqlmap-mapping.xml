@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd" >
+<sqlMap namespace="graphicfilm">
+
+    <typeAlias alias="graphicFilm" type="com.poison.resource.model.GraphicFilm"/>   
+   <!--   日记表信息 -->
+	<resultMap id="graphicFilmResult" class="graphicFilm">
+		<result column="id" property="id" jdbcType="BIGINT"/>
+		<result column="uid" property="uid" jdbcType="BIGINT"/>
+		<result column="title" property="title" jdbcType="VARCHAR"/>
+		<result column="content" property="content" jdbcType="TEXT"/>
+		<result column="type" property="type" jdbcType="VARCHAR"/>
+		<result column="is_del" property="isDel" jdbcType="INT"/>
+		<result column="description" property="description" jdbcType="VARCHAR"/>
+		<result column="cover" property="cover" jdbcType="VARCHAR"/>
+		<result column="create_date" property="createDate" jdbcType="BIGINT"/>
+		<result column="latest_revision_date" property="latestRevisionDate" jdbcType="BIGINT"/>
+	</resultMap>
+	
+	<select id="findGraphicFilm"  resultMap="graphicFilmResult">
+		select * from graphic_film where id=#id#
+	</select>
+	
+	<select id="findGraphicFilmByUid"  resultMap="graphicFilmResult">
+		select * from graphic_film where uid=#uid#
+	</select>
+	
+	<!-- 创建帖子-->
+	<insert id="insertintoGraphicFilm" parameterClass="graphicFilm">
+		insert into graphic_film(id,uid,title,content,type,is_del,description,cover,create_date,latest_revision_date)values(#id#,#uid#,#title#,#content#,#type#,#isDel#,#description#,#cover#,#createDate#,#latestRevisionDate#)
+	</insert>
+	
+</sqlMap>

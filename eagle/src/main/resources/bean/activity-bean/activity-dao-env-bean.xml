@@ -1,0 +1,88 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:aop="http://www.springframework.org/schema/aop"
+	xmlns:tx="http://www.springframework.org/schema/tx"
+	xsi:schemaLocation="
+			http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-3.2.xsd
+			http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop-3.2.xsd
+			http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx-3.2.xsd"
+	default-autowire="byName">
+
+	<!-- =========== FOR ucenter source MYSQL ============ -->
+	<bean id="activityMysqlDataSource"
+		class="org.springframework.jndi.JndiObjectFactoryBean">
+		<property name="jndiName">
+			<value>java:comp/env/jdbc/activityMysqlDataSource</value>
+		</property>
+	</bean>
+
+	<bean id="activityMysqlTransactionManager"
+		class="org.springframework.jdbc.datasource.DataSourceTransactionManager" >
+		<property name="dataSource" ref="activityMysqlDataSource"></property>
+	</bean>
+
+	<bean id="activityMysqlTransactionTemplate"
+		class="org.springframework.transaction.support.TransactionTemplate">
+		<property name="transactionManager" ref="activityMysqlTransactionManager"></property>
+	</bean>
+
+	<!-- ==== sqlMap ==== -->
+	<bean id="activityMysqlDataSourceSqlMapClient" class="org.springframework.orm.ibatis.SqlMapClientFactoryBean">
+		<property name="configLocation">
+			<value>classpath:/ibatis/activity-mysql-sqlmap.xml</value>
+		</property>
+		<property name="dataSource" ref="activityMysqlDataSource"></property>
+	</bean>
+
+	<!-- =========== FOR ucenter source readonly MYSQL ============ -->
+	<bean id="activityMysqlDataSourceReadonly"
+		class="org.springframework.jndi.JndiObjectFactoryBean">
+		<property name="jndiName">
+			<value>java:comp/env/jdbc/activityMysqlDataSourceReadonly</value>
+		</property>
+	</bean>
+
+	<bean id="activityMysqlReadonlyTransactionManager"
+		class="org.springframework.jdbc.datasource.DataSourceTransactionManager" >
+		<property name="dataSource" ref="activityMysqlDataSourceReadonly"></property>
+	</bean>
+
+	<bean id="activityMysqlReadonlyTransactionTemplate"
+		class="org.springframework.transaction.support.TransactionTemplate">
+		<property name="transactionManager" ref="activityMysqlReadonlyTransactionManager"></property>
+	</bean>
+
+	<!-- ==== sqlMap ==== -->
+	<bean id="activityMysqlDataSourceReadonlySqlMapClient" class="org.springframework.orm.ibatis.SqlMapClientFactoryBean">
+		<property name="configLocation">
+			<value>classpath:/ibatis/activity-mysql-sqlmap.xml</value>
+		</property>
+		<property name="dataSource" ref="activityMysqlDataSourceReadonly"></property>
+	</bean>
+
+
+    <bean id="baseActivitySqlMapClientDAO" abstract="true">
+		<property name="dataSource"><ref bean="activityMysqlDataSource"/></property>
+                <property name="sqlMapClient"><ref bean="activityMysqlDataSourceSqlMapClient"/></property>
+    </bean>
+    <bean id="baseActivityReadonlySqlMapClientDAO" abstract="true">
+		<property name="dataSource"><ref bean="activityMysqlDataSourceReadonly"/></property>
+                <property name="sqlMapClient"><ref bean="activityMysqlDataSourceReadonlySqlMapClient"/></property>
+    </bean>
+    
+     <bean id="daoProxyCreator"
+                            class="org.springframework.aop.framework.autoproxy.BeanNameAutoProxyCreator">
+                            <property name="interceptorNames">
+                                          <list>
+                                                        <value>performanceInstrument</value>
+                                          </list>
+                            </property>
+                            <property name="beanNames">
+                                          <value>*DAO</value>
+                            </property>
+              </bean>
+
+              <bean id="performanceInstrument" class="com.keel.common.aop.perf.PerformanceInstrumentInterceptor"/>
+</beans>

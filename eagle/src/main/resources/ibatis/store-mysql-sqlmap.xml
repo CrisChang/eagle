@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+
+<!DOCTYPE sqlMapConfig PUBLIC "-//iBATIS.com//DTD SQL Map Config 2.0//EN" "http://www.ibatis.com/dtd/sql-map-config-2.dtd">
+<sqlMapConfig>
+    <settings cacheModelsEnabled="true" enhancementEnabled="false" lazyLoadingEnabled="false" maxRequests="3000" maxSessions="3000" maxTransactions="3000" useStatementNamespaces="false"/>
+    
+    
+     <sqlMap resource="ibatis/store/store-bk-sqlmap-mapping.xml"/>
+     <sqlMap resource="ibatis/store/store-mv-sqlmap-mapping.xml"/>
+     <sqlMap resource="ibatis/store/store-bk-online-read-sqlmap-mapping.xml"/>
+     <sqlMap resource="ibatis/store/store-mv-stills-sqlmap-mapping.xml"/>
+     <sqlMap resource="ibatis/store/store-big-selecting-sqlmap-mapping.xml"/>
+     <sqlMap resource="ibatis/store/store-chart-sqlmap-mapping.xml"/>
+     <sqlMap resource="ibatis/store/store-netbk-sqlmap-mapping.xml"/>
+     <sqlMap resource="ibatis/store/store-mv-actor-sqlmap-mapping.xml"/>
+     <sqlMap resource="ibatis/store/store-mv-actors-sqlmap-mapping.xml"/>
+     <sqlMap resource="ibatis/store/store-bk-search-sqlmap-mapping.xml"/>
+     <sqlMap resource="ibatis/store/store-mv-search-sqlmap-mapping.xml"/>
+</sqlMapConfig>

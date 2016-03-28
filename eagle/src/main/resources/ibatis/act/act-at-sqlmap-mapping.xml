@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd" >
+<sqlMap namespace="actat">
+	
+	<typeAlias alias="actat" type="com.poison.act.model.ActAt" />
+	
+	<resultMap id="AtResult" class="actat">
+		<result column="id" property="id" jdbcType="BIGINT" />
+		<result column="userid" property="userid" jdbcType="BIGINT" />
+		<result column="resourceid" property="resourceid" jdbcType="BIGINT" />
+		<result column="resuserid" property="resUserid" jdbcType="BIGINT" />
+		<result column="type" property="type" jdbcType="VARCHAR" />
+		<result column="atuserid" property="atUserid" jdbcType="BIGINT" />
+		<result column="is_delete" property="isDelete" jdbcType="TINYINT" />
+		<result column="createdate" property="createDate" jdbcType="BIGINT" />
+		<result column="latestrevisiondate" property="latestRevisionDate" jdbcType="BIGINT" />
+		<result column="resid" property="resid" jdbcType="BIGINT" />
+		<result column="restype" property="restype" jdbcType="VARCHAR" />
+	</resultMap>
+	
+	<!-- 根据id获取一个at信息 -->
+	<select id="findAtById" parameterClass="long" resultClass="actat" >
+		select * from act_at where id = #id# and is_delete = 0
+	</select>
+	<!-- 查询一个资源相关的at的数量 -->
+	<select id="findResAtCount" parameterClass="long" resultClass="int" >
+		select count(1) from act_at where resid = #resourceid# and is_delete = 0
+	</select>
+	<!-- 查询一个人被at的数量 -->
+	<select id="findAtUserCount" parameterClass="long" resultClass="int" >
+		select count(1) from act_at where atuserid = #atUserid# and is_delete = 0
+	</select>
+	<!-- 查询一个人at别人的数量 -->
+	<select id="findUserAtCount" parameterClass="long" resultClass="int" >
+		select count(1) from act_at where userid = #userid# and is_delete = 0
+	</select>
+	
+	<!--查找一个人被at的列表  -->
+	<select id="findAtUser" parameterClass="java.util.Map" resultMap="AtResult" >
+		select * from act_at where atuserid = #atUserid# and is_delete = 0
+		<isNotNull prepend="AND" property="id">
+			<![CDATA[ id< #id# ]]>
+		</isNotNull>
+		order by id desc limit 0,10
+	</select>
+	<!--查找一个人at别人的列表  -->
+	<select id="findUserAt" parameterClass="java.util.Map" resultMap="AtResult" >
+		select * from act_at where userid = #userid# and is_delete = 0
+		<isNotNull prepend="AND" property="id">
+			<![CDATA[ id< #id# ]]>
+		</isNotNull>
+		order by id desc limit 0,10
+	</select>
+	<!--查找一个资源相关的at列表  -->
+	<select id="findResAt" parameterClass="java.util.Map" resultMap="AtResult" >
+		select * from act_at where resid = #resourceid# and is_delete = 0
+		<isNotNull prepend="AND" property="id">
+			<![CDATA[ id< #id# ]]>
+		</isNotNull>
+		order by id desc limit 0,10
+	</select>
+	
+	<!-- 删除一个at信息 -->
+	<update id="deleteActAt" parameterClass="actat" >
+		update act_at set is_delete =1,latestrevisiondate=#latestRevisionDate# where id=#id#
+	</update>
+	<!-- 保存一个at信息 -->
+	<insert id="insertintoActAt" parameterClass="actat">
+		insert into act_at(id,userid,resourceid,resuserid,type,atuserid,is_delete,createdate,latestrevisiondate,resid,restype) values(#id#,#userid#,#resourceid#,#resUserid#,#type#,#atUserid#,#isDelete#,#createDate#,#latestRevisionDate#,#resid#,#restype#)
+	</insert>
+</sqlMap>

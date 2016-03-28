@@ -1,0 +1,145 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd" >
+<sqlMap namespace="activitymvcomment">
+	<!-- 影评大赛活动阶段信息表 -->
+	<typeAlias alias="activityStage" type="com.poison.activity.model.ActivityStage" />
+	<resultMap id="ActivityStageResult" class="activityStage">
+		<result column="id" property="id" jdbcType="BIGINT" />
+		<result column="title" property="title" jdbcType="VARCHAR" />
+		<result column="state" property="state" jdbcType="INT" />
+		<result column="createtime" property="createtime" jdbcType="BIGINT" />
+		<result column="updatetime" property="updatetime" jdbcType="BIGINT" />
+		<result column="isdel" property="isdel" jdbcType="TINYINT" />
+		<result column="score" property="score" jdbcType="INT" />
+		<result column="type" property="type" jdbcType="VARCHAR" />
+	</resultMap>
+	<!-- 查询最新有效的活动阶段信息 -->
+	<select id="findLatestActivityStage" parameterClass="java.util.Map"  resultMap="ActivityStageResult">
+		select * from activity_stage where (state=1 or state=2) and type=#type# and isdel=0 order by score desc limit 0,1
+	</select>
+	
+	<!-- 根据状态查询最新的活动阶段信息 -->
+	<select id="findLatestActivityStageByState" parameterClass="java.util.Map"  resultMap="ActivityStageResult">
+		select * from activity_stage where state=#state# and type=#type# and isdel=0 order by score desc limit 0,1
+	</select>
+	
+	<!-- 用户参赛状态表-->
+	<typeAlias alias="activityState" type="com.poison.activity.model.ActivityState" />
+	<resultMap id="ActivityStateResult" class="activityState">
+		<result column="userid" property="userid" jdbcType="BIGINT" />
+		<result column="state" property="state" jdbcType="INT" />
+		<result column="stageid" property="stageid" jdbcType="BIGINT" />
+		<result column="createtime" property="createtime" jdbcType="BIGINT" />
+		<result column="updatetime" property="updatetime" jdbcType="BIGINT" />
+	</resultMap>
+	
+	<!-- 根据userid查询参赛状态-->
+	<select id="findActivityStateByUserid" parameterClass="long" resultMap="ActivityStateResult" >
+		select * from activity_state where userid = #userid#
+	</select>
+	<!-- 插入一个用户参赛状态 -->
+	<insert id="addActivityState" parameterClass="activityState">
+		insert into activity_state(userid,state,stageid,createtime,updatetime)
+		values(#userid#,#state#,#stageid#,#createtime#,#updatetime#)
+	</insert>
+	
+	<!-- 修改一个用户的参赛状态信息 -->
+	<update id="updateActivityState" parameterClass="activityState">
+		update activity_state set state=#state#,stageid=#stageid#,updatetime = #updatetime# where userid=#userid#
+	</update>
+	
+	
+	
+	<!-- 推荐表 -->
+	<typeAlias alias="ActivityRec" type="com.poison.activity.model.ActivityRec" />
+	<resultMap id="ActivityRecResult" class="ActivityRec">
+		<result column="id" property="id" jdbcType="BIGINT" />
+		<result column="resid" property="resid" jdbcType="BIGINT" />
+		<result column="restype" property="restype" jdbcType="VARCHAR" />
+		<result column="isdel" property="isdel" jdbcType="TINYINT" />
+		<result column="stageid" property="stageid" jdbcType="BIGINT" />
+		<result column="score" property="score" jdbcType="INT" />
+		<result column="createtime" property="createtime" jdbcType="BIGINT" />
+		<result column="updatetime" property="updatetime" jdbcType="BIGINT" />
+	</resultMap>
+	<!-- 查询推荐列表 -->
+	<select id="findActivityRec"  resultMap="ActivityRecResult" parameterClass="java.util.Map">
+		select id,resid,restype,isdel,stageid,score,createtime,updatetime from activity_rec where isdel = 0 and stageid=#stageid# and restype=#restype# order by score desc limit #start#,#pagesize#
+	</select>
+	
+	
+	
+	
+	
+	<typeAlias alias="ActivityUserMatch" type="com.poison.activity.model.ActivityUserMatch"/>   
+	<!-- 影评用户参赛信息 -->
+	<resultMap class="ActivityUserMatch" id="resultActivityUserMatch">
+		<result column="user_id" property="userid" jdbcType="BIGINT"/>
+    	<result column="mvcount" property="mvcount" jdbcType="INT"/>
+		<result column="stageid" property="stageid" jdbcType="BIGINT"/>
+	</resultMap>
+	
+	<!-- 按照发表影评数量查询用户列表信息 -->
+	<select id="findActivityUserMatchByStageidOrderbyMvcount"  resultMap="resultActivityUserMatch" parameterClass="java.util.Map">
+		select user_id,stageid,count(1) as mvcount from mv_comment where is_delete = 0 and stageid=#stageid# GROUP BY user_id order by mvcount desc limit #start#,#pagesize#
+	</select>
+	
+	<!-- 按照最新发表影评查询用户列表信息 -->
+	<select id="findActivityUserMatchByStageidOrderbyId"  resultMap="resultActivityUserMatch" parameterClass="java.util.Map">
+		select user_id,stageid,count(1) as mvcount from mv_comment where is_delete = 0 and stageid=#stageid# GROUP BY user_id order by MAX(id) desc limit #start#,#pagesize#
+	</select>
+	<!-- 根据userid集合查询影评数量 -->
+	<select id="findMvCountByStageidAndUserids"  resultMap="resultActivityUserMatch" parameterClass="java.util.Map">
+		select user_id,stageid,count(1) as mvcount from mv_comment where is_delete = 0 and stageid=#stageid# 
+		and user_id in 
+		<iterate property="userids" open="(" close=")"  conjunction=",">
+		#userids[]#
+		</iterate>
+		GROUP BY user_id
+	</select>
+	
+	
+	<!-- 影评用户参赛信息 -->
+	<resultMap class="ActivityUserMatch" id="resultResid">
+		<result column="id" property="resid" jdbcType="BIGINT"/>
+	</resultMap>
+	<!-- 根据用户id集合查询出某个活动阶段的所有的影评id -->
+	<select id="findResidsByStageidAndUserids"  resultMap="resultResid" parameterClass="java.util.Map">
+		select id from mv_comment where is_delete = 0 and stageid=#stageid# 
+		and user_id in 
+		<iterate property="userids" open="(" close=")"  conjunction=",">
+		#userids[]#
+		</iterate>
+	</select>
+	
+	
+	<!-- 影评用户参赛信息 -->
+	<resultMap class="ActivityUserMatch" id="resultActivityUserMatch2">
+		<result column="res_userid" property="userid" jdbcType="BIGINT"/>
+    	<result column="usecount" property="usecount" jdbcType="INT"/>
+	</resultMap>
+	<!-- 查询每个人的获得的有用数量（在一定的资源id集合中） -->
+	<select id="findUsefulCountForUser" parameterClass="java.util.Map" resultMap="resultActivityUserMatch2">
+		select res_userid,count(1) as usecount from act_useful where is_useful = 1 
+		and resource_id in 
+		<iterate property="resids" open="(" close=")"  conjunction=",">
+		#resids[]#
+		</iterate> 
+		group by res_userid
+	</select>
+	
+	<!-- 影评用户参赛信息 -->
+	<resultMap class="ActivityUserMatch" id="resultActivityUserMatch3">
+		<result column="resource_id" property="resid" jdbcType="BIGINT"/>
+    	<result column="usecount" property="usecount" jdbcType="INT"/>
+	</resultMap>
+	<!-- 查询每个资源的有用数量 -->
+	<select id="findUsefulCountForRes" parameterClass="java.util.Map" resultMap="resultActivityUserMatch3">
+		select resource_id,count(1) as usecount from act_useful where is_useful = 1 
+		and resource_id in 
+		<iterate property="resids" open="(" close=")"  conjunction=",">
+		#resids[]#
+		</iterate> 
+		group by resource_id
+	</select>
+</sqlMap>

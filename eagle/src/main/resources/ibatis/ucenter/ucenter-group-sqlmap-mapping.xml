@@ -1,0 +1,113 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd" >
+<sqlMap namespace="group">
+	
+	<typeAlias alias="group" type="com.poison.ucenter.model.Group" />
+	
+	<resultMap id="groupResult" class="group">
+		<result column="groupid" property="groupid" jdbcType="VARCHAR" />
+		<result column="uid" property="uid" jdbcType="BIGINT" />
+		<result column="name" property="name" jdbcType="VARCHAR" />
+		<result column="imageurl" property="imageurl" jdbcType="VARCHAR" />
+		<result column="tags" property="tags" jdbcType="VARCHAR" />
+		<result column="amount" property="amount" jdbcType="INT" />
+		<result column="isDel" property="isDel" jdbcType="TINYINT" />
+		<result column="intro" property="intro" jdbcType="VARCHAR" />
+		<result column="creattime" property="creattime" jdbcType="BIGINT" />
+		<result column="updatetime" property="updatetime" jdbcType="BIGINT" />
+	</resultMap>
+	
+	<!--创建群  -->
+	<insert id="insertintoGroup" parameterClass="group">
+		insert into groups (groupid,uid,`name`,imageurl,tags,amount,isDel,intro,creattime,updatetime)
+		values(#groupid#,#uid#,#name#,#imageurl#,#tags#,#amount#,#isDel#,#intro#,#creattime#,#updatetime#)
+	</insert>
+	<!-- 根据群组id查询 -->
+	<select id="findGroup" resultMap="groupResult" parameterClass="String">
+		select * from groups where groupid = #groupid# and isDel = 0
+	</select>
+	<!-- 根据多个群组id查询 -->
+	<select id="findGroupsByIds" resultMap="groupResult" parameterClass="java.util.Map">
+		select * from groups where groupid in
+		<iterate property="groupidList" open="(" close=")"  conjunction=",">
+		#groupidList[]#
+		</iterate>
+		and isDel = 0 group by groupid
+	</select>
+	<!-- 根据用户id查询 -->
+	<select id="findGroupsByUserid" resultMap="groupResult" parameterClass="Long">
+		select * from groups where uid = #uid# and isDel = 0
+	</select>
+	<!-- 修改群组信息 -->
+	<update id="updateGroup" parameterClass="group" >
+		update groups set `name`=#name#,imageurl=#imageurl#,tags=#tags#,intro=#intro#,updatetime=#updatetime# where groupid=#groupid#
+	</update>
+	<!-- 删除群组 -->
+	<update id="deleteGroup" parameterClass="group" >
+		update groups set isDel=1,updatetime=#updatetime# where groupid=#groupid# and uid=#uid#
+	</update>
+	
+	
+	<!-- 群成员表 -->
+	<typeAlias alias="groupUser" type="com.poison.ucenter.model.GroupUser" />
+	
+	<resultMap id="groupUserResult" class="groupUser">
+		<result column="id" property="id" jdbcType="BIGINT" />
+		<result column="groupid" property="groupid" jdbcType="VARCHAR" />
+		<result column="uid" property="uid" jdbcType="BIGINT" />
+		<result column="isDel" property="isDel" jdbcType="TINYINT" />
+		<result column="creattime" property="creattime" jdbcType="BIGINT" />
+		<result column="updatetime" property="updatetime" jdbcType="BIGINT" />
+	</resultMap>
+	
+	<!--加入群组 -->
+	<insert id="insertintoGroupUser" parameterClass="groupUser">
+		insert into group_user (id,groupid,uid,isDel,creattime,updatetime)values(#id#,#groupid#,#uid#,#isDel#,#creattime#,#updatetime#)
+	</insert>
+	<!-- 根据群组id和成员id查询 -->
+	<select id="findGroupUserByGUid" resultMap="groupUserResult" parameterClass="java.util.Map">
+		select * from group_user where groupid = #groupid# and uid = #uid# and isDel = 0
+	</select>
+	<!-- 根据群组id查询成员列表 -->
+	<select id="findGroupUser" resultMap="groupUserResult" parameterClass="String">
+		select * from group_user where groupid = #groupid# and isDel = 0
+	</select>
+	<!-- 根据用户id查询所加入的组列表 -->
+	<select id="findGroupUserByUserid" resultMap="groupUserResult" parameterClass="Long">
+		select * from group_user where uid = #uid# and isDel = 0
+	</select>
+	<!-- 删除群成员 -->
+	<update id="deleteGroupUser" parameterClass="groupUser" >
+		update group_user set isDel=1,updatetime=#updatetime# where groupid=#groupid# and uid=#uid#
+	</update>
+	
+	
+	<!-- 群黑名单表 -->
+	<typeAlias alias="groupBlacklist" type="com.poison.ucenter.model.GroupBlackList" />
+	
+	<resultMap id="groupBlacklistResult" class="groupBlacklist">
+		<result column="id" property="id" jdbcType="BIGINT" />
+		<result column="groupid" property="groupid" jdbcType="VARCHAR" />
+		<result column="uid" property="uid" jdbcType="BIGINT" />
+		<result column="isDel" property="isDel" jdbcType="TINYINT" />
+		<result column="creattime" property="creattime" jdbcType="BIGINT" />
+		<result column="updatetime" property="updatetime" jdbcType="BIGINT" />
+	</resultMap>
+	
+	<!--加入群组黑名单 -->
+	<insert id="insertintoGroupBlacklist" parameterClass="groupBlacklist">
+		insert into group_blacklist (id,groupid,uid,isDel,creattime,updatetime)values(#id#,#groupid#,#uid#,#isDel#,#creattime#,#updatetime#)
+	</insert>
+	<!-- 根据群组id和用户id查询黑名单 -->
+	<select id="findGroupBlacklistByGUid" resultMap="groupBlacklistResult" parameterClass="java.util.Map">
+		select * from group_blacklist where groupid = #groupid# and uid = #uid# and isDel = 0
+	</select>
+	<!-- 根据群组id查询黑名单列表 -->
+	<select id="findGroupBlacklist" resultMap="groupBlacklistResult" parameterClass="String">
+		select * from group_blacklist where groupid = #groupid# and isDel = 0
+	</select>
+	<!-- 删除群黑名单成员 -->
+	<update id="deleteGroupBlacklist" parameterClass="groupBlacklist" >
+		update group_blacklist set isDel=1,updatetime=#updatetime# where groupid=#groupid# and uid=#uid#
+	</update>
+</sqlMap>

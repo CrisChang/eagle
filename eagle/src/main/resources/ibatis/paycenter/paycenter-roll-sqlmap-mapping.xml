@@ -1,0 +1,80 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd" >
+<sqlMap namespace="roll">
+	
+	<!-- 企业账户资金表 -->
+	<typeAlias alias="companyAccount" type="com.poison.paycenter.model.CompanyAccount"/>
+	<resultMap id="companyAccountResult" class="companyAccount">
+		<result column="id" property="id" jdbcType="BIGINT"/>
+		<result column="user_id" property="userId" jdbcType="BIGINT" nullValue="0"/>
+		<result column="user_name" property="userName" jdbcType="VARCHAR" nullValue=""/>
+		<result column="account_amt" property="accountAmt" jdbcType="INT" nullValue="0"/>
+		<result column="change_time" property="changeTime" jdbcType="BIGINT" nullValue="0"/>
+		<result column="out_total_amount" property="outTotalAmount" jdbcType="INT" nullValue="0"/>
+		<result column="day_out_total_amount" property="dayOutTotalAmount" jdbcType="INT" nullValue="0"/>
+		<result column="out_last_time" property="outLastTime" jdbcType="BIGINT" nullValue="0"/>
+		<result column="in_total_amount" property="inTotalAmount" jdbcType="INT" nullValue="0"/>
+		<result column="day_in_total_amount" property="dayInTotalAmount" jdbcType="INT" nullValue="0"/>
+		<result column="in_last_time" property="inLastTime" jdbcType="BIGINT" nullValue="0"/>		
+		<result column="extend_field1" property="extendField1" jdbcType="VARCHAR" nullValue=""/>
+		<result column="extend_field2" property="extendField2" jdbcType="VARCHAR" nullValue=""/>
+		<result column="extend_field3" property="extendField3" jdbcType="VARCHAR" nullValue=""/>
+	</resultMap>	
+	<!-- 生成一条账户资金信息 -->
+	<insert id="insertIntoCompanyAccount" parameterClass="companyAccount">
+		insert into company_account(user_id,user_name,account_amt,change_time,out_total_amount,day_out_total_amount,out_last_time,in_total_amount,day_in_total_amount,in_last_time,extend_field1,extend_field2,extend_field3) values (#userId#,#userName#,#accountAmt#,#changeTime#,#outTotalAmount#,#dayOutTotalAmount#,#outLastTime#,#inTotalAmount#,#dayInTotalAmount#,#inLastTime#,#extendField1#,#extendField2#,#extendField3#)
+	</insert>
+	<!-- 查询账户资金大于0的企业信息 -->
+	<select id="findCompanyAccountByAmt" resultMap="companyAccountResult" parameterClass="java.util.Map">
+		select * from company_account where account_amt > #totalAmount# and day_out_total_amount BETWEEN 0 AND #limitAmount# and out_last_time BETWEEN #startDate# AND #endDate#
+	</select> 
+	<!-- 查询账户最后出账时间为当日开始及结束，并且当日出账金额大于限制金额 -->
+	<select id="findCompanyAccountByAmt1" resultMap="companyAccountResult" parameterClass="java.util.Map">
+		select * from company_account where day_out_total_amount>#limitAmount# and out_last_time BETWEEN #startDate# AND #endDate#
+	</select> 
+	<!-- 查询账户最后出账时间为当日开始之前 -->
+	<select id="findCompanyAccountByAmt2" resultMap="companyAccountResult" parameterClass="java.util.Map">
+		select * from company_account where out_last_time BETWEEN 0 AND #lastDate#
+	</select> 
+	<!--  -->  
+	<select id="findCompanyAccountByCompanyId" resultMap="companyAccountResult" parameterClass="long">
+		select * from company_account where user_id = #userId#
+	</select>
+	<!--  -->
+	<update id="updateCompanyAccount" parameterClass="companyAccount">
+		update company_account set account_amt=#accountAmt#, change_time=#changeTime#, out_total_amount=#outTotalAmount#, day_out_total_amount=#dayOutTotalAmount#, out_last_time=#outLastTime# where id=#id#
+	</update>
+	<!--  -->
+	<update id="updateCompanyAccountNew" parameterClass="java.util.Map">
+		update company_account set account_amt=account_amt-#rewardAmt#, change_time=#sysdate#, out_total_amount=out_total_amount+#rewardAmt#, day_out_total_amount=day_out_total_amount+#rewardAmt#, out_last_time=#sysdate# where user_id=#companyId#
+	</update>
+	<!--  -->
+	<update id="updateCompanyAccountOther" parameterClass="java.util.Map">
+		update company_account set day_out_total_amount=#amt#, out_last_time=#sysdate# where id=#id# and day_out_total_amount=#dayOutTotalAmount#
+	</update>
+	
+	
+	<!-- 企业账户资金变更记录表 -->
+	<typeAlias alias="companyAccountLog" type="com.poison.paycenter.model.CompanyAccountLog"/>
+	<resultMap id="companyAccountLogResult" class="companyAccountLog">
+		<result column="id" property="id" jdbcType="BIGINT"/>
+		<result column="company_id" property="companyId" jdbcType="BIGINT" nullValue="0"/>
+		<result column="company_name" property="companyName" jdbcType="VARCHAR" nullValue=""/>
+		<result column="trade_type" property="tradeType" jdbcType="INT" nullValue="0"/>
+		<result column="serial_id" property="serialId" jdbcType="BIGINT" nullValue="0"/>
+		<result column="out_trade_no" property="outTradeNo" jdbcType="VARCHAR" nullValue=""/>
+		<result column="trade_amount" property="tradeAmount" jdbcType="INT" nullValue="0"/>
+		<result column="trade_time" property="tradeTime" jdbcType="BIGINT" nullValue="0"/>
+		<result column="trade_status" property="tradeStatus" jdbcType="TINYINT" nullValue="0"/>
+		<result column="admin_user" property="adminUser" jdbcType="BIGINT" nullValue="0"/>
+		<result column="trade_desc" property="tradeDesc" jdbcType="VARCHAR" nullValue=""/>
+		<result column="shadow" property="shadow" jdbcType="TINYINT" nullValue="0"/>
+		<result column="extend_field1" property="extendField1" jdbcType="VARCHAR" nullValue=""/>
+		<result column="extend_field2" property="extendField2" jdbcType="VARCHAR" nullValue=""/>
+		<result column="extend_field3" property="extendField3" jdbcType="VARCHAR" nullValue=""/>
+	</resultMap>	
+	<insert id="insertIntoCompanyAccountLog" parameterClass="companyAccountLog">
+		insert into company_account_log(company_id,company_name,trade_type,serial_id,out_trade_no,trade_amount,trade_time,trade_status,admin_user,trade_desc,shadow,extend_field1,extend_field2,extend_field3) values (#companyId#,#companyName#,#tradeType#,#serialId#,#outTradeNo#,#tradeAmount#,#tradeTime#,#tradeStatus#,#adminUser#,#tradeDesc#,#shadow#,#extendField1#,#extendField2#,#extendField3#)
+	</insert>
+		
+</sqlMap>

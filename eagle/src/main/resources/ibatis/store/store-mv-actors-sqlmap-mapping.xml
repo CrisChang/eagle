@@ -1,0 +1,98 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd" >
+<sqlMap namespace="actor">
+	
+	<typeAlias alias="actor" type="com.poison.store.model.Actor" />
+	<resultMap id="ActorResult" class="actor">
+		<result column="id" property="id" jdbcType="BIGINT" />
+		<result column="actor_url" property="actorUrl" jdbcType="VARCHAR" />
+		<result column="pic" property="pic" jdbcType="VARCHAR" />
+		<result column="name" property="name" jdbcType="BIGINT" />
+		<result column="foreign_name" property="foreignName" jdbcType="VARCHAR" />
+		<result column="chinese_name" property="chineseName" jdbcType="VARCHAR" />
+		<result column="sex" property="sex" jdbcType="int" nullValue='2'/>
+		<result column="constellation" property="constellation" jdbcType="VARCHAR" />
+		<result column="birthday" property="birthday" jdbcType="VARCHAR" />
+		<result column="birthplace" property="birthplace" jdbcType="VARCHAR" />
+		<result column="career" property="career" jdbcType="VARCHAR" />
+		<result column="more_foreign_name" property="moreForeignName" jdbcType="VARCHAR" />
+		<result column="more_chinese_name" property="moreChineseName" jdbcType="VARCHAR" />
+		<result column="imdb" property="imdb" jdbcType="VARCHAR" />
+		<result column="about" property="about" jdbcType="VARCHAR" />
+		<result column="about_large" property="aboutLarge" jdbcType="VARCHAR" />
+		<result column="family_member" property="familyMember" jdbcType="VARCHAR" />
+		<result column="update_time" property="updateTime" jdbcType="BIGINT" nullValue="0"/>
+		<result column="create_time" property="createTime" jdbcType="BIGINT" nullValue="0"/>
+		<result column="extend_field1" property="extendField1" jdbcType="VARCHAR" />
+		<result column="extend_field2" property="extendField2" jdbcType="VARCHAR" />
+		<result column="extend_field3" property="extendField3" jdbcType="VARCHAR" />
+ 	</resultMap>
+	
+	 <select id="findActor" parameterClass="java.util.Map" resultMap="ActorResult">
+		select * from c_db_actor 
+		<dynamic prepend="WHERE">
+	      <isNotNull prepend="AND" property="id">
+	         id = #id#
+	      </isNotNull>
+	      <isNotNull prepend="AND" property="actorUrl">
+	         actor_url = #actorUrl#
+	      </isNotNull>
+	   </dynamic>
+	</select>
+	
+	<select id="findListActor" parameterClass="java.util.Map" resultMap="ActorResult">
+		select * from c_db_actor 
+		<dynamic prepend="WHERE">
+	      <isNotNull prepend="AND" property="id">
+	         id = #id#
+	      </isNotNull>
+	      <isNotNull prepend="AND" property="actorUrl">
+	         actor_url = #actorUrl#
+	      </isNotNull>
+	   </dynamic>
+	</select>
+	
+    <typeAlias alias="actorStills" type="com.poison.store.model.ActorStills" />
+	<resultMap id="ActorStillsResult" class="actorStills">
+		<result column="id" property="id" jdbcType="BIGINT" />
+		<result column="actor_id" property="actorId" jdbcType="INT" />
+		<result column="actor_url" property="actorUrl" jdbcType="VARCHAR" />
+		<result column="actor_stills" property="actorStills" jdbcType="VARCHAR" />
+		<result column="is_delete" property="isDelete" jdbcType="VARCHAR" />
+		<result column="other" property="other" jdbcType="INT" />
+		<result column="create_date" property="createDate" jdbcType="BIGINT" nullValue="0"/>
+		<result column="latest_revision_date" property="latestRevisionDate" jdbcType="VARCHAR" />
+		<result column="two_dimension_code" property="twoDimensionCode" jdbcType="VARCHAR" />
+ 	</resultMap>
+	
+	<select id="findActorStills" parameterClass="java.util.Map" resultMap="ActorStillsResult">
+		select * from c_db_actor_stills 
+		<dynamic prepend="WHERE">
+	      <isNotNull prepend="AND" property="id">
+	         id = #id#
+	      </isNotNull>
+	      <isNotNull prepend="AND" property="actorId">
+	         actor_id = #actorId#
+	      </isNotNull>
+	      <isNotNull prepend="AND" property="actorUrl">
+	         actor_url = #actorUrl#
+	      </isNotNull>
+	   </dynamic>
+	</select>
+	
+	<select id="findListActorStills" parameterClass="java.util.Map" resultMap="ActorStillsResult">
+		select * from c_db_actor_stills 
+		<dynamic prepend="WHERE">
+	      <isNotNull prepend="AND" property="id">
+	         id = #id#
+	      </isNotNull>
+	      <isNotNull prepend="AND" property="actorId">
+	         actor_id = #actorId#
+	      </isNotNull>
+	       <isNotNull prepend="AND" property="actorUrl">
+	         actor_url = #actorUrl#
+	      </isNotNull>
+	   </dynamic>
+	</select>
+	
+</sqlMap>

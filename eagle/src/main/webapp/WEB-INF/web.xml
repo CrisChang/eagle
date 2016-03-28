@@ -1,0 +1,204 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<web-app  id="union" version="2.5"
+ xmlns="http://java.sun.com/xml/ns/javaee" xmlns:web="http://java.sun.com/xml/ns/javaee/web-app_2_5.xsd"
+ xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+ xsi:schemaLocation="http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns/javaee/web-app_2_5.xsd">
+
+  <display-name>Eagle Web Application</display-name>
+  	<description>
+		Hello Eagle!
+	</description>
+	
+	<context-param>
+		<param-name>contextConfigLocation</param-name>
+		<param-value>/WEB-INF/eagle-root-bean.xml</param-value>
+	</context-param>
+	
+	<context-param>
+		<param-name>logbackConfigLocation</param-name>
+		<param-value>/WEB-INF/classes/eagle-logback.xml</param-value>
+	</context-param>
+
+
+
+	<filter>
+		<filter-name>keel-performance</filter-name>
+		<filter-class>
+			com.keel.framework.web.filter.PerformanceMonitorFilter
+		</filter-class>
+	</filter>
+	<filter-mapping>
+		<filter-name>keel-performance</filter-name>
+		<url-pattern>/*</url-pattern>
+	</filter-mapping>
+
+	<filter>
+		<filter-name>keel-set-character-encoding</filter-name>
+		<filter-class>com.keel.framework.web.filter.SetCharacterEncodingFilter</filter-class>
+		<init-param>
+			<param-name>charset</param-name>
+			<param-value>UTF-8</param-value>
+		</init-param>
+	</filter>
+	<filter-mapping>
+		<filter-name>keel-set-character-encoding</filter-name>
+		<url-pattern>/*</url-pattern>
+	</filter-mapping>
+	<filter>
+		<filter-name>keel-header-session</filter-name>
+		<filter-class>
+			com.keel.framework.web.filter.HeaderHttpSessionFilter
+		</filter-class>
+	</filter>
+	<filter-mapping>
+		<filter-name>keel-header-session</filter-name>
+		<url-pattern>/m/*</url-pattern>
+	</filter-mapping> 
+	<filter>
+		<filter-name>keel-cookie-session</filter-name>
+		<filter-class>
+			com.keel.framework.web.filter.CookieHttpSessionFilter
+		</filter-class>
+	</filter>
+	<filter-mapping>
+		<filter-name>keel-cookie-session</filter-name>
+		<url-pattern>/*</url-pattern>
+		<url-pattern>/web_eagle/*</url-pattern>
+		<url-pattern>/w/*</url-pattern>
+	</filter-mapping>
+	<!-- <filter>
+		<filter-name>CheckUserLoginFilter</filter-name>
+		<filter-class>
+			com.keel.framework.web.filter.CheckUserLoginFilter
+		</filter-class>
+	</filter>
+	<filter-mapping>
+		<filter-name>CheckUserLoginFilter</filter-name>
+		<url-pattern>/</url-pattern>
+		<url-pattern>/web_eagle/*</url-pattern>
+	</filter-mapping> -->
+	<filter>
+		<filter-name>keel-product-context</filter-name>
+		<filter-class>
+			com.keel.framework.web.filter.ProductContextFilter
+		</filter-class>
+	</filter>
+	<filter-mapping>
+		<filter-name>keel-product-context</filter-name>
+		<url-pattern>/*</url-pattern>
+	</filter-mapping>
+
+	<filter>
+		<filter-name>keel-header-autologin</filter-name>
+		<filter-class>
+			com.keel.framework.web.filter.HeaderAutoLoginFilter
+		</filter-class>
+		<init-param>
+			<param-name>maxCurrentAutoLogin</param-name>
+			<param-value>40</param-value>
+		</init-param>
+	</filter>
+	<filter-mapping>
+		<filter-name>keel-header-autologin</filter-name>
+		<url-pattern>/*</url-pattern>
+	</filter-mapping>
+	<filter>
+		<filter-name>keel-cookie-autologin</filter-name>
+		<filter-class>
+			com.keel.framework.web.filter.CookieAutoLoginFilter
+		</filter-class>
+		<init-param>
+			<param-name>maxCurrentAutoLogin</param-name>
+			<param-value>40</param-value>
+		</init-param>
+	</filter>
+	<filter-mapping>
+		<filter-name>keel-cookie-autologin</filter-name>
+		<url-pattern>/*</url-pattern>
+	</filter-mapping>
+
+	<filter>
+	<filter-name>etagFilter</filter-name>
+	<filter-class>org.springframework.web.filter.ShallowEtagHeaderFilter</filter-class>
+</filter>
+	<filter-mapping>
+		<filter-name>etagFilter</filter-name>
+		<url-pattern>/*</url-pattern>
+	</filter-mapping>
+	<!-- <filter>
+		<filter-name>XssSqlFilter</filter-name>
+		<filter-class>com.keel.framework.web.filter.XssFilter</filter-class>
+	</filter>
+	<filter-mapping>
+		<filter-name>XssSqlFilter</filter-name>
+		<url-pattern>/*</url-pattern>
+		<dispatcher>REQUEST</dispatcher>
+	</filter-mapping> -->
+    
+     
+	<listener>
+		<listener-class>
+			org.springframework.web.context.ContextLoaderListener
+		</listener-class>
+	</listener>
+	
+	<listener>
+		<listener-class>
+			ch.qos.logback.ext.spring.web.LogbackConfigListener
+		</listener-class>
+	</listener>
+	
+	<servlet>
+	<servlet-name>resin-file</servlet-name>
+	<servlet-class>com.caucho.servlets.FileServlet</servlet-class>
+	<init-param>
+	<param-name>character-encoding</param-name>
+	<param-value>UTF-8</param-value>
+	</init-param>
+	</servlet>
+	<servlet>
+		<servlet-name>eagle</servlet-name>
+		<servlet-class>org.springframework.web.servlet.DispatcherServlet</servlet-class>
+		<load-on-startup>1</load-on-startup>
+	</servlet>
+	<servlet-mapping>
+		<servlet-name>eagle</servlet-name>
+		<url-pattern>/</url-pattern>
+	</servlet-mapping>
+	<servlet-mapping>
+         <servlet-name>resin-file</servlet-name>
+         <url-pattern>/css/*</url-pattern>
+		</servlet-mapping> 
+      <servlet-mapping>
+         <servlet-name>resin-file</servlet-name>
+         <url-pattern>/js/*</url-pattern>
+     </servlet-mapping>
+      <servlet-mapping>
+         <servlet-name>resin-file</servlet-name>
+         <url-pattern>/images/*</url-pattern>
+     </servlet-mapping>
+      <servlet-mapping>
+         <servlet-name>resin-file</servlet-name>
+         <url-pattern>/img/*</url-pattern>
+     </servlet-mapping>
+     <servlet-mapping>
+         <servlet-name>resin-file</servlet-name>
+         <url-pattern>/sy/*</url-pattern>
+     </servlet-mapping>
+	<servlet-mapping>
+         <servlet-name>resin-file</servlet-name>
+         <url-pattern>*.html</url-pattern>
+     </servlet-mapping>
+	<servlet-mapping>
+         <servlet-name>resin-file</servlet-name>
+         <url-pattern>/bigepage/images/*</url-pattern>
+         <url-pattern>/bigepage/style/*</url-pattern>
+         <url-pattern>/bigepage/*.html</url-pattern>
+     </servlet-mapping>
+     <servlet-mapping>
+         <servlet-name>resin-file</servlet-name>
+         <url-pattern>/web_eagle/k-console/*</url-pattern>
+         <url-pattern>/web_eagle/k-duyao-index/*</url-pattern>
+     </servlet-mapping>
+</web-app>

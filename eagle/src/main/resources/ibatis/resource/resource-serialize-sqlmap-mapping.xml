@@ -1,0 +1,274 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd" >
+<sqlMap namespace="book">
+
+     <typeAlias alias="Serialize" type="com.poison.resource.model.Serialize"/>   
+     <typeAlias alias="Chapter" type="com.poison.resource.model.Chapter"/>
+   <!--   连载表信息 -->
+	<resultMap id="resultSer" class="Serialize">
+		<result column="id" property="id" jdbcType="Long"/>
+		<result column="introduce" property="introduce" jdbcType="VARCHAR"/>
+		<result column="begin_date" property="beginDate" jdbcType="Long"/>
+		<result column="end_date" property="endDate" jdbcType="Long"/>
+		<result column="author" property="author" jdbcType="VARCHAR"/>
+		<result column="url" property="url" jdbcType="VARCHAR"/>
+		<result column="name" property="name" jdbcType="VARCHAR"/>
+		<result column="type" property="type" jdbcType="VARCHAR"/>
+		<result column="isDel" property="isDel" jdbcType="Long"/>
+		<result column="uid" property="uid" jdbcType="Long"/>
+		<result column="tags" property="tags" jdbcType="VARCHAR"/>
+	</resultMap>
+	
+	<!-- 章节表信息 -->
+	<resultMap class="Chapter" id="resultChapter">
+		 <result column="id" property="id" jdbcType="BIGINT"/>
+		 <result column="begin_date" property="beginDate" jdbcType="BIGINT"/>
+		 <result column="end_date" property="updateDate" jdbcType="BIGINT"/>
+		 <result column="name" property="name" jdbcType="VARHCAR"/>
+		 <result column="content" property="content" jdbcType="VARCHAR"/>
+		 <result column="isDel" property="isDel" jdbcType="BIGINT"/>
+		 <result column="parent_id" property="parentId" jdbcType="BIGINT"/>
+		  <result column="uid" property="uid" jdbcType="BIGINT"/>
+	</resultMap>
+
+	<typeAlias alias="ChapterSummary" type="com.poison.resource.model.ChapterSummary"/>
+	<resultMap class="ChapterSummary" id="resultChapterSummary">
+		<result column="id" property="id" jdbcType="BIGINT"/>
+		<result column="begin_date" property="beginDate" jdbcType="Long"/>
+		<result column="end_date" property="updateDate" jdbcType="Long"/>
+		<result column="name" property="name" jdbcType="VARCHAR"/>
+	</resultMap>
+
+	<!-- 创建连载-->
+	<insert id="addSerialize" parameterClass="Serialize">
+		insert into serialize(id,introduce,begin_date,end_date,author,url,name,type,isDel,uid) 
+		values(#id#,#introduce#,#beginDate#,#endDate#,#author#,#url#,#name#,#type#,#isDel#,#uid#)
+	</insert>
+	
+	<!-- 创建章节和续写 -->
+	<insert id="addChapter" parameterClass="Chapter">
+		insert into chapter(id,begin_date,end_date,name,content,isDel,parent_id,uid) 
+		values(#id#,#beginDate#,#updateDate#,#name#,#content#,#isDel#,#parentId#,#uid#)
+	</insert>
+	
+    <!-- 修改连载的名字 -->
+   <update id="updateSerialize" parameterClass="Serialize">
+   		update serialize set name=#name#,end_date=#endDate# ,uid=#uid# where id=#id#
+   </update>
+   
+   <!-- 修改连载的类型 -->
+   <update id="updateSerializeType" parameterClass="Serialize">
+   		update serialize set type=#type#,end_date=#endDate# where id=#id#
+   </update>
+   
+   <!-- 修改简介 -->
+   <update id="updateSerializeIntroduce" parameterClass="Serialize">
+   		update serialize set introduce=#introduce#,end_date=#endDate# ,uid=#uid# where id=#id#
+   </update>
+   
+    <!-- 修改连载封面 -->
+   <update id="updateSerializeUrl" parameterClass="Serialize">
+   		update serialize set url=#url#,end_date=#endDate#  where id=#id#
+   </update>
+   
+    <!-- 修改章节名称-->
+   <update id="updateChapter" parameterClass="Chapter">
+   		update chapter set name=#name#,end_date=#updateDate# ,uid=#uid# where id=#id#
+   </update>
+     <!-- 修改章节内容-->
+   <update id="updateChapterContent" parameterClass="Chapter">
+   		update chapter set content=#content#,end_date=#updateDate# ,uid=#uid# where id=#id#
+   </update>
+   
+     <!--删除章节 -->
+   <update id="deleteChapter" parameterClass="Chapter">
+   		update chapter set isDel=0 ,end_date=#updateDate# where id=#id#
+   </update>
+   
+    <!--删除连载 -->
+   <update id="deleteSerialize" parameterClass="Serialize">
+   		update serialize set isDel=1,end_date=#endDate# where id=#id#
+   </update>
+   
+   <!-- 查询连载表中信息 -->
+   <select id="findByIds" parameterClass="long" resultMap="resultSer">
+   	select * from serialize where id=#id# and isDel=0
+   </select>
+   
+   <!-- 查询所有 连载信息-->
+   <select id="findAllSerialize" resultMap="resultSer">
+   		select * from serialize order by id desc
+   </select>
+   <!-- 查询连载表中信息  根据uid查询-->
+   <select id="findSerializeByUid" parameterClass="long" resultMap="resultSer">
+   	select * from serialize where uid=#uid# and isDel=0 order by id desc
+   </select>
+   
+   <!-- 根据用户ID查询连载分页列表-->
+   <!-- 
+   		select * from serialize where uid = #uid# and isDel = 1 and id >= (
+			select id from serialize 
+				order by id limit #beginNo#,1
+			) order by begin_date desc limit #pageSize#
+	 -->
+   <select id="findSerializePageByUserId" parameterClass="map" resultMap="resultSer">
+   		select * from serialize where uid=#uid# and isDel=0 order by begin_date desc limit #beginNo#,#pageSize#
+   </select>
+   
+   <!-- 根据用户di查询该用户的连载数量 -->
+   <select id="findSerializeTotalCountByUserId" parameterClass="long" resultClass="int">
+   		select count(1) from serialize where uid=#uid# and isDel=0
+   </select> 
+   
+    <!-- 查询这个连载是否存在  根据uid和章节名称查查询-->
+   <select id="findSerializeIsExisted" parameterClass="java.util.Map" resultMap="resultSer">
+   	select * from serialize where uid=#userId# and name=#name# and  isDel=0
+   </select>
+   
+    <!-- 查询连载表中类别信息  根据type查询-->
+   <select id="findByType"  resultClass="Serialize">
+   	select * from serialize where type=#type# and isDel=0 order by id desc
+   </select>
+ 	<!-- 根据id查询是否存在章节 -->
+   <select id="queryByIds" parameterClass="long" resultClass="Chapter">
+   	select * from chapter where id=#id# and issDel=0 order by id desc
+   </select>
+   <!-- 根据外键id查询章节目录 -->
+   <select id="findChapterSummary" parameterClass="long" resultMap="resultChapterSummary">
+   	select id,begin_date,end_date,`name`,uid from chapter where parent_id=#parentId#  and isDel=0 order by id asc
+   </select>
+
+	<select id="findChapter" parameterClass="long" resultClass="Chapter">
+		select * from chapter where parent_id=#parentId#  and isDel=0 order by id asc
+	</select>
+   
+   <!-- 根据主键键id查询章节内容-->
+   <select id="findChapterContent" parameterClass="long" resultMap="resultChapter">
+   	select * from chapter where id=#id# and isDel=0
+   </select>
+   
+   <!-- 根据分页进行查询章节内容，实现上一章下一章功能 -->
+   <select id="findChapterToPage" parameterClass="map" resultMap="resultChapter">
+   	select c.* from chapter c
+		where c.uid=#uid# 
+		and c.isDel=0
+		and c.parent_id=#serId#
+	order by c.begin_date asc 
+	limit #beginNo#,1
+   </select>
+   
+   <!-- 根据用户di查询该用户的该连载下的章节数量 -->
+   <select id="findChapterTotalCountByUserId" parameterClass="long" resultClass="int">
+   		select count(1) from chapter where parent_id=#serId# and isDel=0
+   </select>
+   
+   <!-- 根据用户id查询目录 -->
+   <select id="findSerializeUserId"  parameterClass="java.util.Map" resultMap="resultSer">
+		select * from serialize where isDel = 0 and uid in
+		<iterate property="userList" open="(" close=")"  conjunction=",">
+			#userList[]#
+		</iterate>
+		<isNotNull prepend="AND" property="rId">
+			<![CDATA[ id< #rId# ]]>
+		</isNotNull>
+		order by id desc
+	</select>
+	
+	<typeAlias alias="serializelist" type="com.poison.resource.model.SerializeList"/>
+   <!--   连载表信息 -->
+	<resultMap id="serializelistresult" class="serializelist">
+		<result column="id" property="id" jdbcType="BIGINT"/>
+		<result column="serializelist_name" property="serializeListName" jdbcType="VARCHAR"/>
+		<result column="tag" property="tag" jdbcType="VARCHAR"/>
+		<result column="reason" property="reason" jdbcType="TEXT"/>
+		<result column="is_del" property="isDel" jdbcType="INT"/>
+		<result column="type" property="type" jdbcType="INT"/>
+		<result column="u_id" property="uId" jdbcType="BIGINT"/>
+		<result column="is_publishing" property="isPublishing" jdbcType="INT"/>
+		<result column="create_date" property="createDate" jdbcType="BIGINT"/>
+		<result column="latest_revision_date" property="latestRevisionDate" jdbcType="BIGINT"/>
+	</resultMap>
+	
+	<!-- 创建连载清单 -->
+	<insert id="insertserializelist" parameterClass="serializelist">
+		insert into serializelist(id,serializelist_name,tag,reason,is_del,type,u_id,is_publishing,create_date,latest_revision_date) 
+		values(#id#,#serializeListName#,#tag#,#reason#,#isDel#,#type#,#uId#,#isPublishing#,#createDate#,#latestRevisionDate#)
+	</insert>
+	
+	   <!--修改连载清单 -->
+	   <update id="updateSerializeList" parameterClass="serializelist">
+	   		update serializelist set serializelist_name=#serializeListName#,tag=#tag#,reason=#reason#,is_del=#isDel#,type=#type#,u_id=#uId#,is_publishing=#isPublishing#,latest_revision_date=#latestRevisionDate# where id=#id#
+	   </update>
+   
+	
+	  <select id="findSerializeListById" parameterClass="long" resultMap="serializelistresult">
+   		select * from serializelist where id=#id# and is_del=0
+   	 </select>
+   
+	
+	<typeAlias alias="serializelistlink" type="com.poison.resource.model.SerializeListLink"/>
+   <!--   连载表信息 -->
+	<resultMap id="serializelistlinkresult" class="serializelistlink">
+		<result column="id" property="id" jdbcType="BIGINT"/>
+		<result column="serializelist_id" property="serializeListId" jdbcType="BIGINT"/>
+		<result column="serialize_id" property="serializeId" jdbcType="BIGINT"/>
+		<result column="chapter_id" property="chapterId" jdbcType="BIGINT"/>
+		<result column="user_id" property="userId" jdbcType="BIGINT"/>
+		<result column="is_del" property="isDel" jdbcType="INT"/>
+		<result column="create_date" property="createDate" jdbcType="BIGINT"/>
+		<result column="latest_revision_date" property="latestRevisionDate" jdbcType="BIGINT"/>
+	</resultMap>
+
+
+	<!--修改连载清单最后时间 -->
+	<update id="updateSerializeLinkEndDate" parameterClass="java.util.Map">
+		update serializelist set serializelist_name=#serializeListName#,tag=#tag#,reason=#reason#,is_del=#isDel#,type=#type#,u_id=#uId#,is_publishing=#isPublishing#,latest_revision_date=#latestRevisionDate# where id=#id#
+	</update>
+
+	<!--修改连载清单最后时间 -->
+	<update id="updateLastViewSerializeLinkEndDate" parameterClass="java.util.Map">
+		update serializelist_link set latest_revision_date=#latestRevisionDate# where id=#id#
+	</update>
+
+
+	<!--修改连载清单最后时间 -->
+	<update id="delSerializeListLinkByUidAndSerializeId" parameterClass="java.util.Map">
+		update serializelist_link set is_del=1,latest_revision_date=#endDate# where user_id=#userId# and serialize_id =#serializeId#
+	</update>
+
+		<!-- 创建连载关联 -->
+	<insert id="insertserializelistlink" parameterClass="serializelistlink">
+		insert into serializelist_link(id,serializelist_id,serialize_id,chapter_id,user_id,is_del,create_date,latest_revision_date)
+		values(#id#,#serializeListId#,#serializeId#,#chapterId#,#userId#,#isDel#,#createDate#,#latestRevisionDate#)
+	</insert>
+	
+	  <select id="findSerializeListLinkById" parameterClass="long" resultMap="serializelistlinkresult">
+   		select * from serializelist_link where id=#id# and is_del=0
+   	 </select>
+
+
+	<select id="findSerializeListLinkByUidAndChapterId" parameterClass="java.util.Map" resultMap="serializelistlinkresult">
+		select * from serializelist_link where user_id=#userId# and chapter_id=#chapterId# and is_del=0
+	</select>
+
+
+	<!-- 根据用户id和小说id查找详情-->
+	<select id="findSerializeListLinkByUidAndSerializeId" parameterClass="java.util.Map" resultMap="serializelistlinkresult">
+		select * from serializelist_link where user_id=#userId# and serialize_id=#serializeId# and is_del=0
+	</select>
+
+   	 
+   	 <select id="findSerializeListLinkByListId" parameterClass="long" resultMap="serializelistlinkresult">
+   		select * from serializelist_link where user_id=#userId# and serializelist_id=#serializeListId# and is_del=0
+   	 </select>
+
+
+	<!-- 查询看过的小说列表-->
+	<select id="findViewedSerializeLinkList" parameterClass="java.util.Map" resultMap="serializelistlinkresult">
+		select * from serializelist_link where user_id=#userId# and is_del=0
+		<isNotNull prepend="AND" property="endDate">
+			<![CDATA[ latest_revision_date< #endDate# ]]>
+		</isNotNull>
+		order by latest_revision_date desc limit 0,10
+	</select>
+</sqlMap>

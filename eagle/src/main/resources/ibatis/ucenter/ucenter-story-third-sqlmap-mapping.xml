@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd" >
+<sqlMap namespace="storythirdparty">
+
+    <typeAlias alias="storythirdpartylogin" type="com.poison.ucenter.model.StoryThirdLogin" />
+
+    <resultMap id="storythirdLoginResult" class="storythirdpartylogin">
+        <result column="id" property="id" jdbcType="BIGINT" />
+        <result column="user_id" property="userId" jdbcType="BIGINT" />
+        <result column="nickname" property="nickName" jdbcType="VARCHAR" />
+        <result column="openid" property="openId" jdbcType="VARCHAR" />
+        <result column="gender" property="gender" jdbcType="INT" />
+        <result column="location" property="location" jdbcType="VARCHAR" />
+        <result column="country" property="country" jdbcType="VARCHAR" />
+        <result column="headimgurl" property="headImgUrl" jdbcType="VARCHAR" />
+        <result column="description" property="description" jdbcType="VARCHAR" />
+        <result column="other" property="other" jdbcType="VARCHAR" />
+        <result column="login_source" property="loginSource" jdbcType="VARCHAR" />
+        <result column="type" property="type" jdbcType="VARCHAR" />
+        <result column="createdate" property="createDate" jdbcType="BIGINT" />
+        <result column="push_token" property="pushToken" jdbcType="VARCHAR" />
+        <result column="phonemodel" property="phoneModel" jdbcType="VARCHAR" />
+    </resultMap>
+
+    <insert id="insertintoStoryThirdParty" parameterClass="storythirdpartylogin">
+        insert into story_third_login(user_id,openid,nickname,gender,location,country,headimgurl,description,other,login_source,type,createdate,push_token,phonemodel) values(#userId#,#openId#,#nickName#,#gender#,#location#,#country#,#headImgUrl#,#description#,#other#,#loginSource#,#type#,#createDate#,#pushToken#,#phoneModel#)
+    </insert>
+
+    <select id="findStoryThirdPartyByOpenIdAndLoginSource" resultMap="storythirdLoginResult" parameterClass="java.util.Map">
+        select id,user_id,nickname,openid,gender,location,country,headimgurl,description,other,login_source,type,createdate,push_token,phonemodel from story_third_login where login_source=#loginResource# and openid = #openId#
+    </select>
+
+    <update id="updateStoryThirdParty" parameterClass="storythirdpartylogin" >
+        update story_third_login set nickname=#nickName#,gender=#gender#,location=#location#,country=#country#,headimgurl=#headImgUrl#,description=#description#,other=#other#,login_source=#loginSource#,type=#type#,createdate=#createDate#,push_token=#pushToken#,phonemodel=#phoneModel# where id=#id#
+    </update>
+</sqlMap>

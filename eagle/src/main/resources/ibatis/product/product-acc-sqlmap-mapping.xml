@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd" >
+<sqlMap namespace="acc_gold">
+	<!-- 账户金币表 -->
+	<typeAlias alias="accGold" type="com.poison.product.model.AccGold"/>
+	<resultMap id="accGoldResult" class="accGold">
+		<result column="user_id" property="userId" jdbcType="BIGINT" nullValue="0"/>
+		<result column="goldamount" property="goldamount" jdbcType="BIGINT" nullValue="0"/>
+		<result column="createtime" property="createtime" jdbcType="BIGINT" nullValue="0"/>
+		<result column="changetime" property="changetime" jdbcType="BIGINT" nullValue="0"/>
+		<result column="sequence" property="sequence" jdbcType="INT" nullValue="0"/>
+		<result column="extend_field1" property="extendField1" jdbcType="VARCHAR" nullValue=""/>
+		<result column="extend_field2" property="extendField2" jdbcType="VARCHAR" nullValue=""/>
+		<result column="extend_field3" property="extendField3" jdbcType="VARCHAR" nullValue=""/>
+	</resultMap>
+	<!-- 生成一条金币账户信息 -->
+	<insert id="insertIntoAccGold" parameterClass="accGold">
+		insert into acc_gold(user_id,goldamount,createtime,changetime,sequence,extend_field1,extend_field2,extend_field3) values (#userId#,#goldamount#,#createtime#,#changetime#,#sequence#,#extendField1#,#extendField2#,#extendField3#)
+	</insert>
+	<select id="findAccGoldByUserId" parameterClass="long" resultMap="accGoldResult">
+		select * from acc_gold  where user_id = #userId# 
+	</select>
+	<update id="updateAccGoldByUserId" parameterClass="accGold">
+		update acc_gold set goldamount=#goldamount#,changetime=#changetime#,sequence=sequence+1 where user_id=#userId#
+	</update>
+	<update id="addAccGoldByUserId" parameterClass="accGold">
+		update acc_gold set goldamount=goldamount+#goldamount#,changetime=#changetime#,sequence=sequence+1 where user_id=#userId#
+	</update>
+	<update id="reduceAccGoldByUserId" parameterClass="accGold">
+		update acc_gold set goldamount=goldamount-#goldamount#,changetime=#changetime#,sequence=sequence+1 where user_id=#userId#
+	</update>
+	
+	
+	<!-- 金币账户变更记录表 -->
+	<typeAlias alias="goldRecord" type="com.poison.product.model.AccGoldRecord"/>
+	<resultMap id="goldRecordResult" class="goldRecord">
+		<result column="id" property="id" jdbcType="BIGINT"/>
+		<result column="user_id" property="userId" jdbcType="BIGINT" nullValue="0"/>
+		<result column="trade_amount" property="tradeAmount" jdbcType="BIGINT" nullValue="0"/>
+		<result column="rest_amount" property="restAmount" jdbcType="BIGINT" nullValue="0"/>
+		<result column="ordernum" property="ordernum" jdbcType="VARCHAR" nullValue=""/>
+		<result column="createtime" property="createtime" jdbcType="BIGINT" nullValue="0"/>
+		<result column="updatetime" property="updatetime" jdbcType="BIGINT" nullValue="0"/>
+		<result column="changetime" property="changetime" jdbcType="BIGINT" nullValue="0"/>
+		<result column="remark" property="remark" jdbcType="VARCHAR" nullValue=""/>
+		<result column="sequence" property="sequence" jdbcType="INT" nullValue="0"/>
+		<result column="type" property="type" jdbcType="VARCHAR" nullValue=""/>
+		<result column="change_desc" property="changeDesc" jdbcType="VARCHAR" nullValue=""/>
+		<result column="cause" property="cause" jdbcType="VARCHAR" nullValue=""/>
+		<result column="admin_user" property="adminUser" jdbcType="VARCHAR" nullValue=""/>
+		<result column="shadow" property="shadow" jdbcType="TINYINT" nullValue="0"/>
+		<result column="extend_field1" property="extendField1" jdbcType="VARCHAR" nullValue=""/>
+		<result column="extend_field2" property="extendField2" jdbcType="VARCHAR" nullValue=""/>
+		<result column="extend_field3" property="extendField3" jdbcType="VARCHAR" nullValue=""/>
+	</resultMap>
+	<insert id="insertIntoGoldRecord" parameterClass="goldRecord">
+		insert into acc_gold_record(user_id,trade_amount,rest_amount,ordernum,createtime,updatetime,changetime,remark,sequence,type,change_desc,cause,admin_user,shadow,extend_field1,extend_field2,extend_field3) values (#userId#,#tradeAmount#,#restAmount#,#ordernum#,#createtime#,#updatetime#,#changetime#,#remark#,#sequence#,#type#,#changeDesc#,#cause#,#adminUser#,#shadow#,#extendField1#,#extendField2#,#extendField3#)
+	</insert>
+</sqlMap>

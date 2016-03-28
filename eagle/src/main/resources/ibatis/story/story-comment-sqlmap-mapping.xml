@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd" >
+<sqlMap namespace="storyComment">
+	<typeAlias alias="dateTypeHandler" type="com.keel.utils.time.DateTypeHandler"/>
+	<resultMap id="BaseResultMap" class="com.poison.story.model.StoryComment">
+		<result column="id" property="id" jdbcType="BIGINT" />
+		<result column="story_id" property="storyId" jdbcType="BIGINT" />
+		<result column="user_id" property="userId" jdbcType="BIGINT" />
+		<result column="nickname" property="nickname" jdbcType="VARCHAR" />
+		<result column="story_name" property="storyName" jdbcType="VARCHAR" />
+		<result column="author_id" property="authorId" jdbcType="BIGINT" />
+		<result column="story_author" property="storyAuthor" jdbcType="VARCHAR" />
+		<result column="story_cover" property="storyCover" jdbcType="VARCHAR" />
+		<result column="score" property="score" jdbcType="TINYINT" />
+		<result column="title" property="title" jdbcType="VARCHAR" />
+		<result column="comment_body" property="commentBody" jdbcType="VARCHAR" />
+		<result column="type" property="type" jdbcType="INTEGER" />
+		<result column="story_type" property="storyType" jdbcType="VARCHAR" />
+		<result column="is_delete" property="isDelete" jdbcType="BIT" />
+		<result column="create_date" property="createDate" jdbcType="BIGINT" typeHandler="dateTypeHandler"/>
+		<result column="last_version_date" property="lastVersionDate" jdbcType="BIGINT" typeHandler="dateTypeHandler"/>
+	</resultMap>
+	<sql id="Base_Column_List">
+		id, story_id, user_id, nickname, story_name, author_id, story_author,
+		story_cover,
+		score, title, comment_body, type,story_type, is_delete, create_date, last_version_date
+	</sql>
+	<insert id="insertStoryComment" parameterClass="com.poison.story.model.StoryComment">
+		insert into story_comment (id, story_id, user_id, 
+	      nickname, story_name, author_id, 
+	      story_author, story_cover, score, 
+	      title, comment_body, type, story_type,
+	      is_delete, create_date, last_version_date
+	      )
+	    values (#id,jdbcType=BIGINT#, #storyId,jdbcType=BIGINT#, #userId,jdbcType=BIGINT#, 
+	      #nickname,jdbcType=VARCHAR#, #storyName,jdbcType=VARCHAR#, #authorId,jdbcType=BIGINT#, 
+	      #storyAuthor,jdbcType=VARCHAR#, #storyCover,jdbcType=VARCHAR#, #score,jdbcType=TINYINT#, 
+	      #title,jdbcType=VARCHAR#, #commentBody,jdbcType=VARCHAR#, #type,jdbcType=INTEGER#,#storyType,jdbcType=VARCHAR#, 
+	      #isDelete,jdbcType=BIT#, #createDate,jdbcType=BIGINT,handler=com.keel.utils.time.DateTypeHandler#, #lastVersionDate,jdbcType=BIGINT,handler=com.keel.utils.time.DateTypeHandler#
+	      )
+	</insert>
+	<select id="selectStoryCommentById" resultMap="BaseResultMap" parameterClass="java.lang.Long">
+		select <include refid="Base_Column_List"/>
+		from story_comment
+		where id = #id#
+	</select>
+	<select id="queryStoryCommentList" resultMap="BaseResultMap" parameterClass="com.poison.story.model.StoryComment">
+		select <include refid="Base_Column_List"/>
+		from story_comment
+		where 1=1
+		<isNotEmpty property="id">
+			<![CDATA[ and id < #id# ]]>
+		</isNotEmpty>
+		<isNotEmpty property="storyId">
+			<![CDATA[ and story_id = #storyId#]]>
+		</isNotEmpty>
+		order by id DESC
+		limit 0,10
+	</select>
+</sqlMap>

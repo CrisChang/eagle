@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd" >
+<sqlMap namespace="actrecommend">
+
+    <typeAlias alias="actRecommendVote" type="com.poison.act.model.ActRecommendVote" />
+
+    <resultMap id="recommendVoteResult" class="actRecommendVote">
+        <result column="id" property="id" jdbcType="BIGINT" />
+        <result column="user_id" property="userId" jdbcType="BIGINT" />
+        <result column="resource_id" property="resourceId" jdbcType="BIGINT" />
+        <result column="resource_type" property="resourceType" jdbcType="VARCHAR" />
+        <result column="recommend_vote" property="recommendVote" jdbcType="INT" />
+        <result column="create_date" property="createDate" jdbcType="BIGINT" />
+        <result column="latest_revision_date" property="latestRevisionDate" jdbcType="BIGINT" />
+    </resultMap>
+
+    <!-- 插入一个推荐票 -->
+    <insert id="insertRecommendVote" parameterClass="actRecommendVote">
+        insert into act_recommend_vote(id,user_id,resource_id,resource_type,recommend_vote,create_date,latest_revision_date)
+        values(#id#,#userId#,#resourceId#,#resourceType#,#recommendVote#,#createDate#,#latestRevisionDate#)
+    </insert>
+
+    <!-- 根据用户id和资源id查询最后一次投票-->
+    <select id="findRecommendVoteByUserIdAndResourceId" parameterClass="java.util.Map" resultMap="recommendVoteResult" >
+        select id,user_id,resource_id,resource_type,recommend_vote,create_date,latest_revision_date from act_recommend_vote where
+        user_id = #userId# and resource_id = #resourceId# and is_delete = 0 order by id desc limit 0,1
+    </select>
+</sqlMap>

@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:aop="http://www.springframework.org/schema/aop"
+	xmlns:tx="http://www.springframework.org/schema/tx"
+	xsi:schemaLocation="
+			http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-3.2.xsd
+			http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop-3.2.xsd
+			http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx-3.2.xsd"
+	default-autowire="byName">
+
+	<bean id="getResourceInfoFacade"
+		class="com.poison.resource.client.impl.GetResourceInfoFacadeImpl" />
+	<!-- <bean id="filmListInfoFacade" class="com.poison.resource.client.impl.FilmListInfoFacadeImpl" /> -->
+	<bean id="serializeFacade" class="com.poison.resource.client.impl.SerialzeFacadeImpl" />
+	<bean id="serializeListFacade" class="com.poison.resource.client.impl.SerializeListFacadeImpl" />
+	<bean id="diaryFacade" class="com.poison.resource.client.impl.DiaryFacadeImpl" />
+	<bean id="postFacade" class="com.poison.resource.client.impl.PostFacadeImpl" />
+	<bean id="bkCommentFacade" class="com.poison.resource.client.impl.BkCommentFacadeImpl" />
+	<bean id="myBkFacade" class="com.poison.resource.client.impl.MyBkFacadeImpl" />
+	<bean id="bookTalkFacade" class="com.poison.resource.client.impl.BookTalkFacadeImpl" />
+	<!-- 影单相关 -->
+	<bean id="mvCommentFacade" class="com.poison.resource.client.impl.MvCommentFacadeImpl" />
+	<bean id="myMovieFacade" class="com.poison.resource.client.impl.MyMovieFacadeImpl" />
+	<bean id="movieTalkFacade" class="com.poison.resource.client.impl.MovieTalkFacadeImpl" />
+	<!-- 逼格相关 -->
+	<bean id="bigFacade" class="com.poison.resource.client.impl.BigFacadeImpl" >
+		<property name="dataSource"><ref bean="resourceMysqlDataSource"/></property>
+                <property name="sqlMapClient"><ref bean="resourceMysqlDataSourceSqlMapClient"/></property>
+	</bean>
+	
+	<bean id="resourceLinkFacade" class="com.poison.resource.client.impl.ResourceLinkFacadeImpl" />
+	
+	<!-- 图解电影 -->
+	<bean id="graphicFilmFacade" class="com.poison.resource.client.impl.GraphicFilmFacadeImpl" />
+	<!-- 话题 -->
+	<bean id="topicFacade" class="com.poison.resource.client.impl.TopicFacadeImpl" />
+	<!-- 新的长文章 -->
+	<bean id="articleFacade" class="com.poison.resource.client.impl.ArticleFacadeImpl" />
+	<!-- 根据评论数量的资源排行 -->
+	<bean id="resourceRankingFacade" class="com.poison.resource.client.impl.ResourceRankingFacadeImpl" />
+	<!-- 精选 -->
+	<bean id="selectedFacade" class="com.poison.resource.client.impl.SelectedFacadeImpl" />
+	<!-- 精选资源 -->
+	<bean id="selectedResFacade" class="com.poison.resource.client.impl.SelectedResFacadeImpl" />
+	<!-- 排行榜：原创榜，上周回幕榜 -->
+	<bean id="rankingListFacade" class="com.poison.resource.client.impl.RankingListFacadeImpl" />
+</beans>

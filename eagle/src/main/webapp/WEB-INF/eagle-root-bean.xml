@@ -1,0 +1,82 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<beans xmlns="http://www.springframework.org/schema/beans"    
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:p="http://www.springframework.org/schema/p"    
+       xmlns:context="http://www.springframework.org/schema/context"
+       	   xsi:schemaLocation="
+			http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-3.2.xsd
+			http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop-3.2.xsd
+			http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx-3.2.xsd"
+       default-autowire="byName">
+
+
+    <import resource="classpath:/bean/eagle-bean/eagle-framework-bean.xml" />
+	<import resource="classpath:/bean/eagle-bean/eagle-manager-bean.xml" />
+	<import resource="classpath:/bean/eagle-bean/eagle-mem-bean.xml" />
+	<import resource="classpath:/bean/eagle-bean/eagle-util-bean.xml" />
+	
+	<import resource="classpath:/bean/ucenter-bean/ucenter-client-bean.xml" />
+	<import resource="classpath:/bean/ucenter-bean/ucenter-service-impl-bean.xml" />
+	<import resource="classpath:/bean/ucenter-bean/ucenter-domain-bean.xml" />
+	<import resource="classpath:/bean/ucenter-bean/ucenter-dao-env-bean.xml" />
+	<import resource="classpath:/bean/ucenter-bean/ucenter-mysql-dao-bean.xml" />
+	
+	<!-- 
+	<import resource="classpath:/bean/easemob-bean/easemob-client-bean.xml" />
+	<import resource="classpath:/bean/easemob-bean/easemob-service-impl-bean.xml" />
+	<import resource="classpath:/bean/easemob-bean/easemob-domain-bean.xml" />
+	<import resource="classpath:/bean/easemob-bean/easemob-dao-env-bean.xml" />
+	<import resource="classpath:/bean/easemob-bean/easemob-mysql-dao-bean.xml" />
+	-->
+	
+	<import resource="classpath:/bean/act-bean/act-client-bean.xml" />
+	<import resource="classpath:/bean/act-bean/act-service-impl-bean.xml" />
+	<import resource="classpath:/bean/act-bean/act-domain-bean.xml" />
+	<import resource="classpath:/bean/act-bean/act-dao-env-bean.xml" />
+	<import resource="classpath:/bean/act-bean/act-mysql-dao-bean.xml" />
+	
+	<import resource="classpath:/bean/resource_bean/resource-client-bean.xml" />
+	<import resource="classpath:/bean/resource_bean/resource-service-impl-bean.xml" />
+	<import resource="classpath:/bean/resource_bean/resource-domain-bean.xml" />
+	<import resource="classpath:/bean/resource_bean/resource-dao-env-bean.xml" />
+	<import resource="classpath:/bean/resource_bean/resource-mysql-dao-bean.xml" />
+	
+	 <import resource="classpath:/bean/msg-bean/msg-client-bean.xml" />
+	<import resource="classpath:/bean/msg-bean/msg-service-impl-bean.xml" />
+	<import resource="classpath:/bean/msg-bean/msg-domain-bean.xml" />
+	<import resource="classpath:/bean/msg-bean/msg-dao-env-bean.xml" />
+	<import resource="classpath:/bean/msg-bean/msg-mysql-dao-bean.xml" /> 
+	
+	<import resource="classpath:/bean/store-bean/store-client-bean.xml" />
+	<import resource="classpath:/bean/store-bean/store-service-impl-bean.xml" />
+	<import resource="classpath:/bean/store-bean/store-domain-bean.xml" />
+	<import resource="classpath:/bean/store-bean/store-dao-env-bean.xml" />
+	<import resource="classpath:/bean/store-bean/store-mysql-dao-bean.xml" />
+	
+	<import resource="classpath:/bean/paycenter-bean/paycenter-client-bean.xml" />
+	<import resource="classpath:/bean/paycenter-bean/paycenter-service-impl-bean.xml" />
+	<import resource="classpath:/bean/paycenter-bean/paycenter-domain-bean.xml" />
+	<import resource="classpath:/bean/paycenter-bean/paycenter-dao-env-bean.xml" />
+	<import resource="classpath:/bean/paycenter-bean/paycenter-mysql-dao-bean.xml" />
+	
+	<!-- <import resource="classpath:/bean/quartz-bean/quartz-bean.xml" /> -->
+	
+	<import resource="classpath:/bean/activity-bean/activity-client-bean.xml" />
+	<import resource="classpath:/bean/activity-bean/activity-service-impl-bean.xml" />
+	<import resource="classpath:/bean/activity-bean/activity-domain-bean.xml" />
+	<import resource="classpath:/bean/activity-bean/activity-dao-env-bean.xml" />
+	<import resource="classpath:/bean/activity-bean/activity-mysql-dao-bean.xml" />
+
+
+	<import resource="classpath:/bean/story-bean/story-client-bean.xml" />
+	<import resource="classpath:/bean/story-bean/story-service-impl-bean.xml" />
+	<import resource="classpath:/bean/story-bean/story-domain-bean.xml" />
+	<import resource="classpath:/bean/story-bean/story-dao-env-bean.xml" />
+	<import resource="classpath:/bean/story-bean/story-mysql-dao-bean.xml" />
+	
+	<!--<import resource="classpath:/bean/product-bean/product-client-bean.xml" />-->
+	<!--<import resource="classpath:/bean/product-bean/product-service-impl-bean.xml" />-->
+	<!--<import resource="classpath:/bean/product-bean/product-domain-bean.xml" />-->
+	<!--<import resource="classpath:/bean/product-bean/product-dao-env-bean.xml" />-->
+	<!--<import resource="classpath:/bean/product-bean/product-mysql-dao-bean.xml" />-->
+</beans>

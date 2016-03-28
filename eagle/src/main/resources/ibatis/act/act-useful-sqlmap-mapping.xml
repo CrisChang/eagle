@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd" >
+<sqlMap namespace="actUseful">
+	
+	<typeAlias alias="actuseful" type="com.poison.act.model.ActUseful" />
+	
+	<resultMap id="usefulResult" class="actuseful">
+		<result column="id" property="id" jdbcType="BIGINT" />
+		<result column="user_id" property="userId" jdbcType="BIGINT" />
+		<result column="resource_id" property="resourceId" jdbcType="BIGINT" />
+		<result column="is_useful" property="isUseful" jdbcType="INT" />
+		<result column="res_type" property="resType" jdbcType="VARCHAR" />
+		<result column="create_date" property="createDate" jdbcType="BIGINT" />
+		<result column="latest_revision_date" property="latestRevisionDate" jdbcType="BIGINT" />
+		<result column="res_userid" property="resUserId" jdbcType="BIGINT" />
+	</resultMap>
+	
+	<!--插入是否有用  -->
+	<insert id="insertintoActUseful" parameterClass="actuseful">
+		insert into act_useful(id,user_id,resource_id,is_useful,create_date,latest_revision_date,res_userid,res_type) values(#id#,#userId#,#resourceId#,#isUseful#,#createDate#,#latestRevisionDate#,#resUserId#,#resType#)
+	</insert>
+	
+	<!--更新是否有用的信息  -->
+	<update id="updateUseful" parameterClass="java.util.Map" >
+		update act_useful set is_useful =#isUseful#,latest_revision_date=#latestRevisionDate# where id = #id#
+	</update>
+	
+	<!--查询有用的总数  -->
+	<select id="findUsefulCount" parameterClass="long" resultClass="int" >
+		select count(1) from act_useful where resource_id = #resId# and is_useful = 1
+	</select>
+	
+	<!--查询没用的总数  -->
+	<select id="findUselessCount" parameterClass="long" resultClass="int" >
+		select count(1) from act_useful where resource_id = #resId# and is_useful = 2
+	</select>
+	
+	<!--根据资源的id和用户id查询这条有用信息  -->
+	<select id="findActUsefulByResidAndUserid" parameterClass="java.util.Map" resultMap="usefulResult" >
+		select id,user_id,resource_id,is_useful,create_date,latest_revision_date,res_userid,res_type from act_useful where user_id = #userId# and resource_id = #resId#
+	</select>
+	
+	<!--根据主键id查询这条有用信息  -->
+	<select id="findActUsefulById" parameterClass="long" resultMap="usefulResult" >
+		select id,user_id,resource_id,is_useful,create_date,latest_revision_date,res_userid,res_type from act_useful where id = #id#
+	</select>
+	
+	<!--查找每个人的点有用的列表  -->
+	<select id="findUsefulListByResUid" parameterClass="java.util.Map" resultMap="usefulResult" >
+		select id,user_id,resource_id,is_useful,create_date,latest_revision_date,res_userid,res_type from act_useful where  res_userid=#resUid# and  is_useful = 1 and  <![CDATA[ res_type<>25 ]]>
+		<isNotNull prepend="AND"  property="id">
+			<![CDATA[ id< #id# ]]>
+		</isNotNull>
+		order by id desc limit 0,10
+	</select>
+	
+	
+	<!--根据资源id查询有用列表  -->
+	<select id="findUsefulListByResIdAndType" parameterClass="java.util.Map" resultMap="usefulResult" >
+		select id,user_id,resource_id,is_useful,create_date,latest_revision_date,res_userid,res_type from act_useful where  resource_id=#resId# and  is_useful = 1
+		<isNotNull prepend="AND"  property="id">
+			<![CDATA[ id< #id# ]]>
+		</isNotNull>
+		order by id desc limit 0,10
+	</select>
+</sqlMap>

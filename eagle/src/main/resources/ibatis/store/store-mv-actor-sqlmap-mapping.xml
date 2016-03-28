@@ -1,0 +1,189 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd" >
+<sqlMap namespace="mvActor">
+	
+	<typeAlias alias="mvActor" type="com.poison.store.model.MvActor" />
+	<resultMap id="MvActorResult" class="mvActor">
+		<result column="id" property="id" jdbcType="BIGINT" />
+		<result column="mv_id" property="mvId" jdbcType="BIGINT" nullValue="0"/>
+		<result column="mv_url" property="mvUrl" jdbcType="VARCHAR" />
+		<result column="actor_type" property="actorType" jdbcType="TINYINT" />
+		<result column="actor_url" property="actorUrl" jdbcType="VARCHAR" />
+		<result column="actor_id" property="actorId" jdbcType="BIGINT" />
+		<result column="actor_name" property="actorName" jdbcType="VARCHAR" />
+		<result column="name" property="name" jdbcType="VARCHAR" />
+		<result column="update_time" property="updateTime" jdbcType="BIGINT" nullValue="0"/>
+		<result column="create_time" property="createTime" jdbcType="BIGINT" nullValue="0"/>
+		<result column="is_del" property="isDel" jdbcType="TINYINT" nullValue="0"/>
+		<result column="extend_field1" property="extendField1" jdbcType="VARCHAR" />
+		<result column="extend_field2" property="extendField2" jdbcType="VARCHAR" />
+		<result column="extend_field3" property="extendField3" jdbcType="VARCHAR" />
+ 	</resultMap>
+ 	
+ 	<select id="findMvActor" parameterClass="java.util.Map" resultMap="MvActorResult">
+		select * from c_db_mv_actor 
+		<dynamic prepend="WHERE">
+	      <isNotNull prepend="AND" property="id">
+	         id = #id#
+	      </isNotNull>
+	      <isNotNull prepend="AND" property="mvId">
+	         mv_id = #mvId#
+	      </isNotNull>
+	      <isNotNull prepend="AND" property="mvUrl">
+	         mv_url = #mvUrl#
+	      </isNotNull>
+	      <isNotNull prepend="AND" property="actorType">
+	         actor_type = #actorType#
+	      </isNotNull>
+	       <isNotNull prepend="AND" property="actorUrl">
+	         actor_url = #actorUrl#
+	      </isNotNull>
+	      <isNotNull prepend="AND" property="actorId">
+	         actor_id = #actorId#
+	      </isNotNull>
+	      <isNotNull prepend="AND" property="isDel">
+	         is_del = #isDel#
+	      </isNotNull>
+	   </dynamic>
+	</select>
+	
+	<select id="findListMvActor" parameterClass="java.util.Map" resultMap="MvActorResult">
+		select * from c_db_mv_actor 
+		<dynamic prepend="WHERE">
+	      <isNotNull prepend="AND" property="id">
+	         id = #id#
+	      </isNotNull>
+	      <isNotNull prepend="AND" property="mvId">
+	         mv_id = #mvId#
+	      </isNotNull>
+	      <isNotNull prepend="AND" property="mvUrl">
+	         mv_url = #mvUrl#
+	      </isNotNull>
+	      <isNotNull prepend="AND" property="actorType">
+	         actor_type = #actorType#
+	      </isNotNull>
+	       <isNotNull prepend="AND" property="actorUrl">
+	         actor_url = #actorUrl#
+	      </isNotNull>
+	      <isNotNull prepend="AND" property="actorId">
+	         actor_id = #actorId#
+	      </isNotNull>
+	      <isNotNull prepend="AND" property="isDel">
+	         is_del = #isDel#
+	      </isNotNull>
+	   </dynamic>
+	</select>
+	
+	<select id="findListMvActorByPage" parameterClass="java.util.Map" resultMap="MvActorResult">
+		select * from c_db_mv_actor 
+		<dynamic prepend="WHERE">
+	      <isNotNull prepend="AND" property="id">
+	         id = #id#
+	      </isNotNull>
+	      <isNotNull prepend="AND" property="mvId">
+	         mv_id = #mvId#
+	      </isNotNull>
+	      <isNotNull prepend="AND" property="mvUrl">
+	         mv_url = #mvUrl#
+	      </isNotNull>
+	      <isNotNull prepend="AND" property="actorType">
+	         actor_type = #actorType#
+	      </isNotNull>
+	       <isNotNull prepend="AND" property="actorUrl">
+	         actor_url = #actorUrl#
+	      </isNotNull>
+	      <isNotNull prepend="AND" property="actorId">
+	         actor_id = #actorId#
+	      </isNotNull>
+	      <isNotNull prepend="AND" property="isDel">
+	         is_del = #isDel#
+	      </isNotNull>
+	   </dynamic>
+	     limit #start#,#pageSize#
+	</select>
+	
+	<!-- 过滤掉因角色重复的重复电影 -->
+	<select id="findListMvActorByPageDictinctMv" parameterClass="java.util.Map" resultMap="MvActorResult">
+		select distinct(ma.mv_url) as mv_url_proxy,ma.* from c_db_mv_actor ma right join c_db_mv mv on mv.movie_url = ma.mv_url
+		<dynamic prepend="WHERE">
+	      <isNotNull prepend="AND" property="id">
+	         ma.id = #id#
+	      </isNotNull>
+	      <isNotNull prepend="AND" property="mvId">
+	         ma.mv_id = #mvId#
+	      </isNotNull>
+	      <isNotNull prepend="AND" property="mvUrl">
+	         ma.mv_url = #mvUrl#
+	      </isNotNull>
+	      <isNotNull prepend="AND" property="actorType">
+	         ma.actor_type = #actorType#
+	      </isNotNull>
+	       <isNotNull prepend="AND" property="actorUrl">
+	         ma.actor_url = #actorUrl#
+	      </isNotNull>
+	      <isNotNull prepend="AND" property="actorId">
+	         ma.actor_id = #actorId#
+	      </isNotNull>
+	      <isNotNull prepend="AND" property="isDel">
+	         ma.is_del = #isDel#
+	      </isNotNull>
+	   </dynamic>
+	     group by ma.extend_field3 limit #start#,#pageSize#
+	</select>
+	
+	<select id="findListMvActorByPageDistinctActorUrl" parameterClass="java.util.Map" resultMap="MvActorResult">
+		select distinct(actor_url) as actor_url_proxy,ma.* from c_db_mv_actor ma
+		<dynamic prepend="WHERE">
+	      <isNotNull prepend="AND" property="id">
+	         ma.id = #id#
+	      </isNotNull>
+	      <isNotNull prepend="AND" property="mvId">
+	         ma.mv_id = #mvId#
+	      </isNotNull>
+	      <isNotNull prepend="AND" property="mvUrl">
+	         ma.mv_url = #mvUrl#
+	      </isNotNull>
+	      <isNotNull prepend="AND" property="actorType">
+	         ma.actor_type = #actorType#
+	      </isNotNull>
+	       <isNotNull prepend="AND" property="actorUrl">
+	         ma.actor_url = #actorUrl#
+	      </isNotNull>
+	      <isNotNull prepend="AND" property="actorId">
+	         ma.actor_id = #actorId#
+	      </isNotNull>
+	      <isNotNull prepend="AND" property="isDel">
+	         ma.is_del = #isDel#
+	      </isNotNull>
+	   </dynamic>
+	     group by actor_url_proxy  limit #start#,#pageSize#
+	</select>
+	
+	<select id="findListMvActorByPageDistinctMvUrl" parameterClass="java.util.Map" resultMap="MvActorResult">
+		select distinct(ma.mv_url) as mv_url_proxy,ma.* from c_db_mv_actor ma right join c_db_mv mv on mv.movie_url = ma.mv_url
+		<dynamic prepend="WHERE">
+	      <isNotNull prepend="AND" property="id">
+	         ma.id = #id#
+	      </isNotNull>
+	      <isNotNull prepend="AND" property="mvId">
+	         ma.mv_id = #mvId#
+	      </isNotNull>
+	      <isNotNull prepend="AND" property="mvUrl">
+	         ma.mv_url = #mvUrl#
+	      </isNotNull>
+	      <isNotNull prepend="AND" property="actorType">
+	         ma.actor_type = #actorType#
+	      </isNotNull>
+	       <isNotNull prepend="AND" property="actorUrl">
+	         ma.actor_url = #actorUrl#
+	      </isNotNull>
+	      <isNotNull prepend="AND" property="actorId">
+	         ma.actor_id = #actorId#
+	      </isNotNull>
+	      <isNotNull prepend="AND" property="isDel">
+	         ma.is_del = #isDel#
+	      </isNotNull>
+	   </dynamic>
+	     group by ma.extend_field3 order by mv.release_date_sort desc  limit #start#,#pageSize#
+	</select>
+</sqlMap>

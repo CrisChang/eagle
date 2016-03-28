@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd" >
+<sqlMap namespace="storyuser">
+
+    <typeAlias alias="storyUserinfo" type="com.poison.ucenter.model.StoryUser" />
+
+    <resultMap id="storyUserResult" class="storyUserinfo">
+        <result column="user_id" property="userId" jdbcType="BIGINT" />
+        <result column="login_name" property="loginName" jdbcType="VARCHAR" />
+        <result column="password" property="password" jdbcType="VARCHAR" />
+        <result column="password_md5" property="passwordMd5" jdbcType="VARCHAR" />
+        <result column="mobilephone" property="mobilePhone" jdbcType="VARCHAR" />
+        <result column="name" property="name" jdbcType="VARCHAR" />
+        <result column="face_address" property="faceAddress" jdbcType="VARCHAR" />
+        <result column="birthday" property="birthday" jdbcType="BIGINT" />
+        <result column="sex" property="sex" jdbcType="VARCHAR" />
+        <result column="ip" property="ip" jdbcType="VARCHAR" />
+        <result column="create_Date" property="createDate" jdbcType="BIGINT" />
+        <result column="latest_login_date" property="lastestLoginDate" jdbcType="BIGINT" />
+        <result column="latest_revision_date" property="lastestRevisionDate" jdbcType="BIGINT" />
+        <result column="state" property="state" jdbcType="VARCHAR" />
+        <result column="is_binding" property="isBinding" jdbcType="TINYINT" />
+    </resultMap>
+
+    <!-- 注册一个小说用户-->
+    <insert id="insertStoryUserInfo" parameterClass="java.util.Map" >
+        insert into story_user(login_name,password,mobilephone,name,face_address,create_date,latest_revision_date,is_binding) values(#loginName#,#password#,#mobilePhone#,#name#,#faceAddress#,#createDate#,#lastestRevisionDate#,#isBinding#)
+        <selectKey resultClass="long" keyProperty="userId" >
+            SELECT @@IDENTITY
+        </selectKey>
+    </insert>
+
+    <select id="findStoryUserByUserid" resultMap="storyUserResult" parameterClass="long">
+        select user_id,login_name,`password`,password_md5,mobilephone,`name`,face_address,birthday,sex,ip,create_date,latest_login_date,latest_revision_date,state,is_binding from story_user where user_id=#userId#
+    </select>
+
+    <!-- 根据用户名和密码查询小说的用户-->
+    <select id="findStoryUserByLoginnameAndPassword" resultMap="storyUserResult" parameterClass="java.util.Map">
+        select user_id,login_name,`password`,password_md5,mobilephone,`name`,face_address,birthday,sex,ip,create_date,latest_login_date,latest_revision_date,state,is_binding from story_user
+        where mobilephone=#loginName# and password = #password#
+    </select>
+
+
+    <!-- 根据电话号码查询小说的用户-->
+    <select id="findStoryUserByMobilephone" resultMap="storyUserResult" parameterClass="java.lang.String">
+        select user_id,login_name,`password`,password_md5,mobilephone,`name`,face_address,birthday,sex,ip,create_date,latest_login_date,latest_revision_date,state,is_binding from story_user
+        where mobilephone=#mobilephone#
+    </select>
+
+    <!--绑定手机号  -->
+    <update id="bindingStoryMobile" parameterClass="java.util.Map" >
+        update story_user set mobilephone=#mobilephone#,`password` =#newPassword# ,password_md5=#newPasswordRdm#,latest_revision_date=#sysTime#,is_binding=1 where user_id=#uid#
+    </update>
+
+
+    <!--更新密码  -->
+    <update id="editStoryPassword" parameterClass="java.util.Map" >
+        update story_user set `password` =#newPassword# ,password_md5=#newPasswordRdm#,latest_revision_date=#sysTime# where user_id=#uid#
+    </update>
+
+    <!--改用户为绑定  -->
+    <update id="updateStoryUserIsBinding" parameterClass="java.util.Map" >
+        update story_user set  is_binding=1,latest_revision_date=#sysTime# where user_id=#uid#
+    </update>
+
+
+    <!--更新头像和昵称  -->
+    <update id="editStoryFaceAndNickName" parameterClass="java.util.Map" >
+        update story_user set `name` =#nickname# ,face_address=#faceurl#,latest_revision_date=#sysTime# where user_id=#uid#
+    </update>
+
+</sqlMap>

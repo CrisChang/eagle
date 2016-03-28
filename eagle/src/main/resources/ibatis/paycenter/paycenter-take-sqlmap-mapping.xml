@@ -1,0 +1,93 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd" >
+<sqlMap namespace="take">
+	<!-- 账户总设置表 -->
+	<typeAlias alias="accSet" type="com.poison.paycenter.model.AccSet"/>
+	<resultMap id="accSetResult" class="accSet">
+		<result column="id" property="id" jdbcType="BIGINT"/>
+		<result column="leastamount" property="leastAmount" jdbcType="INT" nullValue="0"/>
+		<result column="limittimes" property="limitTimes" jdbcType="INT" nullValue="0"/>
+		<result column="starttime" property="startTime" jdbcType="INT" nullValue="0"/>
+		<result column="endtime" property="endTime" jdbcType="INT" nullValue="0"/>
+		<result column="createtime" property="createTime" jdbcType="BIGINT" nullValue="0"/>
+		<result column="updatetime" property="updateTime" jdbcType="BIGINT" nullValue="0"/>
+		<result column="extend_field1" property="extendField1" jdbcType="VARCHAR" nullValue=""/>
+		<result column="extend_field2" property="extendField2" jdbcType="VARCHAR" nullValue=""/>
+		<result column="extend_field3" property="extendField3" jdbcType="VARCHAR" nullValue=""/>
+	</resultMap>
+	
+	<select id="getAccSet" resultClass="accSet">
+		select * from acc_set
+	</select>
+	
+	<!-- 提现设置表 -->
+	<typeAlias alias="accTakeSet" type="com.poison.paycenter.model.AccTakeSet"/>
+	<resultMap id="accTakeSetResult" class="accTakeSet">
+		<result column="user_id" property="userId" jdbcType="BIGINT"/>
+		<result column="password" property="password" jdbcType="VARCHAR" nullValue=""/>
+		<result column="createtime" property="createTime" jdbcType="BIGINT" nullValue="0"/>
+		<result column="updatetime" property="updateTime" jdbcType="BIGINT" nullValue="0"/>
+		<result column="wronginfo" property="wronginfo" jdbcType="VARCHAR" nullValue=""/>
+		<result column="extend_field1" property="extendField1" jdbcType="VARCHAR" nullValue=""/>
+		<result column="extend_field2" property="extendField2" jdbcType="VARCHAR" nullValue=""/>
+		<result column="extend_field3" property="extendField3" jdbcType="VARCHAR" nullValue=""/>
+	</resultMap>
+	<!-- 生成一条提现设置信息 -->
+	<insert id="insertAccTakeSet" parameterClass="accTakeSet">
+		insert into acc_take_set(user_id,password,createtime,updatetime,wronginfo,extend_field1,extend_field2,extend_field3) values (#userId#,#password#,#createTime#,#updateTime#,#wronginfo#,#extendField1#,#extendField2#,#extendField3#)
+	</insert>
+	<update id="updateAccTakeSet" parameterClass="accTakeSet">
+		update acc_take_set set password=#password#,updatetime=#updateTime#,wronginfo=#wronginfo#,extend_field1=#extendField1#,extend_field2=#extendField2#,extend_field3=#extendField3# where user_id=#userId#
+	</update>
+	
+	<select id="selectAccTakeSetByUserId" parameterClass="long" resultClass="accTakeSet">
+		select * from acc_take_set  where user_id = #userid# 
+	</select>
+	
+	
+	<!-- 提现记录表 -->
+	<typeAlias alias="accTakeRecord" type="com.poison.paycenter.model.AccTakeRecord"/>
+	<resultMap id="accTakeRecordResult" class="accTakeRecord">
+		<result column="id" property="id" jdbcType="BIGINT"/>
+		<result column="take_no" property="takeNo" jdbcType="VARCHAR" nullValue=""/>
+		<result column="seller_id" property="sellerId" jdbcType="TINYINT" nullValue="0"/>
+		<result column="parter_id" property="parterId" jdbcType="TINYINT" nullValue="0"/>
+		<result column="user_id" property="userId" jdbcType="BIGINT" nullValue="0"/>
+		<result column="take_fee" property="takeFee" jdbcType="BIGINT" nullValue="0"/>
+		<result column="rest_fee" property="restFee" jdbcType="BIGINT" nullValue="0"/>
+		<result column="phone_number" property="phoneNumber" jdbcType="VARCHAR" nullValue=""/>
+		<result column="trade_status" property="tradeStatus" jdbcType="TINYINT" nullValue="0"/>
+		<result column="receive_account" property="receiveAccount" jdbcType="VARCHAR" nullValue=""/>
+		<result column="receive_name" property="receiveName" jdbcType="VARCHAR" nullValue=""/>
+		<result column="receive_bank" property="receiveBank" jdbcType="VARCHAR" nullValue=""/>
+		<result column="sid" property="sid" jdbcType="VARCHAR" nullValue=""/>
+		<result column="take_type" property="takeType" jdbcType="TINYINT" nullValue="0"/>
+		<result column="apply_time" property="applyTime" jdbcType="BIGINT" nullValue="0"/>
+		<result column="take_time" property="takeTime" jdbcType="BIGINT" nullValue="0"/>
+		<result column="extend_field1" property="extendField1" jdbcType="VARCHAR" nullValue=""/>
+		<result column="extend_field2" property="extendField2" jdbcType="VARCHAR" nullValue=""/>
+		<result column="extend_field3" property="extendField3" jdbcType="VARCHAR" nullValue=""/>
+	</resultMap>
+	<insert id="insertAccTakeRecord" parameterClass="accTakeRecord">
+		insert into acc_take_record(take_no,seller_id,parter_id,user_id,take_fee,rest_fee,phone_number,trade_status,receive_account,receive_name,receive_bank,sid,take_type,apply_time,take_time,extend_field1,extend_field2,extend_field3) values (#takeNo#,#sellerId#,#parterId#,#userId#,#takeFee#,#restFee#,#phoneNumber#,#tradeStatus#,#receiveAccount#,#receiveName#,#receiveBank#,#sid#,#takeType#,#applyTime#,#takeTime#,#extendField1#,#extendField2#,#extendField3#)
+	</insert>
+	<select id="findAccTakeRecords" parameterClass="java.util.Map" resultMap="accTakeRecordResult">
+		select * from acc_take_record where user_id=#uid#
+		<isNotNull prepend="AND" property="tradeStatus">
+			trade_status = #tradeStatus#
+		</isNotNull>
+		order by id desc limit #start#,#limit#
+	</select>
+	<select id="selectAccTakeRecordInfoBytakeNo" parameterClass="java.util.Map" resultClass="accTakeRecord">
+		select * from acc_take_record where user_id=#uid# and take_no=#takeno#
+	</select>
+	<select id="selectAccTakeRecordCount" parameterClass="java.util.Map" resultClass="int">
+		select count(1) from acc_take_record where user_id=#uid# and apply_time>=#starttime# and <![CDATA[ apply_time<=#endtime# ]]>
+	</select>
+	<select id="getAccTakeTotal" parameterClass="java.util.Map" resultClass="long">
+		select sum(take_fee) from acc_take_record where user_id=#uid# 
+		<isNotNull prepend="AND" property="tradeStatus">
+			trade_status = #tradeStatus#
+		</isNotNull>
+	</select>
+</sqlMap>

@@ -1,0 +1,89 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:aop="http://www.springframework.org/schema/aop"
+	xmlns:tx="http://www.springframework.org/schema/tx"
+	xsi:schemaLocation="
+			http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-3.2.xsd
+			http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop-3.2.xsd
+			http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx-3.2.xsd"
+	default-autowire="byName">
+
+	<!-- =========== FOR ucenter source MYSQL ============ -->
+	<bean id="ucenterMysqlDataSource"
+		class="org.springframework.jndi.JndiObjectFactoryBean">
+		<property name="jndiName">
+			<value>java:comp/env/jdbc/ucenterMysqlDataSource</value>
+		</property>
+	</bean>
+
+	<bean id="ucenterMysqlTransactionManager"
+		class="org.springframework.jdbc.datasource.DataSourceTransactionManager" >
+		<property name="dataSource" ref="ucenterMysqlDataSource"></property>
+	</bean>
+
+	<bean id="ucenterMysqlTransactionTemplate"
+		class="org.springframework.transaction.support.TransactionTemplate">
+		<property name="transactionManager" ref="ucenterMysqlTransactionManager"></property>
+	</bean>
+
+	<!-- ==== sqlMap ==== -->
+	<bean id="ucenterMysqlDataSourceSqlMapClient" class="org.springframework.orm.ibatis.SqlMapClientFactoryBean">
+		<property name="configLocation">
+			<value>classpath:/ibatis/ucenter-mysql-sqlmap.xml</value>
+		</property>
+		<property name="dataSource" ref="ucenterMysqlDataSource"></property>
+	</bean>
+
+	<!-- =========== FOR ucenter source readonly MYSQL ============ -->
+	<bean id="ucenterMysqlDataSourceReadonly"
+		class="org.springframework.jndi.JndiObjectFactoryBean">
+		<property name="jndiName">
+			<value>java:comp/env/jdbc/ucenterMysqlDataSourceReadonly</value>
+		</property>
+	</bean>
+
+	<bean id="ucenterMysqlReadonlyTransactionManager"
+		class="org.springframework.jdbc.datasource.DataSourceTransactionManager" >
+		<property name="dataSource" ref="ucenterMysqlDataSourceReadonly"></property>
+	</bean>
+
+	<bean id="ucenterMysqlReadonlyTransactionTemplate"
+		class="org.springframework.transaction.support.TransactionTemplate">
+		<property name="transactionManager" ref="ucenterMysqlReadonlyTransactionManager"></property>
+	</bean>
+
+	<!-- ==== sqlMap ==== -->
+	<bean id="ucenterMysqlDataSourceReadonlySqlMapClient" class="org.springframework.orm.ibatis.SqlMapClientFactoryBean">
+		<property name="configLocation">
+			<value>classpath:/ibatis/ucenter-mysql-sqlmap.xml</value>
+		</property>
+		<property name="dataSource" ref="ucenterMysqlDataSourceReadonly"></property>
+	</bean>
+
+
+    <bean id="baseUcenterSqlMapClientDAO" abstract="true">
+		<property name="dataSource"><ref bean="ucenterMysqlDataSource"/></property>
+                <property name="sqlMapClient"><ref bean="ucenterMysqlDataSourceSqlMapClient"/></property>
+    </bean>
+    <bean id="baseUcenterReadonlySqlMapClientDAO" abstract="true">
+		<property name="dataSource"><ref bean="ucenterMysqlDataSourceReadonly"/></property>
+                <property name="sqlMapClient"><ref bean="ucenterMysqlDataSourceReadonlySqlMapClient"/></property>
+    </bean>
+    
+    <bean id="daoProxyCreator"
+                            class="org.springframework.aop.framework.autoproxy.BeanNameAutoProxyCreator">
+                            <property name="interceptorNames">
+                                          <list>
+                                                        <value>performanceInstrument</value>
+                                          </list>
+                            </property>
+                            <property name="beanNames">
+                                          <value>*DAO</value>
+                            </property>
+              </bean>
+
+              <bean id="performanceInstrument" class="com.keel.common.aop.perf.PerformanceInstrumentInterceptor"/>
+              
+</beans>

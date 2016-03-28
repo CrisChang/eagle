@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd" >
+<sqlMap namespace="resreport">
+
+    <typeAlias alias="report" type="com.poison.resource.model.ResReport"/>   
+   <!--   书的评论 -->
+	<resultMap id="resreportResult" class="report">
+		<result column="id" property="id" jdbcType="INT"/>
+		<result column="user_id" property="userId" jdbcType="BIGINT"/>
+		<result column="resource_id" property="resourceId" jdbcType="BIGINT"/>
+		<result column="type" property="type" jdbcType="VARCHAR"/>
+		<result column="is_delete" property="isDelete" jdbcType="INT"/>
+		<result column="description" property="description" jdbcType="VARCHAR"/>
+		<result column="createdate" property="createdate" jdbcType="BIGINT"/>
+	</resultMap>
+	
+	<!-- 创建书的评论-->
+	<insert id="insertReport" parameterClass="report">
+		insert into res_report(id,user_id,resource_id,type,is_delete,description,createdate)
+		values(#id#,#userId#,#resourceId#,#type#,#isDelete#,#description#,#createdate#)
+	</insert>
+	
+	<select id="queryReportById"  resultMap="resreportResult" parameterClass="long">
+		select id,user_id,resource_id,type,is_delete,description,createdate from res_report where id=#id#
+	</select>
+	
+	<select id="findResReportIsExist"  resultMap="resreportResult" parameterClass="java.util.Map">
+		select id,user_id,resource_id,type,is_delete,description,createdate from res_report where user_id=#user_id# and resource_id = #resourceId#
+	</select>
+	<!-- 敏感词汇表 -->
+	<typeAlias alias="sensitiveWord" type="com.poison.resource.model.SensitiveWord"/>   
+	<resultMap id="sensitiveWordResult" class="sensitiveWord">
+		<result column="id" property="id" jdbcType="BIGINT"/>
+		<result column="sensitive_name" property="sensitiveName" jdbcType="VARCHAR"/>
+		<result column="sensitive_level" property="sensitiveLevel" jdbcType="INT"/>		
+		<result column="is_delete" property="isDelete" jdbcType="INT"/>
+	</resultMap>
+	<select id="selectAllSensitiveName" resultClass="java.lang.String" parameterClass="java.util.Map">
+		select sensitive_name,sensitive_level from sensitive_word where sensitive_level=#sensitiveLevel# and is_delete=#isDelete#
+	</select>
+</sqlMap>

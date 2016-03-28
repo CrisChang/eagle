@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd" >
+<sqlMap namespace="apply">
+	
+	<typeAlias alias="shenrenapply" type="com.poison.ucenter.model.ShenrenApply" />
+	
+	<resultMap id="shenrenapplyResult" class="shenrenapply">
+		<result column="id" property="id" jdbcType="BIGINT" />
+		<result column="uid" property="uid" jdbcType="BIGINT" />
+		<result column="realname" property="realname" jdbcType="VARCHAR" />
+		<result column="content" property="content" jdbcType="VARCHAR" />
+		<result column="mobileno" property="mobileno" jdbcType="VARCHAR" />
+		<result column="sid" property="sid" jdbcType="VARCHAR" />
+		<result column="proof" property="proof" jdbcType="VARCHAR" />
+		<result column="applytime" property="applytime" jdbcType="BIGINT" />
+		<result column="updatetime" property="updatetime" jdbcType="BIGINT" />
+		<result column="isDel" property="isDel" jdbcType="TINYINT" />
+		<result column="status" property="status" jdbcType="TINYINT" />
+	</resultMap>
+	
+	<!--插入一个申请信息  -->
+	<insert id="insertintoShenrenApply" parameterClass="shenrenapply">
+		insert into shenren_apply (uid,realname,content,mobileno,sid,proof,applytime,updatetime,isDel,status)
+		values(#uid#,#realname#,#content#,#mobileno#,#sid#,#proof#,#applytime#,#updatetime#,#isDel#,#status#)
+	</insert>
+</sqlMap>

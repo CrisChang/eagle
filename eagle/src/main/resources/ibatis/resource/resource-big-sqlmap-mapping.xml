@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd" >
+<sqlMap namespace="big">
+
+    <typeAlias alias="big" type="com.poison.resource.model.Big"/>   
+    <typeAlias alias="bigLevelValue" type="com.poison.resource.model.BigLevelValue"/>   
+   <!--   书的评论 -->
+	<resultMap id="bigResult" class="big">
+		<result column="id" property="id" jdbcType="INT"/>
+		<result column="attribute" property="attribute" jdbcType="VARCHAR"/>
+		<result column="attribute_value" property="attributeValue" jdbcType="FLOAT"/>
+		<result column="branch" property="branch" jdbcType="VARCHAR"/>
+		<result column="branch_level" property="branchLevel" jdbcType="VARCHAR"/>
+		<result column="branch_detail" property="branchDetail" jdbcType="VARCHAR"/>
+		<result column="branch_value" property="branchValue" jdbcType="FLOAT"/>
+		<result column="is_delete" property="isDelete" jdbcType="INT"/>
+	</resultMap>
+   <!--  逼格等级分制 -->
+	<resultMap id="bigValueResult" class="bigLevelValue">
+		<result column="id" property="id" jdbcType="INT"/>
+		<result column="level" property="level" jdbcType="INT"/>
+		<result column="score" property="value" jdbcType="VARCHAR"/>
+	</resultMap>
+	
+	<select id="findBig"  parameterClass="java.util.Map" resultMap="bigResult">
+		select * from big where attribute = #attribute# and branch = #branch# and branch_detail  like concat('%', #branchDetail#, '%')  and is_delete=0
+	</select>
+	
+	<select id="findBigLevelValueByLevel"  parameterClass="int" resultMap="bigValueResult">
+		select * from big_value where level = #value#
+	</select>
+	
+</sqlMap>

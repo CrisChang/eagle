@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd" >
+<sqlMap namespace="actpraise">
+	
+	<typeAlias alias="actpraise" type="com.poison.act.model.ActPraise" />
+	
+	<resultMap id="praiseResult" class="actpraise">
+		<result column="id" property="id" jdbcType="BIGINT" />
+		<result column="user_id" property="userId" jdbcType="BIGINT" />
+		<result column="resource_id" property="resourceId" jdbcType="BIGINT" />
+		<result column="is_praise" property="isPraise" jdbcType="INT" />
+		<result column="is_low" property="isLow" jdbcType="INT" />
+		<result column="type" property="type" jdbcType="VARCHAR" />
+		<result column="praise_date" property="praiseDate" jdbcType="BIGINT" />
+		<result column="latest_revision_date" property="latestRevisionDate" jdbcType="BIGINT" />
+		<result column="res_userid" property="resUserId" jdbcType="BIGINT" />
+	</resultMap>
+	
+	<select id="findActPraise" parameterClass="actpraise" resultMap="praiseResult" >
+		select id,user_id,resource_id,is_praise,praise_date,latest_revision_date,type,is_low,res_userid from act_praise where user_id = #userId# and resource_id=#resourceId#
+	</select>
+	
+	<!--根据资源id和type查询点赞列表  -->
+	<select id="findPraiseListByResIdAndType" parameterClass="java.util.Map" resultMap="praiseResult" >
+		select id,user_id,resource_id,is_praise,praise_date,latest_revision_date,type,is_low,res_userid from act_praise where  resource_id=#resId# and  is_praise = 1
+		<isNotNull prepend="AND"  property="id">
+			<![CDATA[ id< #id# ]]>
+		</isNotNull>
+		order by id desc limit 0,10
+	</select>
+	
+	<!--查找每个人的点赞列表  -->
+	<select id="findPraiseListByResUid" parameterClass="java.util.Map" resultMap="praiseResult" >
+		select id,user_id,resource_id,is_praise,praise_date,latest_revision_date,type,is_low,res_userid from act_praise where  res_userid=#resUid# and  is_praise = 1 and  <![CDATA[ type<>25 ]]>
+		<isNotNull prepend="AND"  property="id">
+			<![CDATA[ id< #id# ]]>
+		</isNotNull>
+		order by id desc limit 0,10
+	</select>
+	
+	<select id="findActPraiseCount" parameterClass="long" resultClass="int" >
+		select count(1) from act_praise where resource_id = #resourceId# and is_praise = 1
+	</select>
+	
+	<select id="findActLowCount" parameterClass="long" resultClass="int" >
+		select count(1) from act_praise where resource_id = #resourceId# and is_low = 1
+	</select>
+	
+	<update id="updateActPraise" parameterClass="actpraise" >
+		update act_praise set is_praise =#isPraise#,latest_revision_date=#latestRevisionDate# where user_id=#userId# and resource_id=#resourceId#
+	</update>
+	
+	<insert id="insertintoActPraise" parameterClass="actpraise">
+		insert into act_praise(id,user_id,resource_id,is_praise,type,praise_date,latest_revision_date,is_low,res_userid) values(#id#,#userId#,#resourceId#,#isPraise#,#type#,#praiseDate#,#latestRevisionDate#,#isLow#,#resUserId#)
+	</insert>
+</sqlMap>

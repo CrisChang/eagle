@@ -1,0 +1,98 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd" >
+<sqlMap namespace="rankingList">
+
+	<typeAlias alias="RankingList" type="com.poison.resource.model.RankingList" />
+	<!-- 原创榜，上周回幕榜 -->
+	<resultMap id="rankingListResult" class="RankingList">
+		<result column="id" property="id" jdbcType="BIGINT" />
+		<result column="resid" property="resid" jdbcType="BIGINT" />
+		<result column="restype" property="restype" jdbcType="VARCHAR" />
+		<result column="type" property="type" jdbcType="VARCHAR" />
+		<result column="score" property="score" jdbcType="BIGINT" />
+		<result column="isdel" property="isdel" jdbcType="INT" />
+		<result column="createtime" property="createtime" jdbcType="BIGINT" />
+		<result column="updatetime" property="updatetime" jdbcType="BIGINT" />
+		<result column="title" property="title" jdbcType="VARCHAR" />
+		<result column="cover" property="cover" jdbcType="VARCHAR" />
+		<result column="userid" property="userid" jdbcType="BIGINT" />
+		<result column="topshow" property="topshow" jdbcType="BIGINT" />
+	</resultMap>
+
+	<select id="findRankingListByScore" resultMap="rankingListResult" parameterClass="java.util.Map">
+		select * from ranking_list where isdel=0
+		<isNotNull prepend="AND" property="score">
+			<![CDATA[ score< #score# ]]>
+		</isNotNull>
+		<isNotNull prepend="AND" property="type">
+			<![CDATA[ type =#type# ]]>
+		</isNotNull>
+		<isNotNull prepend="AND" property="restype">
+			restype = #restype#
+		</isNotNull>
+		order by score desc limit #pageStart#,#pageSize#
+	</select>
+
+	<select id="countRankingListByScore" resultMap="rankingListResult" parameterClass="java.util.Map">
+		select count(1) from ranking_list where isdel=0
+		<isNotNull prepend="AND" property="score">
+			<![CDATA[ score< #score# ]]>
+		</isNotNull>
+		<isNotNull prepend="AND" property="type">
+			<![CDATA[ type =#type# ]]>
+		</isNotNull>
+		<isNotNull prepend="AND" property="restype">
+			restype = #restype#
+		</isNotNull>
+		order by score desc limit #pageStart#,#pageSize#
+	</select>
+
+	<select id="findRankingListByScoreWithoutTopshow" resultMap="rankingListResult" parameterClass="java.util.Map">
+		select * from ranking_list where isdel=0 and topshow=0
+		<isNotNull prepend="AND" property="score">
+			score> #score#
+		</isNotNull>
+		<isNotNull prepend="AND" property="restype">
+			restype = #restype#
+		</isNotNull>
+		<isNotNull prepend="AND" property="type">
+			type = #type#
+		</isNotNull>
+		and createtime > #starttime# and <![CDATA[ createtime<=#endtime# ]]>
+		order by score limit #pageStart#,#pageSize#
+	</select>
+
+	<select id="findRankingListByTopshow" resultMap="rankingListResult" parameterClass="java.util.Map">
+		select * from ranking_list where isdel=0
+		<isNotNull prepend="AND" property="restype">
+			restype = #restype#
+		</isNotNull>
+		<isNotNull prepend="AND" property="type">
+			type = #type#
+		</isNotNull>
+		order by topshow desc limit #pageStart#,#pageSize#
+	</select>
+
+	<select id="countRankingList" resultClass="long" parameterClass="java.util.Map">
+		select count(1) from ranking_list where isdel=0
+		<isNotNull prepend="AND" property="restype">
+			restype = #restype#
+		</isNotNull>
+		<isNotNull prepend="AND" property="type">
+			type = #type#
+		</isNotNull>
+	</select>
+
+	<select id="findRankingListByResidAndType" resultMap="rankingListResult" parameterClass="java.util.Map">
+		select * from ranking_list where isdel=0
+		<isNotNull prepend="AND" property="resid">
+			resid = #resid#
+		</isNotNull>
+		<isNotNull prepend="AND" property="restype">
+			restype = #restype#
+		</isNotNull>
+		<isNotNull prepend="AND" property="type">
+			type = #type#
+		</isNotNull>
+	</select>
+</sqlMap>

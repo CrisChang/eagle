@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+
+<!DOCTYPE sqlMapConfig PUBLIC "-//iBATIS.com//DTD SQL Map Config 2.0//EN" "http://www.ibatis.com/dtd/sql-map-config-2.dtd">
+<sqlMapConfig>
+    <settings cacheModelsEnabled="true" enhancementEnabled="false" lazyLoadingEnabled="false" maxRequests="3000" maxSessions="3000" maxTransactions="3000" useStatementNamespaces="false"/>
+    
+    
+     <sqlMap resource="ibatis/act/act-transmit-sqlmap-mapping.xml"/>
+     
+     <sqlMap resource="ibatis/act/act-comment-sqlmap-mapping.xml"/>
+     
+     <sqlMap resource="ibatis/act/act-praise-sqlmap-mapping.xml"/>
+     
+     <sqlMap resource="ibatis/act/act-collect-sqlmap-mapping.xml"/>
+     
+     <sqlMap resource="ibatis/act/act-subscribe-sqlmap-mapping.xml"/>
+     
+      <sqlMap resource="ibatis/act/act-publish-sqlmap-mapping.xml"/>
+      
+      <sqlMap resource="ibatis/act/act-at-sqlmap-mapping.xml"/>
+      
+      <sqlMap resource="ibatis/act/act-weixin-sqlmap-mapping.xml"/>
+      
+      <sqlMap resource="ibatis/act/act-useful-sqlmap-mapping.xml"/>
+      
+       <sqlMap resource="ibatis/act/act-hot-sqlmap-mapping.xml"/>
+    <!-- 投票-->
+    <sqlMap resource="ibatis/act/act-recommend-vote-sqlmap-mapping.xml"/>
+</sqlMapConfig>

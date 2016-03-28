@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd" >
+<sqlMap namespace="storyChapter">
+
+    <typeAlias alias="StoryChapter" type="com.poison.story.model.StoryChapter"/>
+    <!--   小说详情 -->
+    <resultMap id="storyChapterResult" class="StoryChapter">
+        <result column="id" property="id" jdbcType="BIGINT"/>
+        <result column="story_id" property="storyId" jdbcType="BIGINT"/>
+        <result column="user_id" property="userId" jdbcType="BIGINT"/>
+        <result column="name" property="name" jdbcType="VARCHAR"/>
+        <result column="is_pay" property="isPay" jdbcType="INT"/>
+        <result column="price" property="price" jdbcType="INT"/>
+        <result column="word_number" property="wordNumber" jdbcType="INT"/>
+        <result column="range" property="range" jdbcType="INT"/>
+        <result column="create_date" property="createDate" jdbcType="BIGINT"/>
+        <result column="latest_revision_date" property="latestRevisionDate" jdbcType="BIGINT"/>
+        <result column="extend_field2" property="introduce" jdbcType="VARCHAR"/>
+    </resultMap>
+
+    <!-- 查找小说详情-->
+    <select id="findChapterListByStoryId"  parameterClass="java.util.Map" resultMap="storyChapterResult">
+        select id,story_id,user_id,`name`,is_pay,price,word_number,`range`,create_date,latest_revision_date,extend_field2 from story_chapter where story_id=#storyId# and is_delete = 0
+        <isNotNull prepend="AND" property="range">
+            <![CDATA[ range> #range# ]]>
+        </isNotNull>
+        order by id asc
+    </select>
+	
+	<!-- 查找章节信息-->
+    <select id="findStoryChapterById"  parameterClass="long" resultMap="storyChapterResult">
+        select id,story_id,user_id,`name`,is_pay,price,word_number,`range`,create_date,latest_revision_date,extend_field2 from story_chapter where id=#id# and is_delete = 0
+    </select>
+	
+    <!-- 查看章节详情-->
+    <select id="findChapterContentByChapterId"  parameterClass="long" resultClass="java.lang.String">
+        select content from story_chapter where id=#id#
+    </select>
+
+    <!-- 查看章节总数-->
+    <select id="findChapterCountByStoryId"  parameterClass="long" resultClass="int">
+        select count(1) from story_chapter where story_id=#storyId# and is_delete = 0
+    </select>
+</sqlMap>

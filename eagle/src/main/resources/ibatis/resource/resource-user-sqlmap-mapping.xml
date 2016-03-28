@@ -1,0 +1,217 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd" >
+<sqlMap namespace="book">
+
+     <typeAlias alias="BookList" type="com.poison.resource.model.BookList"/>   
+      
+   <!--   书单表信息 -->
+	<resultMap id="resultlist" class="BookList">
+		<result column="id" property="id" jdbcType="BIGINT"/>
+		<result column="booklist_name" property="bookListName" jdbcType="VARCHAR"/>
+		<result column="tag" property="tag" jdbcType="VARCHAR"/>
+		<result column="reason" property="reason" jdbcType="TEXT"/>
+		<result column="is_del" property="isDel" jdbcType="INT"/>
+		<result column="type" property="type" jdbcType="INT"/>
+		<result column="cover" property="cover" jdbcType="VARCHAR"/>
+		<result column="u_id" property="uId" jdbcType="BIGINT"/>
+		<result column="is_publishing" property="isPublishing" jdbcType="INT"/>
+		<result column="create_date" property="createDate" jdbcType="BIGINT"/>
+		<result column="latest_revision_date" property="latestRevisionDate" jdbcType="BIGINT"/>
+	</resultMap>
+	
+	
+
+	
+	
+	
+	<!-- 模糊查询Book表 -->
+<!-- 	<select id="findbook" parameterClass="java.lang.String" resultMap="resultBook" >
+	</select> -->
+	
+	<!-- 根据id是否存在书单-->
+	<!-- <select id="findById"  parameterClass="long" resultMap="resultlist">
+	</select> -->
+	
+	<!--插入单本书 -->
+	<!-- <insert id="singleName" parameterClass="BookList">
+	
+	</insert> -->
+	
+   <!--向老书单中增加一本书-->
+   <!-- <insert id="addOldBook" parameterClass="BookList">
+   		insert into booklist (id,book_name,book_date,reason,isDel,type,resource_id,book_id,u_id) 
+		values (#id#,#bookName#,#bookDate#,#reason#,1,#type#,#resourceId#,#bookId#,#uId#)
+   </insert> -->
+   
+    <!-- 新建一个书单 -->
+   	<insert id="insertBookList" parameterClass="BookList">
+   		insert into booklist (id,booklist_name,reason,is_del,type,u_id,tag,is_publishing,create_date,latest_revision_date) 
+		values (#id#,#bookListName#,#reason#,#isDel#,#type#,#uId#,#tag#,#isPublishing#,#createDate#,#latestRevisionDate#)
+    </insert>
+    
+    <!-- 修改书单 -->
+     <update id="updateBookList" parameterClass="com.poison.resource.model.BookList">
+      	update booklist set tag=#tag#,cover=#cover#,booklist_name=#bookListName#,reason=#reason#,is_del=#isDel#,is_publishing=#isPublishing#,latest_revision_date=#latestRevisionDate#
+      	where id=#id#
+     </update>
+     
+     <update id="updateBookListPic" parameterClass="java.util.Map">
+      	update booklist set cover=#cover#,latest_revision_date=#latestRevisionDate#
+      	where id=#id#
+     </update>
+     
+     <!--增加一个书单的评论数  -->
+      <update id="addBookListCommentCount" parameterClass="java.util.Map">
+      	update booklist set comment_count=comment_count+1,latest_revision_date=#latestRevisionDate#
+      	where id=#id#
+     </update>
+     
+     <!-- 删除书单 -->
+   <!--   <update id="deleteBookList" parameterClass="com.poison.resource.model.BookList">
+       	
+     </update> -->
+     
+	<!-- 查询所有书单列表 -->
+	<select id="findBookList" resultClass="com.poison.resource.model.BookList" resultMap="resultlist">
+		select id,booklist_name,reason,is_del,type,tag,u_id,is_publishing,create_date,latest_revision_date,cover from booklist where is_del = 0 and u_id =#uId# order by id desc
+	</select>
+	
+	<!-- 按时间查询最新书单列表 -->
+	<select id="findLatestBookList"  resultMap="resultlist">
+			select id,booklist_name,reason,is_del,type,tag,u_id,is_publishing,create_date,latest_revision_date,cover from booklist where is_del = 0 and is_publishing=0
+		<isNotNull prepend="AND">
+			<![CDATA[ id< #resId# ]]>
+		</isNotNull>
+		order by id desc
+	</select>
+	
+	<select  id="findBookListById" resultClass="com.poison.resource.model.BookList" resultMap="resultlist" >
+		select id,booklist_name,reason,is_del,type,tag,u_id,is_publishing,create_date,latest_revision_date,cover from booklist where is_del = 1 and  <![CDATA[ id< #id# ]]>  order by id desc limit 0,10
+	</select>
+	
+	<select id="findBookListByUsersId"  parameterClass="java.util.Map" resultMap="resultlist">
+		select id,booklist_name,reason,is_del,type,tag,u_id,is_publishing,create_date,latest_revision_date,cover from booklist where is_del = 0 and u_id in
+		<iterate property="usersIdList" open="(" close=")"  conjunction=",">
+			#usersIdList[]#
+		</iterate>
+		<isNotNull prepend="AND" property="resId">
+			<![CDATA[ id< #resId# ]]>
+		</isNotNull>
+		order by id desc
+	</select>
+	
+		
+	<!--查询图书id的信息-->
+	<!-- <select id="queryById"  resultMap="resultBook">
+	</select> -->
+	<!-- 根据uid查询booklist目录 -->
+	<select id="queryUid" resultClass="com.poison.resource.model.BookList" resultMap="resultlist">
+		select id,booklist_name,reason,is_del,type,tag,u_id,is_publishing,create_date,latest_revision_date,cover from booklist where id=#id# and is_del = 0
+	</select>
+	
+	
+	<!-- 查询系统推荐的书单列表 -->
+	<select id="queryServerBookList"  resultMap="resultlist" parameterClass="java.util.Map">
+		select id,booklist_name,reason,is_del,type,tag,u_id,is_publishing,create_date,latest_revision_date,cover from booklist where type=2  and is_del = 0 and tag =#tags#
+		<isNotNull prepend="AND" property="resId">
+			<![CDATA[ id< #resId# ]]>
+		</isNotNull>
+		order by id desc
+	</select>
+	
+	<!-- 根据查询运维列表 -->
+	<select id="queryDefaultBookList"  resultMap="resultlist" parameterClass="long">
+		select id,booklist_name,reason,is_del,type,tag,u_id,is_publishing,create_date,latest_revision_date,cover from booklist where u_id=#uId# and type=0 and is_del = 0
+	</select>
+	
+		<!-- 根据书单名查询用户书单 -->
+	<select id="queryUserBookListByName"  resultMap="resultlist"  parameterClass="BookList">
+		select id,booklist_name,reason,is_del,type,tag,u_id,is_publishing,create_date,latest_revision_date,cover from booklist where u_id=#uId# and booklist_name = #bookListName# and is_del=0
+	</select>
+	
+	<!-- 根据书单id集合查询书单列表 -->
+	<select id="findBookListsByIds"  resultMap="resultlist" parameterClass="java.util.Map">
+		select id,booklist_name,reason,is_del,type,tag,u_id,is_publishing,create_date,latest_revision_date,cover from booklist where id in
+		<iterate property="bklistids" open="(" close=")"  conjunction=",">
+		#bklistids[]#
+		</iterate>
+		 and is_del = 0
+	</select>
+	
+	
+	  <typeAlias alias="BookListLink" type="com.poison.resource.model.BookListLink"/>
+      
+       <!--   书单关联表信息 -->
+	<resultMap id="booklinkresult" class="BookListLink">
+		<result column="id" property="id" jdbcType="BIGINT"/>
+		<result column="booklist_id" property="bookListId" jdbcType="BIGINT"/>
+		<result column="book_id" property="bookId" jdbcType="BIGINT"/>
+		<result column="is_del" property="isDel" jdbcType="INT"/>
+		<result column="is_db" property="isDb" jdbcType="INT"/>
+		<result column="description" property="description" jdbcType="VARCHAR"/>
+		<result column="friendinfo" property="friendinfo" jdbcType="VARCHAR"/>
+		<result column="address" property="address" jdbcType="VARCHAR"/>
+		<result column="tags" property="tags" jdbcType="VARCHAR"/>
+		<result column="res_type" property="resType" jdbcType="VARCHAR"/>
+		<result column="create_date" property="createDate" jdbcType="BIGINT"/>
+		<result column="latest_revision_date" property="latestRevisionDate" jdbcType="BIGINT"/>
+	</resultMap>
+	
+	<!-- 根据书单中是否已经存在该本书 -->
+	<select id="findBookLinkIsExist"  parameterClass="BookListLink" resultMap="booklinkresult">
+		select id,booklist_id,book_id,is_del,is_db,create_date,latest_revision_date,description,friendinfo,address,tags,res_type from booklist_link where booklist_id=#bookListId# and book_id = #bookId# and res_type=#resType# and is_del=0 limit 0,1
+	</select>
+	
+	
+	<insert id="insertBookLink" parameterClass="BookListLink">
+   		insert into booklist_link (id,booklist_id,book_id,is_del,is_db,create_date,latest_revision_date,res_type) 
+		values (#id#,#bookListId#,#bookId#,#isDel#,#isDb#,#createDate#,#latestRevisionDate#,#resType#)
+    </insert>
+    
+    <!-- 根据书单ID查询booklist目录 -->
+	<select id="findBookListInfo"  resultMap="booklinkresult">
+		select id,booklist_id,book_id,is_del,is_db,create_date,latest_revision_date,description,friendinfo,address,tags,res_type from booklist_link where booklist_id=#bookListId# and is_del = 0
+		<isNotNull prepend="AND" property="resId">
+			<![CDATA[ id< #resId# ]]>
+		</isNotNull>
+		 order by id desc
+		 <isNotNull  property="pageSize">
+				limit 0,#pageSize#
+			</isNotNull>
+	</select>
+	
+	<!-- 根据ID查询书单中这本书 -->
+	<select id="findBookLinkById"  parameterClass="java.util.Map" resultMap="booklinkresult">
+		select id,booklist_id,book_id,is_del,is_db,create_date,latest_revision_date,description,friendinfo,address,tags,res_type from booklist_link where booklist_id=#bookListId# and book_id=#bookId# and res_type = #resType# and is_del = 0
+	</select>
+	
+	<select id="findBookLinkIsExistById"  parameterClass="long" resultMap="booklinkresult">
+		select id,booklist_id,book_id,is_del,is_db,create_date,latest_revision_date,description,friendinfo,address,tags,res_type from booklist_link where id=#id#
+	</select>
+	
+	<!-- 查询一个书单有多少部书 -->
+	<select id="findBookLinkCount"  parameterClass="long" resultClass="int">
+		select count(1) from (select count(1) from booklist_link where booklist_id = #bookListId# and is_del = 0 GROUP BY book_id)a
+	</select>
+	
+	  <!-- 修改书单详情 -->
+     <update id="updateBookListLink" parameterClass="BookListLink">
+      	update booklist_link set booklist_id=#bookListId#,book_id=#bookId#,is_del=#isDel#,is_db=#isDb#,latest_revision_date=#latestRevisionDate#
+      	where id=#id#
+     </update>
+     
+     <update id="updateBookListLinkRemark" parameterClass="java.util.Map">
+      	update booklist_link set description=#description#,friendinfo=#friendinfo#,address=#address#,tags=#tags#,latest_revision_date=#latestRevisionDate#
+      	where id=#id#
+     </update>
+     
+     <!-- 查询某个书单下的书的数量 -->
+	<select id="getBookCountByListId"  parameterClass="long" resultClass="int">
+		select count(1) from booklist_link where booklist_id=#listid# and is_del=0
+	</select>
+	
+ 	<select id="getBookListLinkByStartIndex" parameterClass="java.util.Map" resultMap="booklinkresult" >
+		select * from booklist_link where booklist_id=#listid# and is_del=0 limit #start#,#pageSize#
+	</select>
+     
+</sqlMap>

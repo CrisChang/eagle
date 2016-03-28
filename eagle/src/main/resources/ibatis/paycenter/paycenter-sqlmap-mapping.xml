@@ -1,0 +1,204 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd" >
+<sqlMap namespace="paycenter">	
+	
+	<!-- 打赏业务表 -->
+	<typeAlias alias="rewardDetail" type="com.poison.paycenter.model.RewardDetail"/>
+	<resultMap id="rewardDetailResult" class="rewardDetail">
+		<result column="id" property="id" jdbcType="BIGINT"/>
+		<result column="out_trade_no" property="outTradeNo" jdbcType="VARCHAR" nullValue=""/>
+		<result column="send_user_id" property="sendUserId" jdbcType="BIGINT" nullValue="0"/>
+		<result column="send_user_name" property="sendUserName" jdbcType="VARCHAR" nullValue=""/>
+		<result column="send_amt" property="sendAmt" jdbcType="INT" nullValue="0"/>
+		<result column="company_id" property="companyId" jdbcType="BIGINT" nullValue="0"/>
+		<result column="company_name" property="companyName" jdbcType="VARCHAR" nullValue=""/>
+		<result column="receive_user_id" property="receiveUserId" jdbcType="BIGINT" nullValue="0"/>
+		<result column="receive_user_name" property="receiveUserName" jdbcType="VARCHAR" nullValue=""/>
+		<result column="postscript" property="postscript" jdbcType="VARCHAR" nullValue=""/>
+		<result column="send_time" property="sendTime" jdbcType="BIGINT" nullValue="0"/>
+		<result column="send_status" property="sendStatus" jdbcType="TINYINT" nullValue="0"/>
+		<result column="source_id" property="sourceId" jdbcType="BIGINT" nullValue="0"/>
+		<result column="source_name" property="sourceName" jdbcType="VARCHAR" nullValue=""/>
+		<result column="source_type" property="sourceType" jdbcType="TINYINT" nullValue="-1"/>
+		<result column="reward_type" property="rewardType" jdbcType="TINYINT" nullValue="0"/>
+		<result column="extend_field1" property="extendField1" jdbcType="VARCHAR" nullValue=""/>
+		<result column="extend_field2" property="extendField2" jdbcType="VARCHAR" nullValue=""/>
+		<result column="extend_field3" property="extendField3" jdbcType="VARCHAR" nullValue=""/>
+	</resultMap>	
+	<insert id="insertIntoRewardDetail" parameterClass="rewardDetail">
+		insert into reward_detail(out_trade_no,send_user_id,send_user_name,send_amt,company_id,company_name,receive_user_id,receive_user_name,postscript,send_time,send_status,source_id,source_name,source_type,reward_type,extend_field1,extend_field2,extend_field3) values (#outTradeNo#,#sendUserId#,#sendUserName#,#sendAmt#,#companyId#,#companyName#,#receiveUserId#,#receiveUserName#,#postscript#,#sendTime#,#sendStatus#,#sourceId#,#sourceName#,#sourceType#,#rewardType#,#extendField1#,#extendField2#,#extendField3#)
+	</insert>
+	
+	<insert id="insertIntoRewardDetailNew" parameterClass="rewardDetail">
+		insert into reward_detail(out_trade_no,send_user_id,send_user_name,send_amt,company_id,company_name,receive_user_id,receive_user_name,postscript,send_time,send_status,source_id,source_name,source_type,reward_type,extend_field1,extend_field2,extend_field3) values (#outTradeNo#,#sendUserId#,#sendUserName#,#sendAmt#,#companyId#,#companyName#,#receiveUserId#,#receiveUserName#,#postscript#,#sendTime#,#sendStatus#,#sourceId#,#sourceName#,#sourceType#,#rewardType#,#extendField1#,#extendField2#,#extendField3#)
+		<selectKey resultClass="long" keyProperty="id" >
+		     SELECT @@IDENTITY AS id
+	   </selectKey>
+	</insert>
+	
+	<select id="findRewardDetailByIdAndNo" parameterClass="java.util.Map" resultMap="rewardDetailResult">
+		select * from reward_detail where out_trade_no=#outTradeNo# and send_user_id=#sendUserId#
+	</select>
+	<select id="findRewardDetailByTradeNo" parameterClass="java.util.Map" resultMap="rewardDetailResult">
+		select * from reward_detail where out_trade_no=#outTradeNo#
+	</select>	
+	<update id="updateRewardDetail" parameterClass="rewardDetail">
+		update reward_detail set send_status=#sendStatus# where out_trade_no=#outTradeNo# and send_user_id=#sendUserId#
+	</update>
+	<update id="updateRewardDetailByID" parameterClass="rewardDetail">
+		update reward_detail set send_status=#sendStatus# where id=#id#
+	</update>
+	
+	<!-- 查询被打赏人被打赏的总次数 -->
+	<select id="findOtherPersonRewardCount" parameterClass="java.util.Map" resultClass="int">
+		select count(*) from reward_detail where receive_user_id=#receiveUserId# and send_status=#sendStatus#
+	</select>
+	<!-- 查询打赏人打赏的总次数 -->
+	<select id="findRewardOtherPersonCount" parameterClass="java.util.Map" resultClass="int">
+		select count(*) from reward_detail where send_user_id=#sendUserId# and send_status=#sendStatus#
+	</select>
+	<!-- 查询被打赏人当天被打赏的次数 -->
+	<select id="findOtherPersonDayRewardCount" parameterClass="java.util.Map" resultClass="int">
+		select count(*) from reward_detail where receive_user_id=#receiveUserId# and send_status=#sendStatus# and send_time BETWEEN #date1# AND #date2#;
+	</select>
+	<!-- 查询打赏人当天打赏的总次数 -->
+	<select id="findRewardOtherPersonDayCount" parameterClass="java.util.Map" resultClass="int">
+		select count(*) from reward_detail where send_user_id=#sendUserId# and send_status=#sendStatus# and send_time BETWEEN #date1# AND #date2#;
+	</select>
+	
+	<!-- 查询被打赏种类的业务明细 -->
+	<select id="findRewardTypeDetail" resultMap="rewardDetailResult" parameterClass="java.util.Map">
+		select * from reward_detail where source_id=#sourceId# and send_status=#sendStatus# and source_type=#sourceType# order by send_time DESC
+	</select>
+	<!-- 查询被打赏种类被打赏总数 -->
+	<select id="findRewardTypeCount" parameterClass="java.util.Map" resultClass="int">
+		select count(*) from reward_detail where source_id=#sourceId# and send_status=#sendStatus# and source_type=#sourceType#
+	</select>
+	<!-- 查询被打赏种类当天被打赏总数 -->
+	<select id="findRewardTypeDayCount" parameterClass="java.util.Map" resultClass="int">
+		select count(*) from reward_detail where source_id=#sourceId# and send_status=#sendStatus# and source_type=#sourceType# and send_time BETWEEN #date1# AND #date2#
+	</select>	
+	<select id="findRewardDetailById" parameterClass="java.util.Map" resultMap="rewardDetailResult">
+		select * from reward_detail where id=#id# and send_status=#sendStatus# and send_user_id=#userId#
+	</select>
+	<!-- 查询时间段内资源打赏列表信息 -->
+	<select id="getDayRewardDetailList" parameterClass="java.util.Map" resultMap="rewardDetailResult">
+		select * from reward_detail where receive_user_id=#userId# AND send_status=#sendStatus# AND send_time BETWEEN #startDate# AND #endDate# ORDER BY send_time DESC
+	</select>
+	<!-- 查询资源打赏列表信息 -->
+	<select id="getRewardDetailList" parameterClass="java.util.Map" resultMap="rewardDetailResult">
+		select * from reward_detail where source_id=#sourceId# AND send_status=#sendStatus# 
+		<isNotEmpty prepend="AND" property="id">
+			<![CDATA[ id< #id# ]]>
+		</isNotEmpty>
+		ORDER BY send_time DESC LIMIT 0,10
+	</select>
+	<!-- 查询打赏人打赏的业务明细 -->
+	<select id="findRewardOtherPersonDetail" resultMap="rewardDetailResult" parameterClass="java.util.Map">
+		select * from reward_detail where send_user_id=#sendUserId# AND send_status=#sendStatus# AND source_id is not null 
+		<isNotEmpty prepend="AND" property="id">
+			<![CDATA[ id<#id#]]>
+		</isNotEmpty>
+		ORDER BY send_time DESC LIMIT 0,10
+	</select>
+	<!-- 查询被打赏人的业务明细 -->
+	<select id="findOtherPersonRewardDetail" resultMap="rewardDetailResult" parameterClass="java.util.Map">
+		select * from reward_detail where receive_user_id=#receiveUserId# AND send_status=#sendStatus# AND source_id is not null 
+		<isNotEmpty prepend="AND" property="id">
+			<![CDATA[ id< #id# ]]>
+		</isNotEmpty>
+		ORDER BY send_time DESC LIMIT 0,10
+	</select>	
+	<!-- 查询被打赏人当天被打赏总金额 -->
+	
+	
+	<!-- 用户操作状态控制表 -->
+	<typeAlias alias="controlUserStatus" type="com.poison.paycenter.model.ControlUserStatus"/>
+	<resultMap id="controlUserStatusResult" class="controlUserStatus">
+		<result column="id" property="id" jdbcType="BIGINT"/>
+		<result column="user_id" property="userId" jdbcType="BIGINT" nullValue="0"/>
+		<result column="user_name" property="userName" jdbcType="VARCHAR" nullValue=""/>
+		<result column="roll_count" property="rollCount" jdbcType="INT" nullValue="0"/>
+		<result column="roll_last_time" property="rollLastTime" jdbcType="BIGINT" nullValue="0"/>
+		<result column="withdraw_count" property="withdrawCount" jdbcType="INT" nullValue="0"/>
+		<result column="withdraw_last_time" property="withdrawLastTime" jdbcType="BIGINT" nullValue="0"/>
+		<result column="extend_field1" property="extendField1" jdbcType="VARCHAR" nullValue=""/>
+		<result column="extend_field2" property="extendField2" jdbcType="VARCHAR" nullValue=""/>
+		<result column="extend_field3" property="extendField3" jdbcType="VARCHAR" nullValue=""/>
+	</resultMap>	
+	<insert id="insertIntoControlUserStatus" parameterClass="controlUserStatus">
+		insert into control_user_status(user_id,user_name,roll_count,roll_last_time,withdraw_count,withdraw_last_time,extend_field1,extend_field2,extend_field3) values (#userId#,#userName#,#rollCount#,#rollLastTime#,#withdrawCount#,#withdrawLastTime#,#extendField1#,#extendField2#,#extendField3#)
+	</insert>
+	
+	<select id="findControlUserStatusbyId" parameterClass="java.util.Map" resultMap="controlUserStatusResult">
+		select * from control_user_status where user_id=#userId#
+	</select>
+	
+	<update id="updateControlUserStatus" parameterClass="java.util.Map">
+		update control_user_status set roll_count=#rollCount#, roll_last_time=#rollLastTime# where user_id=#userId#
+	</update>
+	
+	<typeAlias alias="rewardStatistical" type="com.poison.paycenter.model.RewardStatistical"/>
+	<resultMap class="rewardStatistical" id="rewardStatisticalResult">
+		<result column="id" property="id" jdbcType="BIGINT"/>
+		<result column="source_id" property="sourceId" jdbcType="BIGINT" nullValue="0"/>
+		<result column="total_amt" property="totalAmt" jdbcType="INT" nullValue="0"/>
+		<result column="total_count" property="totalCount" jdbcType="INT" nullValue="0"/>
+		<result column="source_type" property="sourceType" jdbcType="INT" nullValue="-1"/>
+		<result column="extend_field1" property="extendField1" jdbcType="VARCHAR" nullValue=""/>
+		<result column="extend_field2" property="extendField1" jdbcType="VARCHAR" nullValue=""/>
+		<result column="extend_field3" property="extendField1" jdbcType="VARCHAR" nullValue=""/>
+	</resultMap>
+	<insert id="insertRewardStatistical" parameterClass="rewardStatistical">
+		insert into reward_statistical(source_id,total_amt,total_count,source_type,extend_field1,extend_field2,extend_field3) values (#sourceId#,#totalAmt#,#totalCount#,#sourceType#,#extendField1#,#extendField2#,#extendField3#)
+	</insert>	
+	<update id="updateRewardStatistical" parameterClass="java.util.Map">
+		update reward_statistical set total_amt=total_amt+#amt#, total_count=total_count+#count#,source_type=#sourceType# where source_id=#sourceId#
+	</update>
+	<select id="selectRewardStatisticalBySourceId" resultMap="rewardStatisticalResult">
+		select * from reward_statistical where source_id=#sourceId#
+	</select>
+	<!-- <select id="selectRewardStatisticalByUserId" parameterClass="java.util.Map" resultMap="rewardStatisticalResult">
+		select * from reward_statistical where and source_id=#sourceId#
+	</select> -->
+	<select id="findListBySourceIdDesc" resultMap="rewardStatisticalResult" parameterClass="java.util.Map">
+		select * from reward_statistical where source_id!=0 and total_amt > 0 ORDER BY total_amt DESC limit #start#,20
+	</select>
+	
+	
+	<typeAlias alias="rewardPesonStatistical" type="com.poison.paycenter.model.RewardPesonStatistical"/>
+	<resultMap class="rewardPesonStatistical" id="rewardPesonStatisticalResult">
+		<result column="id" property="id" jdbcType="BIGINT"/>
+		<result column="user_id" property="userId" jdbcType="BIGINT" nullValue="0"/>
+		<result column="total_coll_amt" property="totalCollAmt" jdbcType="INT" nullValue="0"/>
+		<result column="total_coll_count" property="totalCollCount" jdbcType="INT" nullValue="0"/>
+		<result column="total_pay_amt" property="totalPayAmt" jdbcType="INT" nullValue="0"/>
+		<result column="total_pay_count" property="totalPayCount" jdbcType="INT" nullValue="0"/>
+		<result column="extend_field1" property="extendField1" jdbcType="VARCHAR" nullValue=""/>
+		<result column="extend_field2" property="extendField1" jdbcType="VARCHAR" nullValue=""/>
+		<result column="extend_field3" property="extendField1" jdbcType="VARCHAR" nullValue=""/>
+	</resultMap>
+	<insert id="insertInfo" parameterClass="rewardPesonStatistical">
+		insert into reward_peson_statistical(user_id,total_coll_amt,total_coll_count,total_pay_amt,total_pay_count,extend_field1,extend_field2,extend_field3) values (#userId#,#totalCollAmt#,#totalCollCount#,#totalPayAmt#,#totalPayCount#,#extendField1#,#extendField2#,#extendField3#)
+	</insert>	
+	<update id="updateCollInfo" parameterClass="java.util.Map">
+		update reward_peson_statistical set total_coll_amt=total_coll_amt+#totalCollAmt#, total_coll_count=total_coll_count+#totalCollCount# where user_id=#userId#
+	</update>
+	<update id="updatePayInfo" parameterClass="java.util.Map">
+		update reward_peson_statistical set total_pay_amt=total_pay_amt+#totalPayAmt#, total_pay_count=total_pay_count+#totalPayCount# where user_id=#userId#
+	</update>
+	<update id="updateInfo" parameterClass="rewardPesonStatistical">
+		update reward_peson_statistical set total_coll_amt=total_coll_amt+#totalCollAmt#, total_coll_count=total_coll_count+#totalCollCount#, total_pay_amt=total_pay_amt+#totalPayAmt#, total_pay_count=total_pay_count+#totalPayCount# where user_id=#userId#
+	</update>
+	
+	<select id="findByUserId" parameterClass="java.util.Map" resultMap="rewardPesonStatisticalResult">
+		select * from reward_peson_statistical where user_id=#userId#
+	</select>
+	<select id="findByTotalCollAmtDesc" parameterClass="java.util.Map" resultMap="rewardPesonStatisticalResult">
+		select * from reward_peson_statistical where user_id!=0 and total_coll_amt >0 ORDER BY total_coll_amt DESC limit #start#,20
+	</select>
+	<select id="findByTotalPayAmtDesc" parameterClass="java.util.Map" resultMap="rewardPesonStatisticalResult">
+		select * from reward_peson_statistical where user_id!=0 and total_pay_amt >0 ORDER BY total_pay_amt DESC limit #start#,20
+	</select>
+	
+</sqlMap>
