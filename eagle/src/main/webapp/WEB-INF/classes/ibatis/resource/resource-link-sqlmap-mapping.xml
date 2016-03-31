@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd" >
+<sqlMap namespace="reslink">
+
+    <typeAlias alias="resourcelink" type="com.poison.resource.model.ResourceLink"/>   
+
+	<resultMap id="resLinkResult" class="resourcelink">
+		<result column="id" property="id" jdbcType="BIGINT"/>
+		<result column="res_id" property="resId" jdbcType="BIGINT"/>
+		<result column="res_link_id" property="resLinkId" jdbcType="BIGINT"/>
+		<result column="res_type" property="resType" jdbcType="VARCHAR"/>
+		<result column="link_type" property="linkType" jdbcType="VARCHAR"/>
+		<result column="type" property="type" jdbcType="VARCHAR"/>
+		<result column="is_del" property="isDel" jdbcType="INT"/>
+		<result column="description" property="description" jdbcType="VARCHAR"/>
+	</resultMap>
+   <select id="findResLink"  parameterClass="java.lang.String" resultMap="resLinkResult">
+		select * from resource_link where type=#type# and  is_del=0 order by id desc
+	</select>
+	
+	<select id="findResLinkByPage"  parameterClass="java.util.Map" resultMap="resLinkResult">
+		select * from resource_link where type=#type# and  is_del=0 order by id desc limit #start#,#pagesize#
+	</select>
+	
+	 <select id="findResListByResIdAndLinkType"  parameterClass="java.util.Map" resultMap="resLinkResult">
+		select * from resource_link where link_type=#linkType# and res_id=#resId# and  is_del=0 order by id desc
+	</select>
+	 <select id="findResListByResIdAndType"  parameterClass="java.util.Map" resultMap="resLinkResult">
+		select * from resource_link where type=#type# and res_id=#resId# and  is_del=0 order by id desc
+	</select>
+	
+	<select id="findResListByLinkTypeAndType"  parameterClass="java.util.Map" resultMap="resLinkResult">
+		select * from resource_link where link_type=#linkType# and type=#type# and  is_del=0 order by id desc
+	</select>
+	
+	<select id="findResListByResLinkIdAndType"  parameterClass="java.util.Map" resultMap="resLinkResult">
+		select * from resource_link where type=#type# and res_link_id=#resLinkId# and  is_del=0 order by id desc 
+		<isNotNull property="start">
+			limit #start#,#pagesize#
+		</isNotNull>
+	</select>
+	
+	<insert id="insertResLink" parameterClass="resourcelink">
+		insert into resource_link(id,res_id,res_link_id,res_type,link_type,type,isDel,description)
+		values(#id#,#resId#,#resLinkId#,#resType#,#linkType#,#type#,#isDel#,#description#)
+	</insert>
+	
+</sqlMap>

@@ -1,0 +1,106 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd" >
+<sqlMap namespace="statistics">
+	
+	<typeAlias alias="userStatistics" type="com.poison.ucenter.model.UserStatistics" />
+	
+	<resultMap id="userStatisticsResult" class="userStatistics">
+		<result column="id" property="id" jdbcType="BIGINT" />
+		<result column="user_id" property="userId" jdbcType="BIGINT" />
+		<result column="bkcomment_count" property="bkcommentCount" jdbcType="BIGINT" />
+		<result column="mvcomment_count" property="mvcommentCount" jdbcType="BIGINT" />
+		<result column="bklist_count" property="bklistCount" jdbcType="BIGINT" />
+		<result column="mvlist_count" property="mvlistCount" jdbcType="BIGINT" />
+		<result column="transmit_count" property="transmitCount" jdbcType="BIGINT" />
+		<result column="diary_count" property="diaryCount" jdbcType="BIGINT" />
+		<result column="post_count" property="postCount" jdbcType="BIGITN" />
+		<result column="article_count" property="articleCount" jdbcType="BIGITN" />
+		<result column="serialize_count" property="serializeCount" jdbcType="BIGINT" />
+		<result column="total_count" property="totalCount" jdbcType="BIGINT" />
+		<result column="latest_revision_date" property="latestRevisionDate" jdbcType="BIGINT" />
+		<result column="comment_switch" property="commentSwitch" jdbcType="INT" />
+		<result column="give_switch" property="giveSwitch" jdbcType="INT" />
+		<result column="at_switch" property="atSwitch" jdbcType="INT" />
+	</resultMap>
+	
+	<insert id="insertUserStatistics" parameterClass="long">
+		insert into user_statistics(user_id) values(#userId#)
+	</insert>
+	
+	<select id="findUserStatisticsByUid" resultMap="userStatisticsResult" parameterClass="long">
+		select id,user_id,bkcomment_count,mvcomment_count,bklist_count,mvlist_count,transmit_count,diary_count,post_count,article_count,serialize_count,latest_revision_date,total_count,comment_switch,give_switch,at_switch from user_statistics where user_id=#userId#
+	</select>
+	
+	<update id="updateBkcommentCount" parameterClass="java.util.Map" >
+		update user_statistics set bkcomment_count=bkcomment_count+1,total_count = total_count+1,latest_revision_date=#latestRevisionDate# where user_id=#userId#
+	</update>
+	
+	<update id="updateBkcommentNewCount" parameterClass="java.util.Map" >
+		update user_statistics set total_count = total_count+#bkcommentCount#-bkcomment_count,bkcomment_count=#bkcommentCount#,latest_revision_date=#latestRevisionDate# where user_id=#userId#
+	</update>
+	
+	<update id="updateMvcommentCount" parameterClass="java.util.Map" >
+		update user_statistics set mvcomment_count=mvcomment_count+1,total_count = total_count+1,latest_revision_date=#latestRevisionDate# where user_id=#userId#
+	</update>
+	
+	<update id="updateMvcommentNewCount" parameterClass="java.util.Map" >
+		update user_statistics set total_count = total_count+#mvcommentCount#-mvcomment_count,mvcomment_count=#mvcommentCount#,latest_revision_date=#latestRevisionDate# where user_id=#userId#
+	</update>
+	
+	<update id="updateBklistCount" parameterClass="java.util.Map" >
+		update user_statistics set bklist_count=bklist_count+1,total_count = total_count+1,latest_revision_date=#latestRevisionDate# where user_id=#userId#
+	</update>
+	
+	<update id="updateMvlistCount" parameterClass="java.util.Map" >
+		update user_statistics set mvlist_count=mvlist_count+1,total_count = total_count+1,latest_revision_date=#latestRevisionDate# where user_id=#userId#
+	</update>
+	
+	<update id="updateTransmitCount" parameterClass="java.util.Map" >
+		update user_statistics set transmit_count=transmit_count+1,total_count = total_count+1,latest_revision_date=#latestRevisionDate# where user_id=#userId#
+	</update>
+	
+	<update id="updateDiaryCount" parameterClass="java.util.Map" >
+		update user_statistics set diary_count=diary_count+1,total_count = total_count+1,latest_revision_date=#latestRevisionDate# where user_id=#userId#
+	</update>
+	
+	<update id="updateDiaryNewCount" parameterClass="java.util.Map" >
+		update user_statistics set total_count = total_count+#diaryCount#-diary_count,diary_count=#diaryCount#,latest_revision_date=#latestRevisionDate# where user_id=#userId#
+	</update>
+	
+	<update id="updatePostCount" parameterClass="java.util.Map" >
+		update user_statistics set post_count=post_count+1,total_count = total_count+1,latest_revision_date=#latestRevisionDate# where user_id=#userId#
+	</update>
+	
+	<update id="updateArticleCount" parameterClass="java.util.Map" >
+		update user_statistics set article_count=article_count+1,total_count = total_count+1,latest_revision_date=#latestRevisionDate# where user_id=#userId#
+	</update>
+	
+	<!--更新评论的消息提醒  -->
+	<update id="updateCommentSwitch" parameterClass="java.util.Map" >
+		update user_statistics set comment_switch=#commentSwitch#,latest_revision_date=#latestRevisionDate# where user_id=#userId#
+	</update>
+	
+	<!--更新打赏的消息提醒  -->
+	<update id="updateGiveSwitch" parameterClass="java.util.Map" >
+		update user_statistics set give_switch=#giveSwitch#,latest_revision_date=#latestRevisionDate# where user_id=#userId#
+	</update>
+	
+	<!--更新@的消息提醒  -->
+	<update id="updateAtSwitch" parameterClass="java.util.Map" >
+		update user_statistics set at_switch=#atSwitch#,latest_revision_date=#latestRevisionDate# where user_id=#userId#
+	</update>
+	
+	<!-- 查询总条数 -->
+	<select id="findTotalNum"  resultClass="long">
+		select count(1) from user_statistics
+	</select>
+	<!-- 查询小于书评数量的条数 -->
+	<select id="findNumByLessBkcommentCount"  resultClass="long" parameterClass="long">
+		select count(1) from user_statistics where <![CDATA[ bkcomment_count<#bkcommentCount# ]]>
+	</select>
+	<!-- 查询小于影评数量的条数 -->
+	<select id="findNumByLessMvcommentCount"  resultClass="long" parameterClass="long">
+		select count(1) from user_statistics where <![CDATA[ mvcomment_count<#mvcommentCount# ]]>
+	</select>
+	
+</sqlMap>

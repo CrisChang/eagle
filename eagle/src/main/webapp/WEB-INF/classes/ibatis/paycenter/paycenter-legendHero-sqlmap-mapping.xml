@@ -1,0 +1,127 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd" >
+<sqlMap namespace="legendHero">	
+	
+	<!-- 封神榜 -->
+	<typeAlias alias="legendHero" type="com.poison.paycenter.model.LegendHero"/>
+	<resultMap id="legendHeroResult" class="legendHero">
+	    <result column="id" property="id" jdbcType="BIGINT"/>
+	    <result column="user_id" property="userId" jdbcType="BIGINT" nullValue=""/>
+		<result column="user_name" property="userName" jdbcType="VARCHAR" nullValue=""/>
+		<result column="user_header_img" property="userHeaderImg" jdbcType="VARCHAR" nullValue=""/>
+		<result column="user_auth" property="userAuth" jdbcType="VARCHAR" nullValue=""/>
+		<result column="sort" property="sort" jdbcType="int" nullValue="0"/>
+		<result column="coll" property="coll" jdbcType="float" />
+		<result column="group_id" property="groupId" jdbcType="int" nullValue="0"/>
+		<result column="describes" property="describes" jdbcType="VARCHAR" nullValue=""/>
+		<result column="update_time" property="updateTime" jdbcType="BIGINT" nullValue="0"/>
+		<result column="create_time" property="createTime" jdbcType="BIGINT" nullValue="0"/>
+		<result column="extendField1" property="extendField1" jdbcType="VARCHAR" nullValue=""/>
+		<result column="extendField2" property="extendField2" jdbcType="VARCHAR" nullValue=""/>
+		<result column="extendField3" property="extendField3" jdbcType="VARCHAR" nullValue=""/>
+	</resultMap>
+	
+	<insert id="insertIntoLegendHero" parameterClass="legendHero">
+		insert into legend_hero(user_id,user_name,user_header_img,user_auth,sort,coll,group_id,describes,update_time,create_time,extendField1,extendField2,extendField3) values (#userId#,#userName#,#userHeaderImg#,#userAuth#,#sort#,#coll#,#groupId#,#describes#,#updateTime#,#createTime#,#extendField1#,#extendField2#,#extendField3#)
+	</insert>
+	
+	<select id="findAllLegendHero" resultMap="legendHeroResult">
+		select h.* from legend_hero h order by h.coll,h.sort;
+	</select>
+	
+	<select id="findLegendHeroById" parameterClass="long" resultMap="legendHeroResult">
+		select * from legend_hero  where id=#id#
+	</select>
+	
+	<select id="findLegendHeroByUserId" parameterClass="long" resultMap="legendHeroResult">
+		select * from legend_hero  where user_id=#userId#
+	</select>
+	
+	<update id="updateLegendHeroById" parameterClass="legendHero">
+		update legend_hero set id=#id#  
+	    <isNotEmpty prepend="," property="userId">  
+	        user_id=#userId#  
+	    </isNotEmpty>  
+	    <isNotEmpty prepend="," property="userName">  
+	        user_name=#userName#  
+	    </isNotEmpty>
+	    <isNotEmpty prepend="," property="userHeaderImg">  
+	        user_header_img=#userHeaderImg#  
+	    </isNotEmpty>
+	    <isNotEmpty prepend="," property="userAuth">  
+	        user_auth=#userAuth#  
+	    </isNotEmpty>
+	    <isNotEmpty prepend="," property="sort">  
+	        sort=#sort#  
+	    </isNotEmpty>
+	    <isNotEmpty prepend="," property="coll">  
+	        coll=#coll#  
+	    </isNotEmpty>
+	    <isNotEmpty prepend="," property="groupId">  
+	        group_id=#groupId#  
+	    </isNotEmpty>
+	    <isNotEmpty prepend="," property="describes">  
+	        describes=#describes#  
+	    </isNotEmpty>
+	    <isNotEmpty prepend="," property="updateTime">  
+	        update_time=#updateTime#  
+	    </isNotEmpty>
+	    <isNotEmpty prepend="," property="extendField1">  
+	        extendField1=#extendField1#  
+	    </isNotEmpty>
+	     <isNotEmpty prepend="," property="extendField2">  
+	        extendField2=#extendField2#  
+	    </isNotEmpty>
+	     <isNotEmpty prepend="," property="extendField3">  
+	        extendField3=#extendField3#  
+	    </isNotEmpty>
+	      where id=#id#  
+	</update>
+	
+	<update id="updateLegendHeroByUserId" parameterClass="legendHero">
+		update legend_hero set id=#id#  
+	    <isNotEmpty prepend="," property="userName">  
+	        user_name=#userName#  
+	    </isNotEmpty>
+	    <isNotEmpty prepend="," property="userHeaderImg">  
+	        user_header_img=#userHeaderImg#  
+	    </isNotEmpty>
+	    <isNotEmpty prepend="," property="userAuth">  
+	        user_auth=#userAuth#  
+	    </isNotEmpty>
+	    <isNotEmpty prepend="," property="sort">  
+	        sort=#sort#  
+	    </isNotEmpty>
+	    <isNotEmpty prepend="," property="coll">  
+	        coll=#coll#  
+	    </isNotEmpty>
+	    <isNotEmpty prepend="," property="groupId">  
+	        group_id=#groupId#  
+	    </isNotEmpty>
+	    <isNotEmpty prepend="," property="describes">  
+	        describes=#describes#  
+	    </isNotEmpty>
+	    <isNotEmpty prepend="," property="updateTime">  
+	        update_time=#updateTime#  
+	    </isNotEmpty>
+	    <isNotEmpty prepend="," property="extendField1">  
+	        extendField1=#extendField1#  
+	    </isNotEmpty>
+	     <isNotEmpty prepend="," property="extendField2">  
+	        extendField2=#extendField2#  
+	    </isNotEmpty>
+	     <isNotEmpty prepend="," property="extendField3">  
+	        extendField3=#extendField3#  
+	    </isNotEmpty>
+	      where user_id=#userId#  
+	</update>
+	
+	<delete id="deleteLegendHeroById" parameterClass="long">
+	    delete from legend_hero where id=#id#  
+	</delete>
+	
+	<delete id="deleteLegendHeroByUserId" parameterClass="long">
+	    delete from legend_hero where user_id=#userId#  
+	</delete>
+	
+</sqlMap>

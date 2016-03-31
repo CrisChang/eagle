@@ -1,0 +1,185 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd" >
+<sqlMap namespace="reward">
+	
+	<!-- <typeAlias alias="yantest" type="com.poison.paycenter.model.YanTest" />	
+	<resultMap id="testResult" class="yantest">
+		<result column="id" property="id" jdbcType="BIGINT" />
+		<result column="name" property="name" jdbcType="VARCHAR" />
+		<result column="age" property="age" jdbcType="INT" />		
+	</resultMap>
+	
+	<insert id="insertintoYanTest" parameterClass="java.util.Map">
+		insert into yan_test(name,age) values(#name#,#age#)
+		<selectKey resultClass="long" keyProperty="id" >
+		     SELECT @@IDENTITY AS id
+	   </selectKey>
+	</insert> -->
+	
+	<!-- <select id="findAtList"  parameterClass="java.util.Map" resultMap="atResult">
+		select * from msg_at where user_at_id = #userId# and is_delete = 0
+		<isNotNull prepend="AND" property="resId">
+			<![CDATA[ at_id< #resId# ]]>
+		</isNotNull>
+		order by at_id desc limit 0,20
+	</select> -->
+	
+<!-- 	<select id="findTestById"  parameterClass="String" resultMap="testResult">
+		select * from yan_test where id = #id#
+	</select> -->
+	
+	<!-- 账户资金表 -->
+	<typeAlias alias="accAmt" type="com.poison.paycenter.model.AccAmt"/>
+	<resultMap id="accAmtResult" class="accAmt">
+		<result column="id" property="id" jdbcType="BIGINT"/>
+		<result column="user_id" property="userId" jdbcType="BIGINT" nullValue="0"/>
+		<result column="user_name" property="userName" jdbcType="VARCHAR" nullValue=""/>
+		<result column="phone_number" property="phoneNumber" jdbcType="VARCHAR" nullValue=""/>
+		<result column="account_amt" property="accountAmt" jdbcType="INT" nullValue="0"/>
+		<result column="reward_amount" property="rewardAmount" jdbcType="INT" nullValue="0"/>
+		<result column="change_time" property="changeTime" jdbcType="BIGINT" nullValue="0"/>
+		<result column="extend_field1" property="extendField1" jdbcType="VARCHAR" nullValue=""/>
+		<result column="extend_field2" property="extendField2" jdbcType="VARCHAR" nullValue=""/>
+		<result column="extend_field3" property="extendField3" jdbcType="VARCHAR" nullValue=""/>
+	</resultMap>	
+	<!-- 生成一条账户资金信息 -->
+	<insert id="insertIntoAccAmt" parameterClass="accAmt">
+		insert into acc_amt(user_id,user_name,phone_number,account_amt,reward_amount,change_time,extend_field1,extend_field2,extend_field3) values (#userId#,#userName#,#phoneNumber#,#accountAmt#,#rewardAmount#,#changeTime#,#extendField1#,#extendField2#,#extendField3#)
+	</insert>
+	<select id="findAccAmtByUserMap" parameterClass="java.util.Map" resultMap="accAmtResult">
+		select * from acc_amt where user_id = #userId# and user_name=#userName#
+	</select>
+	<select id="findAccAmtByUserId" parameterClass="long" resultMap="accAmtResult">
+		select * from acc_amt  where user_id = #userId# 
+	</select>
+	<update id="updateAccAmtByUserId" parameterClass="accAmt">
+		update acc_amt set account_amt=#accountAmt#,reward_amount=#rewardAmount#,change_time=#changeTime# where user_id=#userId#
+	</update>
+	<!-- chongzhi -->
+	<update id="updateAccAmtByUserIdNew" parameterClass="java.util.Map">
+		update acc_amt set account_amt=account_amt+#rewardAmt#,change_time=#sysdate# where user_id=#userId#
+	</update>
+	<update id="updateAccAmtByUserIdNewForPayer" parameterClass="java.util.Map">
+		update acc_amt set account_amt=account_amt-#sendAmt#,change_time=#sysdate# where user_id=#sendId#
+	</update>
+	<!-- shoukuan -->
+	<update id="updateAccAmtByUserIdColl" parameterClass="java.util.Map">
+		update acc_amt set reward_amount=reward_amount+#rewardAmt#,change_time=#sysdate# where user_id=#userId#
+	</update>
+	
+	
+	<!-- 账户资金变更记录表 -->
+	<typeAlias alias="amtRecord" type="com.poison.paycenter.model.AmtRecord"/>
+	<resultMap id="amtRecordResult" class="amtRecord">
+		<result column="id" property="id" jdbcType="BIGINT"/>
+		<result column="user_id" property="userId" jdbcType="BIGINT" nullValue="0"/>
+		<result column="user_name" property="userName" jdbcType="VARCHAR" nullValue=""/>
+		<result column="phone_number" property="phoneNumber" jdbcType="VARCHAR" nullValue=""/>
+		<result column="trade_type" property="tradeType" jdbcType="INT" nullValue="0"/>
+		<result column="serial_id" property="serialId" jdbcType="BIGINT" nullValue="0"/>
+		<result column="out_trade_no" property="outTradeNo" jdbcType="VARCHAR" nullValue=""/>
+		<result column="trade_amount" property="tradeAmount" jdbcType="INT" nullValue="0"/>
+		<result column="trade_time" property="tradeTime" jdbcType="BIGINT" nullValue="0"/>
+		<result column="trade_status" property="tradeStatus" jdbcType="TINYINT" nullValue="0"/>
+		<result column="admin_user" property="adminUser" jdbcType="BIGINT" nullValue="0"/>
+		<result column="trade_desc" property="tradeDesc" jdbcType="VARCHAR" nullValue=""/>
+		<result column="shadow" property="shadow" jdbcType="TINYINT" nullValue="0"/>
+		<result column="extend_field1" property="extendField1" jdbcType="VARCHAR" nullValue=""/>
+		<result column="extend_field2" property="extendField2" jdbcType="VARCHAR" nullValue=""/>
+		<result column="extend_field3" property="extendField3" jdbcType="VARCHAR" nullValue=""/>
+	</resultMap>	
+	<insert id="insertIntoAmtRecord" parameterClass="amtRecord">
+		insert into amt_record(user_id,user_name,phone_number,trade_type,serial_id,out_trade_no,trade_amount,trade_time,trade_status,admin_user,trade_desc,shadow,extend_field1,extend_field2,extend_field3) values (#userId#,#userName#,#phoneNumber#,#tradeType#,#serialId#,#outTradeNo#,#tradeAmount#,#tradeTime#,#tradeStatus#,#adminUser#,#tradeDesc#,#shadow#,#extendField1#,#extendField2#,#extendField3#)
+	</insert>
+	
+	<!-- 支付宝交易日志记录表 -->
+	<typeAlias alias="payLog" type="com.poison.paycenter.model.PayLog"/>
+	<resultMap id="payLogResult" class="payLog">
+		<result column="id" property="id" jdbcType="BIGINT"/>
+		<result column="log_status" property="logStatus" jdbcType="TINYINT" nullValue="0"/>
+		<result column="user_id" property="userId" jdbcType="BIGINT" nullValue="0"/>
+		<result column="user_name" property="userName" jdbcType="VARCHAR" nullValue=""/>
+		<result column="out_trade_no" property="outTradeNo" jdbcType="VARCHAR" nullValue=""/>
+		<result column="pay_mark" property="payMark" jdbcType="TINYINT" nullValue="0"/>
+		<result column="service" property="service" jdbcType="VARCHAR" nullValue=""/>
+		<result column="seller_id" property="sellerId" jdbcType="TINYINT" nullValue="0"/>
+		<result column="parter_id" property="parterId" jdbcType="TINYINT" nullValue="0"/>
+		<result column="_input_charset" property="inputCharset" jdbcType="VARCHAR" nullValue=""/>
+		<result column="sign_type" property="signType" jdbcType="VARCHAR" nullValue=""/>
+		<result column="sign" property="sign" jdbcType="VARCHAR" nullValue=""/>
+		<result column="notify_url" property="notifyUrl" jdbcType="VARCHAR" nullValue=""/>
+		<result column="app_id" property="appId" jdbcType="VARCHAR" nullValue=""/>
+		<result column="appenv" property="appenv" jdbcType="VARCHAR" nullValue=""/>
+		<result column="subject" property="subject" jdbcType="VARCHAR" nullValue=""/>
+		<result column="payment_type" property="paymentType" jdbcType="VARCHAR" nullValue=""/>
+		<result column="total_fee" property="totalFee" jdbcType="INT" nullValue="0"/>
+		<result column="body" property="body" jdbcType="VARCHAR" nullValue=""/>
+		<result column="it_b_pay" property="itBPay" jdbcType="VARCHAR" nullValue=""/>
+		<result column="extern_token" property="externToken" jdbcType="VARCHAR" nullValue=""/>
+		<result column="paymethod" property="paymethod" jdbcType="VARCHAR" nullValue=""/>
+		<result column="notify_time" property="notifyTime" jdbcType="BIGINT" nullValue="0"/>
+		<result column="notify_type" property="notifyType" jdbcType="VARCHAR" nullValue=""/>
+		<result column="notify_id" property="notifyId" jdbcType="VARCHAR" nullValue=""/>
+		<result column="trade_no" property="tradeNo" jdbcType="VARCHAR" nullValue=""/>
+		<result column="trade_status" property="tradeStatus" jdbcType="VARCHAR" nullValue=""/>
+		<result column="buyer_id" property="buyerId" jdbcType="VARCHAR" nullValue=""/>
+		<result column="buyer_email" property="buyerEmail" jdbcType="VARCHAR" nullValue=""/>
+		<result column="quantity" property="quantity" jdbcType="INT" nullValue="0"/>
+		<result column="price" property="price" jdbcType="INT" nullValue="0"/>
+		<result column="gmt_create" property="gmtCreate" jdbcType="BIGINT" nullValue="0"/>
+		<result column="gmt_payment" property="gmtPayment" jdbcType="BIGINT" nullValue="0"/>
+		<result column="is_total_fee_adjust" property="isTotalFeeAdjust" jdbcType="VARCHAR" nullValue=""/>
+		<result column="use_coupon" property="useCoupon" jdbcType="VARCHAR" nullValue=""/>
+		<result column="discount" property="discount" jdbcType="VARCHAR" nullValue=""/>
+		<result column="refund_status" property="refundStatus" jdbcType="VARCHAR" nullValue=""/>
+		<result column="gmt_refund" property="gmtRefund" jdbcType="BIGINT" nullValue="0"/>
+		<result column="log_create" property="logCreate" jdbcType="BIGINT" nullValue="0"/>
+		<result column="extend_field1" property="extendField1" jdbcType="VARCHAR" nullValue=""/>
+		<result column="extend_field2" property="extendField2" jdbcType="VARCHAR" nullValue=""/>
+		<result column="extend_field3" property="extendField3" jdbcType="VARCHAR" nullValue=""/>
+	</resultMap>	
+	<insert id="insertIntoPayLog" parameterClass="payLog">
+		insert into pay_log(log_status,user_id,user_name,out_trade_no,pay_mark,service,seller_id,parter_id,_input_charset,sign_type,sign,notify_url,app_id,appenv,subject,payment_type,total_fee,body,it_b_pay,extern_token,paymethod,notify_time,notify_type,notify_id,trade_no,trade_status,buyer_id,buyer_email,quantity,price,gmt_create,gmt_payment,is_total_fee_adjust,use_coupon,discount,refund_status,gmt_refund,log_create,extend_field1,extend_field2,extend_field3) values (#logStatus#,#userId#,#userName#,#outTradeNo#,#payMark#,#service#,#sellerId#,#parterId#,#inputCharset#,#signType#,#sign#,#notifyUrl#,#appId#,#appenv#,#subject#,#paymentType#,#totalFee#,#body#,#itBPay#,#externToken#,#paymethod#,#notifyTime#,#notifyType#,#notifyId#,#tradeNo#,#tradeStatus#,#buyerId#,#buyerEmail#,#quantity#,#price#,#gmtCreate#,#gmtPayment#,#isTotalFeeAdjust#,#useCoupon#,#discount#,#refundStatus#,#gmtRefund#,#logCreate#,#extendField1#,#extendField2#,#extendField3#)
+	</insert>
+	
+	<insert id="insertIntoPayLogNew" parameterClass="payLog">
+		insert into pay_log(log_status,user_id,user_name,out_trade_no,pay_mark,service,seller_id,parter_id,_input_charset,sign_type,sign,notify_url,app_id,appenv,subject,payment_type,total_fee,body,it_b_pay,extern_token,paymethod,notify_time,notify_type,notify_id,trade_no,trade_status,buyer_id,buyer_email,quantity,price,gmt_create,gmt_payment,is_total_fee_adjust,use_coupon,discount,refund_status,gmt_refund,log_create,extend_field1,extend_field2,extend_field3) values (#logStatus#,#userId#,#userName#,#outTradeNo#,#payMark#,#service#,#sellerId#,#parterId#,#inputCharset#,#signType#,#sign#,#notifyUrl#,#appId#,#appenv#,#subject#,#paymentType#,#totalFee#,#body#,#itBPay#,#externToken#,#paymethod#,#notifyTime#,#notifyType#,#notifyId#,#tradeNo#,#tradeStatus#,#buyerId#,#buyerEmail#,#quantity#,#price#,#gmtCreate#,#gmtPayment#,#isTotalFeeAdjust#,#useCoupon#,#discount#,#refundStatus#,#gmtRefund#,#logCreate#,#extendField1#,#extendField2#,#extendField3#)
+	</insert>
+	
+	<!-- 充值记录表 -->
+	<typeAlias alias="payRecord" type="com.poison.paycenter.model.PayRecord"/>
+	<resultMap id="payRecordResult" class="payRecord">
+		<result column="id" property="id" jdbcType="BIGINT"/>
+		<result column="out_trade_no" property="outTradeNo" jdbcType="VARCHAR" nullValue=""/>
+		<result column="seller_id" property="sellerId" jdbcType="TINYINT" nullValue="0"/>
+		<result column="parter_id" property="parterId" jdbcType="TINYINT" nullValue="0"/>
+		<result column="user_id" property="userId" jdbcType="BIGINT" nullValue="0"/>
+		<result column="user_name" property="userName" jdbcType="VARCHAR" nullValue=""/>
+		<result column="total_fee" property="totalFee" jdbcType="INT" nullValue="0"/>
+		<result column="phone_number" property="phoneNumber" jdbcType="VARCHAR" nullValue=""/>
+		<result column="trade_status" property="tradeStatus" jdbcType="TINYINT" nullValue="0"/>
+		<result column="buyer_id" property="buyerId" jdbcType="VARCHAR" nullValue=""/>
+		<result column="buyer_email" property="buyerEmail" jdbcType="VARCHAR" nullValue=""/>
+		<result column="payment_type" property="paymentType" jdbcType="TINYINT" nullValue="0"/>
+		<result column="trade_no" property="tradeNo" jdbcType="VARCHAR" nullValue=""/>
+		<result column="trade_time" property="tradeTime" jdbcType="BIGINT" nullValue="0"/>
+		<result column="extend_field1" property="extendField1" jdbcType="VARCHAR" nullValue=""/>
+		<result column="extend_field2" property="extendField2" jdbcType="VARCHAR" nullValue=""/>
+		<result column="extend_field3" property="extendField3" jdbcType="VARCHAR" nullValue=""/>
+	</resultMap>	
+	<insert id="insertIntoPayRecord" parameterClass="payRecord">
+		insert into pay_record(out_trade_no,seller_id,parter_id,user_id,user_name,total_fee,phone_number,trade_status,buyer_id,buyer_email,payment_type,trade_no,trade_time,extend_field1,extend_field2,extend_field3) values (#outTradeNo#,#sellerId#,#parterId#,#userId#,#userName#,#totalFee#,#phoneNumber#,#tradeStatus#,#buyerId#,#buyerEmail#,#paymentType#,#tradeNo#,#tradeTime#,#extendField1#,#extendField2#,#extendField3#)
+	</insert>
+	<select id="findPayRecordByOutTradeNo" parameterClass="java.util.Map" resultMap="payRecordResult">
+		select * from pay_record where id=#id# and trade_status=#tradeStatus#
+	</select>
+	<update id="updatePayRecordByOutTradeNo" parameterClass="payRecord">
+		update pay_record set trade_status=#tradeStatus#,buyer_id=#buyerId#,buyer_email=#buyerEmail#,trade_no=#tradeNo# where id=#id#
+	</update>
+	<insert id="insertIntoPayRecordnew" parameterClass="payRecord">
+		insert into pay_record(out_trade_no,seller_id,parter_id,user_id,user_name,total_fee,phone_number,trade_status,buyer_id,buyer_email,payment_type,trade_no,trade_time,extend_field1,extend_field2,extend_field3) values (#outTradeNo#,#sellerId#,#parterId#,#userId#,#userName#,#totalFee#,#phoneNumber#,#tradeStatus#,#buyerId#,#buyerEmail#,#paymentType#,#tradeNo#,#tradeTime#,#extendField1#,#extendField2#,#extendField3#)
+		<selectKey resultClass="long" keyProperty="id" >
+		     SELECT @@IDENTITY AS id
+	   </selectKey>
+	</insert>
+</sqlMap>

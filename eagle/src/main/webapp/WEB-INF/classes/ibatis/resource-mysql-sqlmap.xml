@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+
+<!DOCTYPE sqlMapConfig PUBLIC "-//iBATIS.com//DTD SQL Map Config 2.0//EN" "http://www.ibatis.com/dtd/sql-map-config-2.dtd">
+<sqlMapConfig>
+    <settings cacheModelsEnabled="true" enhancementEnabled="false" lazyLoadingEnabled="false" maxRequests="3000" maxSessions="3000" maxTransactions="3000" useStatementNamespaces="false"/>
+     <sqlMap resource="ibatis/resource/resource-user-sqlmap-mapping.xml"/> 
+	 <!-- <sqlMap resource="ibatis/resource/resource-film-sqlmap-mapping.xml"/> -->	
+	 <sqlMap resource="ibatis/resource/resource-serialize-sqlmap-mapping.xml"/>	
+	 <sqlMap resource="ibatis/resource/resource-diary-sqlmap-mapping.xml"/>	
+	  <sqlMap resource="ibatis/resource/resource-post-sqlmap-mapping.xml"/>	
+	  <sqlMap resource="ibatis/resource/resource-bkcomment-sqlmap-mapping.xml"/>	
+	  <sqlMap resource="ibatis/resource/resource-mybk-sqlmap-mapping.xml"/>
+	  <!-- 影单相关信息 -->
+	  <sqlMap resource="ibatis/resource/resource-movie-sqlmap-mapping.xml"/>
+	  <sqlMap resource="ibatis/resource/resource-movietalk-sqlmap-mapping.xml"/>
+	  <!-- 书单相关 -->
+	  <sqlMap resource="ibatis/resource/resource-booktalk-sqlmap-mapping.xml"/>
+	<!--   <sqlMap resource="ibatis/resource/resource-filmlist-sqlmap-mapping.xml"/> -->
+	  <sqlMap resource="ibatis/resource/resource-mvcomment-sqlmap-mapping.xml"/>
+	  <!-- 逼格相关 -->
+	  <sqlMap resource="ibatis/resource/resource-big-sqlmap-mapping.xml"/>
+	  
+	  <sqlMap resource="ibatis/resource/resource-report-sqlmap-mapping.xml"/>
+	  
+	  <sqlMap resource="ibatis/resource/resource-link-sqlmap-mapping.xml"/>
+	  
+	   <sqlMap resource="ibatis/resource/resource-statistic-sqlmap-mapping.xml"/>
+	   
+	   <sqlMap resource="ibatis/resource/resource-graphicfilm-sqlmap-mapping.xml"/>
+	  <!-- 话题 -->
+	   <sqlMap resource="ibatis/resource/resource-topic-sqlmap-mapping.xml"/>
+	   <!-- 长文章 -->
+	   <sqlMap resource="ibatis/resource/resource-article-sqlmap-mapping.xml"/>
+	   <!-- 根据评论数量的资源排行 -->
+	   <sqlMap resource="ibatis/resource/resource-ranking-sqlmap-mapping.xml"/>
+	   <!-- 精选 -->
+	   <sqlMap resource="ibatis/resource/resource-selected-sqlmap-mapping.xml"/>
+	   <!-- 精选资源 -->
+	   <sqlMap resource="ibatis/resource/resource-selectedres-sqlmap-mapping.xml"/>
+	   <!-- 排行榜，上周回幕榜 -->
+	   <sqlMap resource="ibatis/resource/resource-rankinglist-sqlmap-mapping.xml"/>
+</sqlMapConfig>

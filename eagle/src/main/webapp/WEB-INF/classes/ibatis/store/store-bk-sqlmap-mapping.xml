@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd" >
+<sqlMap namespace="storebk">
+	
+	<typeAlias alias="bk" type="com.poison.store.model.BkInfo" />
+	
+	<resultMap id="BkResult" class="bk">
+		<result column="id" property="id" jdbcType="INT" />
+		<result column="book_url" property="bookUrl" jdbcType="VARCHAR" />
+		<result column="book_pic" property="bookPic" jdbcType="VARCHAR" />
+		<result column="name" property="name" jdbcType="VARCHAR" />
+		<result column="score" property="score" jdbcType="VARCHAR" />
+		<result column="author_name" property="authorName" jdbcType="VARCHAR" />
+		<result column="translator" property="translator" jdbcType="VARCHAR" />
+		<result column="press" property="press" jdbcType="BIGINT" />
+		<result column="original_name" property="originalName" jdbcType="VARCHAR" />
+		<result column="subtitle" property="subtitle" jdbcType="VARCHAR" />
+		<result column="publishing_time" property="publishingTime" jdbcType="VARCHAR" />
+		<result column="number" property="number" jdbcType="INT" />
+		<result column="price" property="price" jdbcType="VARCHAR" />
+		<result column="binding" property="binding" jdbcType="VARCHAR" />
+		<result column="series_name" property="seriesName" jdbcType="VARCHAR" />
+		<result column="tags" property="tags" jdbcType="VARCHAR" />
+		<result column="content" property="content" jdbcType="TEXT" />
+		<result column="author_info" property="authorInfo" jdbcType="TEXT" />
+		<result column="catalog" property="catalog" jdbcType="TEXT" />
+		<result column="series_info" property="seriesInfo" jdbcType="TEXT" />
+		<result column="isbn" property="isbn" jdbcType="VARCHAR" />
+		<result column="coll_time" property="collTime" jdbcType="INT" />
+		<result column="sales_volume" property="salesVolume" jdbcType="VARCHAR" />
+		<result column="ranking_list" property="rankingList" jdbcType="VARCHAR" />
+	</resultMap>
+	
+	<select id="findBkInfo" resultMap="BkResult" parameterClass="int">
+		select id,book_url,book_pic,`name`,score,author_name,translator,press,original_name,subtitle,publishing_time,number,price,binding,series_name,tags,content,author_info,catalog,series_info,isbn,coll_time,sales_volume,ranking_list from c_db_bk where id=#id#
+	</select>
+	
+	<select id="findBkInfoByIsbn" resultMap="BkResult" parameterClass="java.lang.String">
+		select id,book_url,book_pic,`name`,score,author_name,translator,press,original_name,subtitle,publishing_time,number,price,binding,series_name,tags,content,author_info,catalog,series_info,isbn,coll_time,sales_volume,ranking_list from c_db_bk where isbn=#isbn#
+	</select>
+	
+	<select id="findBkInfoBybookurl" resultMap="BkResult" parameterClass="java.lang.String">
+		select id,book_url,book_pic,`name`,score,author_name,translator,press,original_name,subtitle,publishing_time,number,price,binding,series_name,tags,content,author_info,catalog,series_info,isbn,coll_time,sales_volume,ranking_list from c_db_bk where book_url=#bookurl#
+	</select>
+	
+	<select id="findBkInfoByName" resultMap="BkResult" parameterClass="java.lang.String">
+		select id,book_url,book_pic,`name`,score,author_name,translator,press,original_name,subtitle,publishing_time,number,price,binding,series_name,tags,content,author_info,catalog,series_info,isbn,coll_time,sales_volume,ranking_list from c_db_bk where name=#name# limit 0,10
+	</select>
+	
+	<select id="findBkInfoByLikeName" resultMap="BkResult" parameterClass="java.lang.String">
+		select id,book_url,book_pic,`name`,score,author_name,translator,press,original_name,subtitle,publishing_time,number,price,binding,series_name,tags,content,author_info,catalog,series_info,isbn,coll_time,sales_volume,ranking_list from c_db_bk where name like concat('%', #name#, '%') limit 0,10
+	</select>
+	
+	<insert id="insertintoBkInfo" parameterClass="bk">
+		insert into c_db_bk(book_url,book_pic,name,score,author_name,translator,press,original_name,subtitle,publishing_time,number,price,binding,series_name,tags,content,author_info,catalog,series_info,isbn,coll_time) values(#bookUrl#,#bookPic#,#name#,#score#,#authorName#,#translator#,#press#,#originalName#,#subtitle#,#publishingTime#,#number#,#price#,#binding#,#seriesName#,#tags#,#content#,#authorInfo#,#catalog#,#seriesInfo#,#isbn#,#collTime#)
+		 <selectKey resultClass="int" keyProperty="id" >
+		     SELECT @@IDENTITY AS id
+		   </selectKey>
+	</insert>
+	<select id="findBkInfosByIds" resultMap="BkResult" parameterClass="java.util.Map">
+		select id,book_url,book_pic,`name`,score,author_name,translator,press,original_name,subtitle,publishing_time,number,price,binding,series_name,tags,content,author_info,catalog,series_info,isbn,coll_time,sales_volume,ranking_list from c_db_bk where id in ($ids$)
+	</select>
+</sqlMap>

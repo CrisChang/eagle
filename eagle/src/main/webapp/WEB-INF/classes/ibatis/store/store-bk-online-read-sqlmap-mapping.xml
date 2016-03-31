@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd" >
+<sqlMap namespace="onlineRead">
+	
+	<typeAlias alias="bkOlineRead" type="com.poison.store.model.OnlineRead" />
+	
+	<resultMap id="bkOlineReadResult" class="bkOlineRead">
+		<result column="id" property="id" jdbcType="BIGINT" />
+		<result column="bk_id" property="bkId" jdbcType="INT" />
+		<result column="online_read" property="onlineRead" jdbcType="VARCHAR" />
+		<result column="is_delete" property="isDelete" jdbcType="INT" />
+		<result column="other" property="other" jdbcType="VARCHAR" />
+		<result column="create_date" property="createDate" jdbcType="BIGINT" />
+		<result column="latest_revision_date" property="latestRevisionDate" jdbcType="BIGINT" />
+		<result column="two_dimension_code" property="twoDimensionCode" jdbcType="VARCHAR" />
+		<result column="res_type" property="resType" jdbcType="VARCHAR" />
+	</resultMap>
+	
+	<insert id="insertintoBkOnLineRead" parameterClass="bkOlineRead">
+		insert into bk_online_read(id,bk_id,online_read,is_delete,other,create_date,latest_revision_date,two_dimension_code) values(#id#,#bkId#,#onlineRead#,#isDelete#,#other#,#createDate#,#latestRevisionDate#,#twoDimensionCode#)
+	</insert>
+	
+	<update id="updateBkOnLineRead" parameterClass="bkOlineRead" >
+		update bk_online_read set two_dimension_code = #twoDimensionCode#,latest_revision_date = #latestRevisionDate# where bk_id = #bkId# and is_delete = 0
+	</update>
+	
+	<select id="findOnlineReadByBkId" resultMap="bkOlineReadResult" parameterClass="java.util.Map">
+		select id,bk_id,online_read,is_delete,other,create_date,latest_revision_date,two_dimension_code,res_type from bk_online_read where bk_id=#bkId# and  res_type = #resType#  and is_delete = 0
+	</select>
+	
+</sqlMap>

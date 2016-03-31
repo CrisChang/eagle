@@ -1,0 +1,133 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd" >
+<sqlMap namespace="selected">
+
+    <typeAlias alias="Selected" type="com.poison.resource.model.Selected"/>   
+   <!--  精选表 -->
+	<resultMap id="selectedResult" class="Selected">
+		<result column="id" property="id" jdbcType="BIGINT" />
+		<result column="resid" property="resid" jdbcType="BIGINT" />
+		<result column="type" property="type" jdbcType="VARCHAR" />
+		<result column="score" property="score" jdbcType="BIGINT" />
+		<result column="isdel" property="isdel" jdbcType="INT" />
+		<result column="createtime" property="createtime" jdbcType="BIGINT" />
+		<result column="updatetime" property="updatetime" jdbcType="BIGINT" />
+		<result column="info" property="info" jdbcType="VARCHAR" />
+		<result column="image" property="image" jdbcType="VARCHAR" />
+		<result column="userid" property="userid" jdbcType="BIGINT" />
+		<result column="topshow" property="topshow" jdbcType="BIGINT" />
+ 	</resultMap>
+ 	
+	
+	<!-- 根据精选值排序 查询精选列表 (不包含用户)-->
+	<select id="findSelectedByScore"  resultMap="selectedResult"  parameterClass="java.util.Map">
+		select * from selected where isdel=0 and type!=32 and userid=0
+		<isNotNull prepend="AND" property="score">
+			<![CDATA[ score< #score# ]]>
+		</isNotNull>
+		and !((type='3' or type='6' or type='7') and (info='' or info is null))
+		order by score desc limit 0,#pageSize#
+	</select>
+	
+	<!-- 根据精选值排序 查询精选列表 (不包含用户和置顶的资源)-->
+	<select id="findSelectedByScoreWithoutTopshow"  resultMap="selectedResult"  parameterClass="java.util.Map">
+		select * from selected where isdel=0 and type!=32 and userid=0 and topshow=0
+		<isNotNull prepend="AND" property="score">
+			score> #score#
+		</isNotNull>
+		and createtime > #starttime# and <![CDATA[ createtime<=#endtime# ]]> and !((type='3' or type='6' or type='7') and (info='' or info is null))
+		order by score limit 0,#pageSize#
+	</select>
+	
+	<!-- 随机查询精选列表 (不包含用户和置顶的资源)-->
+	<select id="findSelectedRandomWithoutTopshow"  resultMap="selectedResult"  parameterClass="java.util.Map">
+		select * from selected where isdel=0 and type!=32 and userid=0 and topshow=0 and !((type='3' or type='6' or type='7') and (info='' or info is null))
+		<isNotNull prepend="AND" property="starttime">
+			createtime>= #starttime#
+		</isNotNull>
+		<isNotNull prepend="AND" property="endtime">
+			<![CDATA[ createtime< #endtime# ]]>
+		</isNotNull>
+		ORDER BY RAND() LIMIT #pageSize#
+	</select>
+	
+	<!-- 根据置顶值排序 查询精选列表 (只是置顶的资源)-->
+	<select id="findSelectedByTopshow"  resultMap="selectedResult">
+		select * from selected where isdel=0 and type!=32 and userid=0 and topshow>0 and !((type='3' or type='6' or type='7') and (info='' or info is null)) order by topshow desc
+	</select>
+	
+	<!-- 查询精选的数量（不包含用户） -->
+	<select id="getSelectedCount"  parameterClass="long" resultClass="long">
+		select count(1) from selected where isdel=0 and type!=32
+	</select>
+	
+	<!-- 根据精选值排序 查询精选用户列表 -->
+	<select id="findSelectedUserByScore"  resultMap="selectedResult"  parameterClass="java.util.Map">
+		select * from selected where isdel=0 and type=32
+		<isNotNull prepend="AND" property="score">
+			<![CDATA[ score< #score# ]]>
+		</isNotNull>
+		order by score desc limit 0,#pageSize#
+	</select>
+	
+	<!-- 根据推荐用户 id查询推荐用户的关联资源 -->
+	<select id="findSelectedUserResource"  resultMap="selectedResult"  parameterClass="java.util.Map">
+		select * from selected where isdel=0 and userid in
+		<iterate property="useridList" open="(" close=")"  conjunction=",">
+		#useridList[]#
+		</iterate>
+	</select>
+	
+	<!-- 根据资源id和资源类型查询 -->
+	<select id="findSelectedByResidAndType"  resultMap="selectedResult"  parameterClass="java.util.Map">
+		select * from selected where resid=#resid# and type=#type# and isdel=0
+	</select>
+	
+	<!-- 根据资源id和资源类型查询 -->
+	<select id="findSelectedByIdOrderDesc"  resultMap="selectedResult" >
+		select * from selected where isdel=0 and type!=32 and userid=0 and topshow=0 and !((type='3' or type='6' or type='7') and (info='' or info is null)) order by id desc limit 0,10
+	</select>
+	
+	<!-- 查询大于id的精选列表 -->
+	<select id="findSelectedOrderId"  resultMap="selectedResult" parameterClass="int">
+		select * from selected where isdel=0 and type!=32 and userid=0 and topshow=0 and !((type='3' or type='6' or type='7') and (info='' or info is null)) and <![CDATA[ id > #bigIndex# ]]> order by id desc limit 0,10
+	</select>
+	
+	<!-- 查询两者之间的精选列表 -->
+	<select id="findSelectedByMiddle"  resultMap="selectedResult" parameterClass="java.util.Map">
+		select * from selected where isdel=0 and type!=32 and userid=0 and topshow=0 and !((type='3' or type='6' or type='7') and (info='' or info is null)) and  <![CDATA[ id > #secondIndex# ]]> and <![CDATA[ id < #firstIndex# ]]> and <![CDATA[ createtime > #timeSeparation# ]]>  order by id desc limit 0,#pageSize#
+	</select>
+
+
+	<typeAlias alias="OperationSelected" type="com.poison.resource.model.OperationSelected"/>
+	<!--  精选表 -->
+	<resultMap id="operationSelectedResult" class="OperationSelected">
+		<result column="id" property="id" jdbcType="BIGINT" />
+		<result column="resid" property="resid" jdbcType="BIGINT" />
+		<result column="type" property="type" jdbcType="VARCHAR" />
+		<result column="isdel" property="isdel" jdbcType="INT" />
+		<result column="createtime" property="createtime" jdbcType="BIGINT" />
+		<result column="updatetime" property="updatetime" jdbcType="BIGINT" />
+		<result column="info" property="info" jdbcType="VARCHAR" />
+		<result column="image" property="image" jdbcType="VARCHAR" />
+		<result column="userid" property="userid" jdbcType="BIGINT" />
+		<result column="topshow" property="topshow" jdbcType="BIGINT" />
+		<result column="resuserid" property="resuserid" jdbcType="BIGINT" />
+	</resultMap>
+
+	<!-- 查询大于id的运营精选列表 -->
+	<select id="findOperationSelectedOrderId"  resultMap="operationSelectedResult" parameterClass="int">
+		select * from operation_selected where isdel=0 and type!=32 and userid=0 and topshow=0 and !((type='3' or type='6' or type='7') and (info='' or info is null)) and <![CDATA[ id > #bigIndex# ]]> order by id desc limit 0,10
+	</select>
+
+	<!-- 查询两者之间的精选列表 -->
+	<select id="findOperationSelectedByMiddle"  resultMap="operationSelectedResult" parameterClass="java.util.Map">
+		select * from operation_selected where isdel=0 and type!=32 and userid=0 and topshow=0 and !((type='3' or type='6' or type='7') and (info='' or info is null)) and  <![CDATA[ id > #secondIndex# ]]> and <![CDATA[ id < #firstIndex# ]]> and <![CDATA[ createtime > #timeSeparation# ]]>  order by id desc limit 0,#pageSize#
+	</select>
+
+	<!-- 根据资源id和资源类型查询 -->
+	<select id="findOperationSelectedByIdOrderDesc"  resultMap="selectedResult" >
+		select * from operation_selected where isdel=0 and type!=32 and userid=0 and topshow=0 and !((type='3' or type='6' or type='7') and (info='' or info is null)) order by id desc limit 0,10
+	</select>
+
+</sqlMap>

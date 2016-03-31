@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd" >
+<sqlMap namespace="movieStills">
+	
+	<typeAlias alias="mvOlineStills" type="com.poison.store.model.MovieStills" />
+	
+	<resultMap id="mvOlineStillsResult" class="mvOlineStills">
+		<result column="id" property="id" jdbcType="BIGINT" />
+		<result column="mv_id" property="mvId" jdbcType="BIGINT" />
+		<result column="movie_stills" property="movieStills" jdbcType="VARCHAR" />
+		<result column="is_delete" property="isDelete" jdbcType="INT" />
+		<result column="other" property="other" jdbcType="VARCHAR" />
+		<result column="create_date" property="createDate" jdbcType="BIGINT" />
+		<result column="latest_revision_date" property="latestRevisionDate" jdbcType="BIGINT" />
+		<result column="two_dimension_code" property="twoDimensionCode" jdbcType="VARCHAR" />
+	</resultMap>
+	
+	<update id="updateMvStills" parameterClass="mvOlineStills">
+		update mv_online_stills set movie_stills=#movieStills#,latest_revision_date=#latestRevisionDate# where mv_id=#mvId# and is_delete = 0
+	</update>
+	
+	<update id="updateMvTwoDimensionCode" parameterClass="mvOlineStills">
+		update mv_online_stills set two_dimension_code=#twoDimensionCode#,latest_revision_date=#latestRevisionDate# where mv_id=#mvId# and is_delete = 0
+	</update>
+	
+	<update id="updateMvOther" parameterClass="mvOlineStills">
+		update mv_online_stills set other=#other#,latest_revision_date=#latestRevisionDate# where mv_id=#mvId# and is_delete = 0
+	</update>
+	
+	<insert id="insertintoMvOlineStills" parameterClass="mvOlineStills">
+		insert into mv_online_stills(id,mv_id,movie_stills,is_delete,other,create_date,latest_revision_date,two_dimension_code) values(#id#,#mvId#,#movieStills#,#isDelete#,#other#,#createDate#,#latestRevisionDate#,#twoDimensionCode#)
+	</insert>
+	
+	<select id="findMvOlineStillsByBkId" resultMap="mvOlineStillsResult" parameterClass="long">
+		select id,mv_id,movie_stills,is_delete,other,create_date,latest_revision_date,two_dimension_code from mv_online_stills where mv_id=#mvId# and is_delete = 0
+	</select>
+	
+	
+</sqlMap>

@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd" >
+<sqlMap namespace="feedback">
+	
+	<typeAlias alias="userfeedback" type="com.poison.ucenter.model.UserFeedBack" />
+	
+	<resultMap id="userfeedbackResult" class="userfeedback">
+		<result column="id" property="id" jdbcType="BIGINT" />
+		<result column="user_id" property="userId" jdbcType="BIGINT" />
+		<result column="resource_id" property="resourceId" jdbcType="VARCHAR" />
+		<result column="res_type" property="resType" jdbcType="VARCHAR" />
+		<result column="description" property="description" jdbcType="TEXT" />
+		<result column="other_info" property="otherInfo" jdbcType="TEXT" />
+		<result column="is_delete" property="isDelete" jdbcType="TINYINT" />
+		<result column="create_date" property="createDate" jdbcType="BIGINT" />
+		<result column="latest_revision_date" property="latestRevisionDate" jdbcType="BIGINT" />
+	</resultMap>
+	
+	<!--插入用户反馈信息  -->
+	<insert id="insertintoUserfeedback" parameterClass="userfeedback">
+		insert into user_feedback (id,user_id,resource_id,res_type,description,other_info,create_date,latest_revision_date)values(#id#,#userId#,#resourceId#,#resType#,#description#,#otherInfo#,#createDate#,#latestRevisionDate#)
+	</insert>
+	
+	<select id="findUserfeedback" resultMap="userfeedbackResult" parameterClass="long">
+		select * from user_feedback where id = #id# and is_delete = 0
+	</select>
+	
+</sqlMap>

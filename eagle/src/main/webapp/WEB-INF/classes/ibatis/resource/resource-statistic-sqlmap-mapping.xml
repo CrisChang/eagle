@@ -1,0 +1,122 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd" >
+<sqlMap namespace="resourcestatistic">
+
+    <typeAlias alias="resstatistic" type="com.poison.resource.model.ResStatistic"/>   
+	<resultMap id="resstatisticResult" class="resstatistic">
+		<result column="id" property="id" jdbcType="BIGINT"/>
+		<result column="res_id" property="resId" jdbcType="BIGINT"/>
+		<result column="type" property="type" jdbcType="VARCHAR"/>
+		<result column="false_visit" property="falseVisit" jdbcType="BIGINT"/>
+		<result column="visit_number" property="visitNumber" jdbcType="BIGINT"/>
+		<result column="is_delete" property="isDelete" jdbcType="INT"/>
+		<result column="latest_revision_date" property="latestRevisionDate" jdbcType="BIGINT"/>
+		<result column="praise_number" property="praiseNumber" jdbcType="BIGINT"/>
+		<result column="comment_number" property="commentNumber" jdbcType="BIGINT"/>
+		<result column="reward_number" property="rewardNumber" jdbcType="BIGINT"/>
+		<result column="read_number" property="readNumber" jdbcType="BIGINT"/>
+		<result column="read_random_number" property="readRandomNumber" jdbcType="BIGINT"/>
+		<result column="useful_number" property="usefulNumber" jdbcType="BIGINT"/>
+		<result column="nouseful_number" property="nousefulNumber" jdbcType="BIGINT"/>
+		<result column="res_link_id" property="resLinkId" jdbcType="BIGINT"/>
+		<result column="res_link_type" property="resLinkType" jdbcType="VARCHAR"/>
+		<result column="heat_number" property="heatNumber" jdbcType="BIGINT" nullValue="0"/>
+		<result column="search_number" property="searchNumber" jdbcType="BIGINT" nullValue="0"/>
+		<result column="total_search_number" property="totalSearchNumber" jdbcType="BIGINT" nullValue="0"/>
+		<result column="activity_stage_id" property="activityStageId" jdbcType="BIGINT" nullValue="0"/>
+	</resultMap>
+	
+	<!-- 创建统计信息-->
+	<insert id="insertResStatistic" parameterClass="resstatistic">
+		insert into resource_statistic(res_id,type,false_visit,visit_number,latest_revision_date,praise_number,comment_number,reward_number,read_number,read_random_number,useful_number,nouseful_number,res_link_id,res_link_type,heat_number,search_number,total_search_number,activity_stage_id)
+		values(#resId#,#type#,#falseVisit#,#visitNumber#,#latestRevisionDate#,#praiseNumber#,#commentNumber#,#rewardNumber#,#readNumber#,#readRandomNumber#,#usefulNumber#,#nousefulNumber#,#resLinkId#,#resLinkType#,#heatNumber#,#searchNumber#,#totalSearchNumber#,#activityStageId#)
+	</insert>
+	
+	<select id="findResStatisticById"  resultMap="resstatisticResult" parameterClass="resstatistic">
+		select id,res_id,type,false_visit,visit_number,is_delete,latest_revision_date,praise_number,comment_number,reward_number,read_number,read_random_number,useful_number,nouseful_number,res_link_id,res_link_type,heat_number,search_number,total_search_number,activity_stage_id from resource_statistic 
+		<dynamic prepend="WHERE">
+	      <isNotNull prepend="AND" property="resId">
+	         res_id = #resId#
+	      </isNotNull>
+	      <isNotNull prepend="AND" property="type">
+	         type = #type#
+	      </isNotNull>
+	      
+	   </dynamic>
+	</select>
+	<!-- select id,res_id,type,false_visit,visit_number,is_delete,latest_revision_date,praise_number,comment_number,reward_number,read_number from resource_statistic where res_id=#resId# and type = #type# -->
+	
+	<!-- 不更新: res_link_id=#resLinkId#,res_link_type=#resLinkType# -->
+	<update id="updateResStatistic" parameterClass="resstatistic">
+		update resource_statistic set false_visit=#falseVisit#,visit_number=#visitNumber#,latest_revision_date=#latestRevisionDate#,praise_number=#praiseNumber#,comment_number=#commentNumber#,reward_number=#rewardNumber#,read_number=#readNumber#,read_random_number=#readRandomNumber#,useful_number=#usefulNumber#,nouseful_number=#nousefulNumber#,heat_number=#heatNumber#,search_number=#searchNumber#,total_search_number=#totalSearchNumber#,res_link_id=#resLinkId#,res_link_type=#resLinkType#,activity_stage_id=#activityStageId# where res_id=#resId# and type = #type# and <![CDATA[ read_random_number<= #readRandomNumber# ]]>
+	</update>
+	
+	<!--根据点赞数查询排行  -->
+	<select id="findResStatisticRankByPraise"  resultMap="resstatisticResult" parameterClass="java.util.Map">
+		select id,res_id,type,false_visit,visit_number,is_delete,latest_revision_date,praise_number,comment_number,reward_number,read_number,read_random_number,useful_number,nouseful_number,res_link_id,res_link_type,heat_number,search_number,total_search_number,activity_stage_id from resource_statistic where res_link_id = #resLinkId# and res_link_type = #resLinkType#
+		order by praise_number desc limit #pageIndex#,#pageSize#
+	</select>
+	
+	<!--根据有用数查询排行(某个参赛阶段的)  -->
+	<select id="findResStatisticRankByUseful"  resultMap="resstatisticResult" parameterClass="java.util.Map">
+		select id,res_id,type,false_visit,visit_number,is_delete,latest_revision_date,praise_number,comment_number,reward_number,read_number,read_random_number,useful_number,nouseful_number,res_link_id,res_link_type,heat_number,search_number,total_search_number,activity_stage_id from resource_statistic where res_link_id = #resLinkId# and res_link_type = #resLinkType# and activity_stage_id = #activityStageId#
+		order by useful_number desc limit #pageIndex#,#pageSize#
+	</select>
+
+	<!--根据有用数查询排行,查询长影评  -->
+	<select id="findResStatisticRankByUsefulAndType"  resultMap="resstatisticResult" parameterClass="java.util.Map">
+		select id,res_id,type,false_visit,visit_number,is_delete,latest_revision_date,praise_number,comment_number,reward_number,read_number,read_random_number,useful_number,nouseful_number,res_link_id,res_link_type,heat_number,search_number,total_search_number,activity_stage_id from resource_statistic where res_link_id = #resLinkId# and res_link_type = #resLinkType# and activity_stage_id = #activityStageId#
+		and	type = #type#
+		order by useful_number desc limit #pageIndex#,#pageSize#
+	</select>
+	
+	<!--根据投票数查询排行（某个参赛阶段的）  -->
+	<select id="findResStatisticRankByVoteNum"  resultMap="resstatisticResult" parameterClass="java.util.Map">
+		select id,res_id,type,false_visit,visit_number,is_delete,latest_revision_date,praise_number,comment_number,reward_number,read_number,read_random_number,useful_number,nouseful_number,res_link_id,res_link_type,heat_number,search_number,total_search_number,activity_stage_id from resource_statistic where activity_stage_id = #activityStageId#
+		order by heat_number desc limit #pageIndex#,#pageSize#
+	</select>
+	<!-- 根据阅读数查询排行（某个类型资源的） -->
+	<select id="findResStatisticRankByReadNum"  resultMap="resstatisticResult" parameterClass="java.util.Map">
+		select id,res_id,type,false_visit,visit_number,is_delete,latest_revision_date,praise_number,comment_number,reward_number,read_number,read_random_number,useful_number,nouseful_number,res_link_id,res_link_type,heat_number,search_number,total_search_number,activity_stage_id from resource_statistic where is_delete=0 and (type = #type# 
+		<isNotNull prepend="OR" property="secondtype">
+	         type = #secondtype#
+	    </isNotNull>)
+		order by read_number+read_random_number desc limit #pageIndex#,#pageSize#
+	</select>
+	
+	<!-- 根据阅读数查询排行 (不区分资源，所有资源的排行，排除了文字类型)-->
+	<select id="findAllResStatisticRankByReadNum"  resultMap="resstatisticResult" parameterClass="java.util.Map">
+		select id,res_id,type,false_visit,visit_number,is_delete,latest_revision_date,praise_number,comment_number,reward_number,read_number,read_random_number,useful_number,nouseful_number,res_link_id,res_link_type,heat_number,search_number,total_search_number,activity_stage_id from resource_statistic where is_delete=0 and type!='3'
+		order by read_number+read_random_number desc limit #pageIndex#,#pageSize#
+	</select>
+
+	<!--查询热门评论数  -->
+	<select id="findResStatisticCountByLinkIdAndType"  resultClass="int" parameterClass="java.util.Map">
+		select count(1) from resource_statistic where type = #type# and res_link_id = #resLinkId#
+	</select>
+	
+	<typeAlias alias="rescollectnum" type="com.poison.resource.model.ResCollectNum"/>   
+	<resultMap id="rescollectnumResult" class="rescollectnum">
+		<result column="id" property="id" jdbcType="BIGINT"/>
+		<result column="res_id" property="resId" jdbcType="BIGINT"/>
+		<result column="type" property="type" jdbcType="VARCHAR"/>
+		<result column="false_collect_num" property="falseCollectNum" jdbcType="BIGINT"/>
+		<result column="is_collected_num" property="isCollectedNum" jdbcType="BIGINT"/>
+		<result column="is_delete" property="isDelete" jdbcType="INT"/>
+		<result column="latest_revision_date" property="latestRevisionDate" jdbcType="BIGINT"/>
+	</resultMap>
+	
+	<insert id="insertRescollectnum" parameterClass="rescollectnum">
+		insert into resource_collect_num(res_id,type,false_collect_num,is_collected_num,latest_revision_date)
+		values(#resId#,#type#,#falseCollectNum#,#isCollectedNum#,#latestRevisionDate#)
+	</insert>
+	
+	<select id="findRescollectnumById"  resultMap="rescollectnumResult" parameterClass="rescollectnum">
+		select id,res_id,type,false_collect_num,is_collected_num,is_delete,latest_revision_date from resource_collect_num where res_id=#resId# and type=#type#
+	</select>
+	
+	<update id="updateRescollectnum" parameterClass="rescollectnum">
+		update resource_collect_num set false_collect_num=#falseCollectNum#,is_collected_num=#isCollectedNum#,latest_revision_date=#latestRevisionDate# where res_id=#resId# and type = #type#
+	</update>
+	
+</sqlMap>

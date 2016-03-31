@@ -1,0 +1,152 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd" >
+<sqlMap namespace="diary">
+
+    <typeAlias alias="Diary" type="com.poison.resource.model.Diary"/>   
+   <!--   日记表信息 -->
+	<resultMap id="resultDiary" class="Diary">
+		<result column="id" property="id" jdbcType="Long"/>
+		<result column="uid" property="uid" jdbcType="Long"/>
+		<result column="begin_date" property="beginDate" jdbcType="Long"/>
+		<result column="end_date" property="endDate" jdbcType="Long"/>
+		<result column="content" property="content" jdbcType="VARCHAR"/>
+		<result column="type" property="type" jdbcType="VARCHAR"/>
+		<result column="isDel" property="isDel" jdbcType="Long"/>
+		<result column="lon" property="lon" jdbcType="VARCHAR"/>
+		<result column="lat" property="lat" jdbcType="VARCHAR"/>
+		<result column="location_name" property="locationName" jdbcType="VARCHAR"/>
+		<result column="location_city" property="locationCity" jdbcType="VARCHAR"/>
+		<result column="location_area" property="locationArea" jdbcType="VARCHAR"/>
+		<result column="title" property="title" jdbcType="VARCHAR"/>
+		<result column="cover" property="cover" jdbcType="VARCHAR"/>
+		<result column="tag" property="tag" jdbcType="VARCHAR"/>
+	</resultMap>
+	
+	<!-- 创建日记-->
+	<insert id="addDiary" parameterClass="Diary">
+		insert into diary(id,uid,begin_date,end_date,content,type,isDel,lon,lat,location_name,location_city,location_area,title,cover)
+		values(#id#,#uid#,#beginDate#,#endDate#,#content#,#type#,#isDel#,#lon#,#lat#,#locationName#,#locationCity#,#locationArea#,#title#,#cover#)
+	</insert>
+	
+	<!-- 根据类型修改当前日记 -->
+	<update id="updateDiary" parameterClass="com.poison.resource.model.Diary">
+		update diary set content=#content#,end_date=#endDate# ,uid=#uid# where id=#id# and isDel=0
+	</update>
+	<!-- 删除当前日记 -->
+	<update id="deleteDiary" parameterClass="long">
+		update diary set isDel=1 where id=#id# 
+	</update>
+	
+	<!-- 根据当前用户名查询 日记-->
+	<select id="queryDiaryByUid"  resultClass="Diary">
+		select id,uid,begin_date,end_date,content,type,isDel,lon,lat,location_name,location_city,location_area,title,cover,tag from diary where uid=#uid# and isDel=0 order by id desc
+	</select>
+	
+	<select id="findDiaryCount"  resultClass="int" parameterClass="long">
+		select count(1) from diary where uid=#userId# and isDel=0 
+	</select>
+	
+	<!-- 按时间查询最新书单列表 -->
+	<select id="findDiaryListByDate" resultClass="com.poison.resource.model.Diary" resultMap="resultDiary">
+		select id,uid,begin_date,end_date,content,type,isDel,lon,lat,location_name,location_city,location_area,title,cover,tag from diary where isDel = 0 order by id desc limit 0,10
+	</select>
+	
+	<select  id="findDiaryListById" resultClass="com.poison.resource.model.Diary" resultMap="resultDiary" >
+		select id,uid,begin_date,end_date,content,type,isDel,lon,lat,location_name,location_city,location_area,title,,tag from diary where isDel = 0 and  <![CDATA[ id< #id# ]]>  order by id desc limit 0,10
+	</select>
+	
+	<select  id="findDiaryList" resultClass="java.lang.Long" resultMap="resultDiary" >
+		select id,uid,begin_date,end_date,content,type,isDel,lon,lat,location_name,location_city,location_area,title,cover,tag from diary where isDel = 0
+		<isNotNull prepend="AND">
+			<![CDATA[ id< #id# ]]>
+		</isNotNull> 
+		order by id desc limit 0,50
+	</select>
+	
+	<!-- 根据当类型查询 日记-->
+	<select id="queryType" parameterClass="java.util.Map" resultMap="resultDiary">
+		select id,uid,begin_date,end_date,content,type,isDel,lon,lat,location_name,location_city,location_area,title,cover,tag from diary where uid=#uid# and type=#type# and isDel=0 order by begin_date desc
+	</select>
+	
+	<!-- 根据当类型查询所有 日记-->
+	<select id="queryAllType" parameterClass="java.lang.String" resultMap="resultDiary">
+		select id,uid,begin_date,end_date,content,type,isDel,lon,lat,location_name,location_city,location_area,title,cover,tag from diary where  type=#type# and isDel=0 order by id desc limit 0,10
+	</select>
+	
+	<!-- 实体根据主键id查询日记内容 -->
+	<select id="queryByIdDiary" resultMap="resultDiary">
+		select id,uid,begin_date,end_date,content,type,isDel,lon,lat,location_name,location_city,location_area,title,cover,tag from diary where id=#id#
+	</select>
+	
+	<!-- 实体根据主键id查询日记内容 -->
+	<select id="queryByIdDiaryWithoutDel" resultMap="resultDiary">
+		select id,uid,begin_date,end_date,content,type,isDel,lon,lat,location_name,location_city,location_area,title,cover,tag from diary where id=#id# and isDel=0
+	</select>
+	
+	
+	<select id="findDiaryListByUsersId"  parameterClass="java.util.Map" resultMap="resultDiary">
+		select id,uid,begin_date,end_date,content,type,isDel,lon,lat,location_name,location_city,location_area,title,cover,tag from diary where isDel = 0 and uid in
+		<iterate property="usersIdList" open="(" close=")"  conjunction=",">
+			#usersIdList[]#
+		</iterate>
+		<isNotNull prepend="AND" property="resId">
+			<![CDATA[ id< #resId# ]]>
+		</isNotNull>
+		order by id desc limit 0,10
+	</select>
+	
+	<!--查询一个日志的详情  -->
+	<select id="findDiaryListByUserId"  parameterClass="java.util.Map" resultMap="resultDiary">
+		select id,uid,begin_date,end_date,content,type,isDel,lon,lat,location_name,location_city,location_area,title,cover,tag from diary where isDel = 0 and
+		uid = #userId#
+		<isNotNull prepend="AND" property="resId">
+			<![CDATA[ id< #resId# ]]>
+		</isNotNull>
+		order by id desc limit 0,20
+	</select>
+	
+	
+	<!-- 根据标题和内容模糊查询，查询某个时间段的 -->
+	<select id="searchDiaryByLike" parameterClass="java.util.Map" resultMap="resultDiary">
+		select id,uid,begin_date,end_date,content,type,isDel,lon,lat,location_name,location_city,location_area,title,cover,tag from diary where isDel = 0 and uid = #userId#
+		<isNotNull prepend="AND" property="keyword">
+		 (title like concat('%', #keyword#, '%') or content like concat('%', #keyword#, '%'))
+		 </isNotNull>
+		<isNotNull prepend="AND" property="starttime">
+			<![CDATA[ begin_date>=#starttime# ]]>
+		</isNotNull>
+		<isNotNull prepend="AND" property="endtime">
+			<![CDATA[ begin_date<=#endtime# ]]>
+		</isNotNull>
+		 order by id desc limit #start#,#pageSize#
+	</select>
+	<!-- 根据模糊查询的条件查询数量 -->
+	<select id="findDiaryCountByLike"  resultClass="int" parameterClass="java.util.Map">
+		select count(1) from diary where isDel = 0 and uid = #userId#
+		<isNotNull prepend="AND" property="keyword">
+		 (title like concat('%', #keyword#, '%') or content like concat('%', #keyword#, '%'))
+		 </isNotNull>
+		<isNotNull prepend="AND" property="starttime">
+			<![CDATA[ begin_date>=#starttime# ]]>
+		</isNotNull>
+		<isNotNull prepend="AND" property="endtime">
+			<![CDATA[ begin_date<=#endtime# ]]>
+		</isNotNull>
+	</select>
+	
+	<!-- 日历中动态使用 -->
+	<resultMap id="resultDiaryTime" class="Diary">
+		<result column="id" property="id" jdbcType="Long"/>
+		<result column="begin_date" property="beginDate" jdbcType="Long"/>
+	</resultMap>
+	<!--根据用户id查询一个时间段的文字时间信息 -->
+	<select id="findUserDiaryTime"  parameterClass="java.util.Map" resultMap="resultDiaryTime">
+		select id,begin_date from diary where uid=#uid# and isDel = 0 and begin_date>=#starttime# and <![CDATA[ begin_date<=#endtime# ]]>
+	</select>
+	
+	<!--根据用户id查询一个时间段的文字信息列表 -->
+	<select id="findUserDiarysByTime"  parameterClass="java.util.Map" resultMap="resultDiary">
+		select id,uid,begin_date,end_date,content,type,isDel,lon,lat,location_name,location_city,location_area,title,cover,tag from diary where uid=#uid# and isDel = 0 and begin_date>=#starttime# and <![CDATA[ begin_date<=#endtime# ]]>
+	</select>
+	
+</sqlMap>

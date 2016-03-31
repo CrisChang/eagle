@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:aop="http://www.springframework.org/schema/aop"
+	xmlns:tx="http://www.springframework.org/schema/tx"
+	xsi:schemaLocation="
+			http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-3.2.xsd
+			http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop-3.2.xsd
+			http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx-3.2.xsd"
+	default-autowire="byName">
+
+	<bean id="bkDomainRepository" class="com.poison.store.domain.repository.BkDomainRepository"/>
+	<bean id="mvDomainRepository" class="com.poison.store.domain.repository.MvDomainRepository"/>
+	<bean id="bkOnlineReadDomainRepository" class="com.poison.store.domain.repository.BkOnlineReadDomainRepository"/>
+	<bean id="mvStillsDomainRepository" class="com.poison.store.domain.repository.MvStillsDomainRepository"/>
+	<bean id="bigSelectingDomainRepository" class="com.poison.store.domain.repository.BigSelectingDomainRepository"/>
+	<bean id="popChartsDomainRepository" class="com.poison.store.domain.repository.PopChartsDomainRepository"/>
+	<!--网络小说  -->
+	<bean id="netBookDomainRepository" class="com.poison.store.domain.repository.NetBookDomainRepository"/>
+	<!-- 电影角色 -->
+	<bean id="mvActorDomainRepository" class="com.poison.store.domain.repository.MvActorDomainRepository"/>
+	<!-- 图书、电影热搜榜 -->
+	<bean id="bkSearchDomainRepository" class="com.poison.store.domain.repository.BkSearchDomainRepository"/>
+	<bean id="mvSearchDomainRepository" class="com.poison.store.domain.repository.MvSearchDomainRepository"/>
+</beans>

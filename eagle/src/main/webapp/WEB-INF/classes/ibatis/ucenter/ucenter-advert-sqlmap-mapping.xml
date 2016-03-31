@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd" >
+<sqlMap namespace="advert">
+	
+	<typeAlias alias="advert" type="com.poison.ucenter.model.Advert" />
+	
+	<resultMap id="advertResult" class="advert">
+		<result column="id" property="id" jdbcType="BIGINT" />
+		<result column="image" property="image" jdbcType="VARCHAR" />
+		<result column="url" property="url" jdbcType="VARCHAR" />
+		<result column="isdel" property="isdel" jdbcType="TINYINT" />
+		<result column="creattime" property="creattime" jdbcType="BIGINT" />
+		<result column="updatetime" property="updatetime" jdbcType="BIGINT" />
+	</resultMap>
+	
+	<!-- 查询最新的广告信息 -->
+	<select id="getAdvertInfo" resultMap="advertResult">
+		select * from advert where isdel = 0 order by id desc limit 0,1
+	</select>
+</sqlMap>

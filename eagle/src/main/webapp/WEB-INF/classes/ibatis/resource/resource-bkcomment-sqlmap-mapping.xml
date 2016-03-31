@@ -1,0 +1,242 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd" >
+<sqlMap namespace="bkComment">
+
+    <typeAlias alias="BkComment" type="com.poison.resource.model.BkComment"/>   
+   <!--   书的评论 -->
+	<resultMap id="bkCommentResult" class="BkComment">
+		<result column="id" property="id" jdbcType="BIGINT"/>
+		<result column="user_id" property="userId" jdbcType="BIGINT"/>
+		<result column="book_id" property="bookId" jdbcType="INT"/>
+		<result column="comment" property="comment" jdbcType="TEXT"/>
+		<result column="score" property="score" jdbcType="VARCHAR"/>
+		<result column="is_db" property="isDb" jdbcType="INT"/>
+		<result column="is_opposition" property="isOpposition" jdbcType="INT"/>
+		<result column="is_delete" property="isDelete" jdbcType="INT"/>
+		<result column="big_value" property="bigValue" jdbcType="FLOAT"/>
+		<result column="type" property="type" jdbcType="VARCHAR"/>
+		<result column="res_type" property="resType" jdbcType="VARCHAR"/>
+		<result column="description" property="description" jdbcType="VARCHAR"/>
+		<result column="create_date" property="createDate" jdbcType="BIGINT"/>
+		<result column="latest_revision_date" property="latestRevisionDate" jdbcType="BIGINT"/>
+		<result column="lon" property="lon" jdbcType="VARCHAR"/>
+		<result column="lat" property="lat" jdbcType="VARCHAR"/>
+		<result column="location_name" property="locationName" jdbcType="VARCHAR"/>
+		<result column="location_city" property="locationCity" jdbcType="VARCHAR"/>
+		<result column="location_area" property="locationArea" jdbcType="VARCHAR"/>
+		<result column="title" property="title" jdbcType="VARCHAR"/>
+		<result column="cover" property="cover" jdbcType="VARCHAR"/>
+		<result column="resource_type" property="resourceType" jdbcType="VARCHAR"/>
+		<result column="tag" property="tag" jdbcType="VARCHAR"/>
+	</resultMap>
+	
+	<!-- 创建书的评论-->
+	<insert id="insertBkComment" parameterClass="BkComment">
+		insert into bk_comment(id,user_id,book_id,comment,score,is_db,is_opposition,is_delete,type,res_type,create_date,latest_revision_date,lon,lat,location_name,location_city,location_area,title,cover,resource_type)
+		values(#id#,#userId#,#bookId#,#comment#,#score#,#isDb#,#isOpposition#,#isDelete#,#type#,#resType#,#createDate#,#latestRevisionDate#,#lon#,#lat#,#locationName#,#locationCity#,#locationArea#,#title#,#cover#,#resourceType#)
+	</insert>
+	
+	<select id="findBkCommentList"  parameterClass="java.util.Map" resultMap="bkCommentResult">
+		select id,user_id,book_id,`comment`,score,is_db,is_opposition,is_delete,create_date,latest_revision_date,type,res_type,big_value,description,lon,lat,location_name,location_city,location_area,title,cover,resource_type,tag from bk_comment where is_delete = 0 and is_opposition=0 and book_id =#bookId# and res_type = #resType#
+		and comment !='' and comment is not null
+		<isNotNull prepend="AND" property="resourceType">
+			<![CDATA[ resource_type= #resourceType# ]]>
+		</isNotNull>
+		<isNotNull prepend="AND" property="resId">
+			<![CDATA[ id< #resId# ]]>
+		</isNotNull>
+		order by id desc limit 0,10
+	</select>
+	
+	<select id="findBkCommentListForOld"  parameterClass="java.util.Map" resultMap="bkCommentResult">
+		select id,user_id,book_id,`comment`,score,is_db,is_opposition,is_delete,create_date,latest_revision_date,type,res_type,big_value,description,lon,lat,location_name,location_city,location_area,title,cover,resource_type,tag from bk_comment where is_delete = 0 and is_opposition=0 and book_id =#bookId# and res_type = #resType#
+		and comment !='' and comment is not null and resource_type='6'
+		<isNotNull prepend="AND" property="title">
+			title!= ''
+		</isNotNull>
+		<isNull prepend="AND" property="title">
+			title = ''
+		</isNull>
+		<isNotNull prepend="AND" property="resId">
+			<![CDATA[ id< #resId# ]]>
+		</isNotNull>
+		order by id desc limit 0,10
+	</select>
+	
+	<select id="findBkCommentListByType"  parameterClass="java.util.Map" resultMap="bkCommentResult">
+		select id,user_id,book_id,`comment`,score,is_db,is_opposition,is_delete,create_date,latest_revision_date,type,res_type,big_value,description,lon,lat,location_name,location_city,location_area,title,cover,resource_type,tag from bk_comment where is_delete = 0
+		<isNotNull prepend="AND" property="userId">
+			<![CDATA[ user_id= #userId# ]]>
+		</isNotNull>
+		<isNotNull prepend="AND" property="type">
+			<![CDATA[ type= #type# ]]>
+		</isNotNull>
+		<isNotNull prepend="AND" property="resId">
+			<![CDATA[ id< #resId# ]]>
+		</isNotNull>
+		order by id desc limit 0,10
+	</select>
+	
+	<select id="findAllBkCommentList"  resultMap="bkCommentResult" parameterClass="java.lang.Long">
+		select id,user_id,book_id,`comment`,score,is_db,is_opposition,is_delete,create_date,latest_revision_date,type,res_type,big_value,description,lon,lat,location_name,location_city,location_area,title,cover,resource_type,tag from bk_comment where is_delete = 0
+		<isNotNull prepend="AND">
+			<![CDATA[ id< #resId# ]]>
+		</isNotNull> 
+		order by id desc limit 0,50
+	</select>
+	
+	<select id="findBkOppositionCommentList"  parameterClass="java.util.Map" resultMap="bkCommentResult">
+		select id,user_id,book_id,`comment`,score,is_db,is_opposition,is_delete,create_date,latest_revision_date,type,res_type,big_value,description,lon,lat,location_name,location_city,location_area,title,cover,resource_type,tag from bk_comment where is_delete = 0 and is_opposition=1 and book_id =#bookId#
+		<isNotNull prepend="AND" property="resId">
+			<![CDATA[ id< #resId# ]]>
+		</isNotNull>
+		order by id desc limit 0,10
+	</select>
+	
+	<select id="findUserBkDefaultCommentList"  parameterClass="java.util.Map" resultMap="bkCommentResult">
+		select id,user_id,book_id,`comment`,score,is_db,is_opposition,is_delete,create_date,latest_revision_date,type,res_type,big_value,description,lon,lat,location_name,location_city,location_area,title,cover,resource_type,tag from bk_comment where where user_id=#userId# and is_delete=0 group by book_id order by id desc
+		<isNotNull prepend="AND" property="resId">
+			<![CDATA[ id< #resId# ]]>
+		</isNotNull>
+		order by id desc limit 0,10
+	</select>
+	
+	<select id="findMyBkCommentList"  parameterClass="java.util.Map" resultMap="bkCommentResult">
+		select id,user_id,book_id,`comment`,score,is_db,is_opposition,is_delete,create_date,latest_revision_date,type,res_type,big_value,description,lon,lat,location_name,location_city,location_area,title,cover,resource_type,tag from bk_comment where user_id=#userId# and book_id=#bookId#  and is_delete =0
+		<isNotNull prepend="AND" property="resId">
+			<![CDATA[ id< #resId# ]]>
+		</isNotNull>
+		order by id desc limit 0,10
+	</select>
+	
+		<select id="findCommentListByUserId"  parameterClass="java.util.Map" resultMap="bkCommentResult">
+		select id,user_id,book_id,`comment`,score,is_db,is_opposition,is_delete,create_date,latest_revision_date,type,res_type,big_value,description,lon,lat,location_name,location_city,location_area,title,cover,resource_type,tag from bk_comment where user_id=#userId#  and is_delete =0
+		and comment is not null and comment != ''
+		<isNotNull prepend="AND" property="resId">
+			<![CDATA[ id< #resId# ]]>
+		</isNotNull>
+		order by id desc limit 0,10
+	</select>
+	
+	<!-- 根据userId查询这个用户的长影评 -->
+	<select id="findUserLongBkCommentListByUserId"  parameterClass="java.util.Map" resultMap="bkCommentResult">
+		select id,user_id,book_id,`comment`,score,is_db,is_opposition,is_delete,create_date,latest_revision_date,type,res_type,big_value,description,lon,lat,location_name,location_city,location_area,title,cover,resource_type,tag from bk_comment where is_delete = 0 and user_id = #userId# and resource_type = 23
+		<isNotNull prepend="AND" property="resId">
+			<![CDATA[ id< #resId# ]]>
+		</isNotNull>
+		order by id desc limit 0,10
+	</select>
+	
+	<select id="findCommentCount"  parameterClass="java.util.Map" resultClass="int">
+		select count(1) from bk_comment where book_id=#bookId# and res_type = #resType# and is_delete = 0
+	</select>
+	
+	<select id="findBkCommentCount"  parameterClass="long" resultClass="int">
+		select count(1) from bk_comment where user_id=#userId# and is_delete = 0 and comment != '' and comment is not null
+	</select>
+	
+	<select id="findCommentIsExistById"  parameterClass="long" resultMap="bkCommentResult">
+		select id,user_id,book_id,`comment`,score,is_db,is_opposition,is_delete,create_date,latest_revision_date,type,res_type,big_value,description,lon,lat,location_name,location_city,location_area,title,cover,resource_type,tag from bk_comment where id=#id#
+		and is_delete = 0
+	</select>
+	
+	<select id="findBkCommentListByIds"  resultMap="bkCommentResult" parameterClass="java.util.Map">
+		select id,user_id,book_id,`comment`,score,is_db,is_opposition,is_delete,create_date,latest_revision_date,type,res_type,big_value,description,lon,lat,location_name,location_city,location_area,title,cover,resource_type,tag from bk_comment where is_delete = 0
+		and id in 
+		<iterate property="commentids" open="(" close=")"  conjunction=",">
+		#commentids[]#
+		</iterate>
+	</select>
+	
+	<update id="updateMyCommentByBook" parameterClass="BkComment">
+		update bk_comment set comment=#comment#,score=#score#,latest_revision_date=#latestRevisionDate#,title=#title#,cover=#cover# where id=#id# and is_delete = 0
+	</update>
+	
+	<update id="deleteMyCommentById" parameterClass="long">
+		update bk_comment set is_delete=1 where id=#id#
+	</update>
+	
+	<update id="updateCommentBigValue" parameterClass="java.util.Map" >
+		update bk_comment set big_value=#bigValue# where id=#id# and is_delete = 0
+	</update>
+	
+	<!-- 根据时间段查询某个人的书评信息 -->
+	<select id="findMyBkCommentListByTime"  parameterClass="java.util.Map" resultMap="bkCommentResult">
+		select id,user_id,book_id,`comment`,score,is_db,is_opposition,is_delete,create_date,latest_revision_date,type,res_type,big_value,description,lon,lat,location_name,location_city,location_area,title,cover,resource_type,tag from bk_comment where user_id=#userId# and is_delete =0 and create_date > #starttime# and <![CDATA[ create_date <= #endtime# ]]>
+	</select>
+	
+	<!-- 根据标题和内容模糊查询，查询某个时间段的 -->
+	<select id="searchBkCommentByLike" parameterClass="java.util.Map" resultMap="bkCommentResult">
+		select id,user_id,book_id,`comment`,score,is_db,is_opposition,is_delete,create_date,latest_revision_date,type,res_type,big_value,description,lon,lat,location_name,location_city,location_area,title,cover,resource_type,tag from bk_comment where user_id=#userId# and is_delete =0
+		<isNotNull prepend="AND" property="keyword">
+		 (title like concat('%', #keyword#, '%') or `comment` like concat('%', #keyword#, '%'))
+		 </isNotNull>
+		<isNotNull prepend="AND" property="starttime">
+			<![CDATA[ create_date>=#starttime# ]]>
+		</isNotNull>
+		<isNotNull prepend="AND" property="endtime">
+			<![CDATA[ create_date<=#endtime# ]]>
+		</isNotNull>
+		 order by id desc limit #start#,#pageSize#
+	</select>
+	<!-- 根据模糊查询的条件查询数量 -->
+	<select id="findBkCommentCountByLike"  resultClass="int" parameterClass="java.util.Map">
+		select count(1) from bk_comment where user_id=#userId# and is_delete =0
+		<isNotNull prepend="AND" property="keyword">
+		 (title like concat('%', #keyword#, '%') or `comment` like concat('%', #keyword#, '%'))
+		 </isNotNull>
+		<isNotNull prepend="AND" property="starttime">
+			<![CDATA[ create_date>=#starttime# ]]>
+		</isNotNull>
+		<isNotNull prepend="AND" property="endtime">
+			<![CDATA[ create_date<=#endtime# ]]>
+		</isNotNull>
+	</select>
+	<!-- 查询有无书评发表记录（包含已经删除的） ，用于任务打赏-->
+	<select id="findBkCommentRecord"  resultClass="long" parameterClass="long">
+		select id from bk_comment where user_id=#userid# limit 0,1
+	</select>
+	
+	<typeAlias alias="BkAvgMark" type="com.poison.resource.model.BkAvgMark"/>   
+   <!--   书的平均打分 -->
+	<resultMap id="bkAvgMarkResult" class="BkAvgMark">
+		<result column="id" property="id" jdbcType="BIGINT"/>
+		<result column="bk_id" property="bkId" jdbcType="INT"/>
+		<result column="bk_avg_mark" property="bkAvgMark" jdbcType="FLOAT"/>
+		<result column="bk_total_num" property="bkTotalNum" jdbcType="INT"/>
+		<result column="is_delete" property="isDelete" jdbcType="INT"/>
+		<result column="latest_revision_date" property="latestRevisionDate" jdbcType="BIGINT"/>
+		<result column="res_type" property="resType" jdbcType="VARCHAR"/>
+		<result column="experts_avg_mark" property="expertsAvgMark" jdbcType="FLOAT"/>
+		<result column="experts_total_num" property="expertsTotalNum" jdbcType="INT"/>
+	</resultMap>
+	
+	<!-- 创建书的评论-->
+	<insert id="insertBkAvgMark" parameterClass="BkAvgMark">
+		insert into bk_avg_mark(id,bk_id,bk_avg_mark,bk_total_num,is_delete,latest_revision_date,res_type,experts_avg_mark,experts_total_num)
+		values(#id#,#bkId#,#bkAvgMark#,#bkTotalNum#,#isDelete#,#latestRevisionDate#,#resType#,#expertsAvgMark#,#expertsTotalNum#)
+	</insert>
+	
+	<select id="findBkAvgMarkByBkId"  parameterClass="int" resultMap="bkAvgMarkResult">
+		select id,bk_id,bk_avg_mark,bk_total_num,is_delete,latest_revision_date,res_type,experts_avg_mark,experts_total_num from bk_avg_mark where bk_id=#bkId# and is_delete = 0
+	</select>
+	<!-- 根据书的id集合查询和书的类型查询评分信息 -->
+	<select id="findBkAvgMarkByBkIds"  parameterClass="java.util.Map" resultMap="bkAvgMarkResult">
+		select id,bk_id,bk_avg_mark,bk_total_num,is_delete,latest_revision_date,res_type,experts_avg_mark,experts_total_num from bk_avg_mark where bk_id in
+		<iterate property="bkids" open="(" close=")"  conjunction=",">
+		#bkids[]#
+		</iterate>
+		and res_type=#resType# and is_delete = 0
+	</select>
+	
+	
+	<update id="updateBkAvgMark" parameterClass="BkAvgMark">
+		update bk_avg_mark set bk_avg_mark=#bkAvgMark#,bk_total_num=#bkTotalNum#,latest_revision_date=#latestRevisionDate# where bk_id=#bkId# and is_delete = 0
+	</update>
+	
+	<!-- 更改神人书评的平均分 -->
+	<update id="updateBkExpertsAvgMark" parameterClass="BkAvgMark">
+		update bk_avg_mark set experts_avg_mark=#expertsAvgMark#,experts_total_num=#expertsTotalNum#,latest_revision_date=#latestRevisionDate# where bk_id=#bkId# and is_delete = 0
+	</update>
+	
+</sqlMap>

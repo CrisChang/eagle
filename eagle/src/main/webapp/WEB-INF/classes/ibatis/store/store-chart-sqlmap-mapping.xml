@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd" >
+<sqlMap namespace="charts">
+	
+	<typeAlias alias="popcharts" type="com.poison.store.model.PopCharts" />
+	
+	<resultMap id="PopChartsResult" class="popcharts">
+		<result column="id" property="id" jdbcType="BIGINT" />
+		<result column="chart_name" property="chartName" jdbcType="VARCHAR" />
+		<result column="cover_page" property="coverPage" jdbcType="VARCHAR" />
+		<result column="chart_level" property="chartLevel" jdbcType="INT" />
+		<result column="type" property="type" jdbcType="VARCHAR" />
+	</resultMap>
+	
+	<select id="findPopChartsByLevel"  resultMap="PopChartsResult">
+		select * from pop_charts order by chart_level desc
+	</select>
+	
+	<select id="findPopChartsByType"  resultMap="PopChartsResult" parameterClass="java.lang.String">
+		select * from pop_charts where type = #type#
+	</select>
+	
+	<typeAlias alias="chartsdb" type="com.poison.store.model.ChartsDb" />
+	
+	<resultMap id="ChartsDbResult" class="chartsdb">
+		<result column="id" property="id" jdbcType="BIGINT" />
+		<result column="chart_name" property="chartName" jdbcType="VARCHAR" />
+		<result column="chart_group" property="chartGroup" jdbcType="VARCHAR" />
+		<result column="type" property="type" jdbcType="VARCHAR" />
+	</resultMap>
+	
+	<select id="findChartsByGroup"  resultMap="ChartsDbResult">
+		select * from charts_db where chart_group = #chartGroup#
+	</select>
+	
+</sqlMap>

@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd" >
+<sqlMap namespace="storyPay">
+
+    <typeAlias alias="StoryPay" type="com.poison.story.model.StoryPay"/>
+    <!--  章节支付信息 -->
+    <resultMap id="storyPayResult" class="StoryPay">
+        <result column="id" property="id" jdbcType="BIGINT"/>
+        <result column="chapter_id" property="chapterId" jdbcType="BIGINT"/>
+        <result column="user_id" property="userId" jdbcType="BIGINT"/>
+        <result column="payed" property="payed" jdbcType="INT"/>
+        <result column="pay_amount" property="payAmount" jdbcType="INT"/>
+        <result column="createtime" property="createtime" jdbcType="BIGINT"/>
+    </resultMap>
+
+    <!-- 查询支付信息根据章节id -->
+    <select id="findStoryPayByChapterId"  parameterClass="java.util.Map" resultMap="storyPayResult">
+        select id,chapter_id,user_id,payed,pay_amount,createtime from story_pay where chapter_id=#chapterId# and user_id = #userId# order by id desc
+    </select>
+    <!-- 根据id集合查询支付信息集合 -->
+    <select id="findStoryPaysByChapterIds"  parameterClass="java.util.Map" resultMap="storyPayResult">
+        select id,chapter_id,user_id,payed,pay_amount,createtime from story_pay where user_id = #userId# and chapter_id in 
+        <iterate property="chapterIdList" open="(" close=")"  conjunction=",">
+			#chapterIdList[]#
+		</iterate>
+    </select>
+	<!-- 保存章节支付信息 -->
+	<insert id="saveStoryPay" parameterClass="StoryPay">
+		insert into story_pay(id,chapter_id,user_id,payed,pay_amount,createtime) values (#id#,#chapterId#,#userId#,#payed#,#payAmount#,#createtime#)
+	</insert>
+</sqlMap>

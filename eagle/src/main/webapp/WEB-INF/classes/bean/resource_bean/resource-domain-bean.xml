@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:aop="http://www.springframework.org/schema/aop"
+	xmlns:tx="http://www.springframework.org/schema/tx"
+	xsi:schemaLocation="
+			http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-3.2.xsd
+			http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop-3.2.xsd
+			http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx-3.2.xsd"
+	default-autowire="byName">
+
+	<bean id="bookListDomainRepository" class="com.poison.resource.domain.repository.BookListDomainRepository"/> 
+	<!-- <bean id="fiLmListDomainRepository" class="com.poison.resource.domain.repository.FilmListDomainRepository"/> -->
+	<bean id="serializeDomainRepository" class="com.poison.resource.domain.repository.SerializeDomainRepository"/>
+	<bean id="serializeListDomainRepository" class="com.poison.resource.domain.repository.SerializeListDomainRepository"/>
+	<bean id="diaryDomainRepository" class="com.poison.resource.domain.repository.DiaryDomainRepository"/>
+	<bean id="postDomainRepository" class="com.poison.resource.domain.repository.PostDomainRepository"/>
+	<bean id="bkCommentDomainRepository" class="com.poison.resource.domain.repository.BkCommentDomainRepository"/>
+	<bean id="myBkDomainRepository" class="com.poison.resource.domain.repository.MyBkDomainRepository"/>
+	<bean id="bookTalkDomainRepository" class="com.poison.resource.domain.repository.BookTalkDomainRepository"/>
+	<!-- 影单相关 -->
+	<bean id="movieListDomainRepository" class="com.poison.resource.domain.repository.MovieListDomainRepository"/>
+	<bean id="mvCommentDomainrepository" class="com.poison.resource.domain.repository.MvCommentDomainrepository"/>
+	<bean id="myMovieDomainRepository" class="com.poison.resource.domain.repository.MyMovieDomainRepository"/> 
+	<bean id="mvDomainRepository" class="com.poison.resource.domain.repository.MyMovieDomainRepository"/> 
+	<bean id="movieTalkDomainRepository" class="com.poison.resource.domain.repository.MovieTalkDomainRepository"/> 
+	<!-- 逼格相关 -->
+	<bean id="bigDomainRepository" class="com.poison.resource.domain.repository.BigDomainRepository"/>
+	
+	<bean id="resourceLinkDomainRepository" class="com.poison.resource.domain.repository.ResourceLinkDomainRepository"/>
+	
+	<bean id="resStatisticDomainRepository" class="com.poison.resource.domain.repository.ResStatisticDomainRepository"/>
+	
+	<!--图解电影  -->
+	<bean id="graphicFilmDomainRepository" class="com.poison.resource.domain.repository.GraphicFilmDomainRepository"/>
+	<!-- 话题 -->
+	<bean id="topicDomainRepository" class="com.poison.resource.domain.repository.TopicDomainRepository"/>
+	<!-- 新的长文章 -->
+	<bean id="articleDomainRepository" class="com.poison.resource.domain.repository.ArticleDomainRepository"/>
+	<!-- 根据评论数量的资源排行 -->
+	<bean id="resourceRankingDomainRepository" class="com.poison.resource.domain.repository.ResourceRankingDomainRepository"/>
+	<!-- 精选 -->
+	<bean id="selectedDomainRepository" class="com.poison.resource.domain.repository.SelectedDomainRepository"/>
+	<!-- 精选资源 -->
+	<bean id="selectedResDomainRepository" class="com.poison.resource.domain.repository.SelectedResDomainRepository"/>
+	<!-- 排行榜：原创榜，上周回幕榜 -->
+	<bean id="rankingListDomainRepository" class="com.poison.resource.domain.repository.RankingListDomainRepository"/>
+</beans>

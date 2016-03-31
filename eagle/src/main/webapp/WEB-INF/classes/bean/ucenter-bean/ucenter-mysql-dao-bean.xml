@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<beans xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:aop="http://www.springframework.org/schema/aop"
+	xmlns:tx="http://www.springframework.org/schema/tx"
+	xmlns="http://www.springframework.org/schema/beans"
+	xsi:schemaLocation="
+			http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-3.2.xsd
+			http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop-3.2.xsd
+			http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx-3.2.xsd"
+	default-autowire="byName">
+
+	<!-- <bean id="userHelloDAO" class="com.poison.ucenter.dao.impl.UserHelloDAO" parent="baseUcenterSqlMapClientDAO"/> -->
+
+	<bean id="userInfoDAO" class="com.poison.ucenter.dao.impl.UserInfoDAOImpl" parent="baseUcenterSqlMapClientDAO"/>
+	
+	<bean id="userAttentionDAO" class="com.poison.ucenter.dao.impl.UserAttentionDAOImpl" parent="baseUcenterSqlMapClientDAO"/>
+	
+	<bean id="userSummaryDAO" class="com.poison.ucenter.dao.impl.UserSummaryDAOImpl" parent="baseUcenterSqlMapClientDAO"/>
+	
+	<bean id="talentZoneDAO" class="com.poison.ucenter.dao.impl.TalentZoneDAOImpl" parent="baseUcenterSqlMapClientDAO"/>
+	
+	<bean id="talentZoneLinkDAO" class="com.poison.ucenter.dao.impl.TalentZoneLinkDAOImpl" parent="baseUcenterSqlMapClientDAO"/>
+	
+	<bean id="userBigDAO" class="com.poison.ucenter.dao.impl.UserBigDAOImpl" parent="baseUcenterSqlMapClientDAO"/>
+	
+	<bean id="userAlbumDAO" class="com.poison.ucenter.dao.impl.UserAlbumDAOImpl" parent="baseUcenterSqlMapClientDAO"/>
+	
+	<bean id="thirdPartyDAO" class="com.poison.ucenter.dao.impl.ThirdPartyDAOImpl" parent="baseUcenterSqlMapClientDAO"/>
+	
+	<bean id="userStatisticsDAO" class="com.poison.ucenter.dao.impl.UserStatisticsDAOImpl" parent="baseUcenterSqlMapClientDAO"/>
+	
+	<bean id="userFeedBackDAO" class="com.poison.ucenter.dao.impl.UserFeedBackDAOImpl" parent="baseUcenterSqlMapClientDAO"/>
+	
+	<bean id="groupDAO" class="com.poison.ucenter.dao.impl.GroupDAOImpl" parent="baseUcenterSqlMapClientDAO"/>
+	
+	<bean id="groupUserDAO" class="com.poison.ucenter.dao.impl.GroupUserDAOImpl" parent="baseUcenterSqlMapClientDAO"/>
+	
+	<bean id="groupBlackListDAO" class="com.poison.ucenter.dao.impl.GroupBlackListDAOImpl" parent="baseUcenterSqlMapClientDAO"/>
+	
+	<bean id="easemobUserDAO" class="com.poison.easemob.dao.impl.EasemobUserDAOImpl" parent="baseUcenterSqlMapClientDAO"/>
+	
+	<bean id="shenrenApplyDAO" class="com.poison.ucenter.dao.impl.ShenrenApplyDAOImpl" parent="baseUcenterSqlMapClientDAO"/>
+	
+	<bean id="advertDAO" class="com.poison.ucenter.dao.impl.AdvertDAOImpl" parent="baseUcenterSqlMapClientDAO"/>
+	
+	<bean id="userLatestDAO" class="com.poison.ucenter.dao.impl.UserLatestDAOImpl" parent="baseUcenterSqlMapClientDAO"/>
+
+	<!-- 作者信息-->
+	<bean id="authorDAO" class="com.poison.ucenter.dao.impl.AuthorDAOImpl" parent="baseUcenterSqlMapClientDAO"/>
+	<!-- 小说用户-->
+	<bean id="storyUserDAO" class="com.poison.ucenter.dao.impl.StoryUserDAOImpl" parent="baseUcenterSqlMapClientDAO"/>
+</beans>

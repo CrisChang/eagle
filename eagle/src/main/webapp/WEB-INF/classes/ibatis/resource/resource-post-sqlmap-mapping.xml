@@ -1,0 +1,112 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd" >
+<sqlMap namespace="post">
+
+    <typeAlias alias="Post" type="com.poison.resource.model.Post"/>   
+   <!--   日记表信息 -->
+	<resultMap id="resultPost" class="Post">
+		<result column="id" property="id" jdbcType="Long"/>
+		<result column="uid" property="uid" jdbcType="Long"/>
+		<result column="begin_date" property="beginDate" jdbcType="Long"/>
+		<result column="end_date" property="endDate" jdbcType="Long"/>
+		<result column="name" property="name" jdbcType="VARCHAR"/>
+		<result column="isDel" property="isDel" jdbcType="Long"/>
+		<result column="content" property="content" jdbcType="VARCHAR"/>
+		<result column="type" property="type" jdbcType="VARCHAR"/>
+		<result column="summary" property="summary" jdbcType="VARCHAR"/>
+		<result column="reading_count" property="readingCount" jdbcType="INT"/>
+	</resultMap>
+	
+	<!-- 创建帖子-->
+	<insert id="addPost" parameterClass="Post">
+		insert into post(id,uid,begin_date,end_date,name,isDel,content,reading_count,type,summary)
+		values(#id#,#uid#,#beginDate#,#endDate#,#name#,#isDel#,#content#,#readingCount#,#type#,#summary#)
+	</insert>
+	
+	<!-- 根据类型修改当前帖子 -->
+	<update id="updateByIdPost" parameterClass="com.poison.resource.model.Post">
+		update post set end_date=#endDate# ,name=#name#,uid=#uid#,content=#content#,summary=#summary# where isDel=0 and id=#id#
+	</update>
+	<update id="updatePostReadingCount" parameterClass="long">
+		update post set reading_count=reading_count+1 where isDel=0 and id=#id#
+	</update>
+	<!-- 删除当前帖子 -->
+	<update id="deleteByIdPost" parameterClass="long">
+		update post set isDel=1 where id=#id# 
+	</update>
+	<!-- 修改帖子内容 -->
+	<update id="updateByIdContent" parameterClass="com.poison.resource.model.Post">
+		update post set content=#content# ,end_date=#endDate# where isDel=0 and uid=#uid#
+	</update>
+	<!-- 根据uid查询所需帖子 -->
+	<select id="queryByUidPost"  resultMap="resultPost">
+		select id,uid,begin_date,end_date,`name`,isDel,content,type,reading_count,summary from post where uid=#uid#
+		and isDel=0 order by begin_date desc limit 0,10
+	</select>
+	
+	<select id="findPostCount"  resultClass="int" parameterClass="long">
+		select count(1) from post where uid=#userId# and isDel=0
+	</select>
+	
+	<!-- 根据id查询所需帖子 -->
+	<select id="queryByIdName"  resultMap="resultPost">
+		select id,uid,begin_date,end_date,`name`,isDel,content,type,reading_count,summary from post where id=#id#
+	</select>
+	
+	<!-- 根据类别查询 -->
+	<select id="queryByTypePost"  resultMap="resultPost" parameterClass="java.util.Map">
+		select id,uid,begin_date,end_date,`name`,isDel,content,type,reading_count,summary from post where isDel=0 
+		<isNotNull prepend="AND" property="id">
+			<![CDATA[ id< #id# ]]>
+		</isNotNull>
+		<isNotNull prepend="AND" property="type">
+			<![CDATA[ type=#type# ]]>
+		</isNotNull>
+		order by id desc limit 0,10
+	</select>
+	
+	<!-- 根据类别和用户名 -->
+	<select id="queryByTypeUid" parameterClass="java.util.Map" resultMap="resultPost">
+		select id,uid,begin_date,end_date,`name`,isDel,content,type,reading_count,summary from post where isDel=0 
+		<isNotNull prepend="AND" property="type">
+			<![CDATA[ type=#type# ]]>
+		</isNotNull>
+		 and uid=#uid# order by begin_date desc limit 0,10
+	</select>
+	
+		<!-- 按时间查询最新书单列表 -->
+	<select id="findPostListByDate" resultClass="com.poison.resource.model.Post" resultMap="resultPost">
+		select id,uid,begin_date,end_date,`name`,isDel,content,type,reading_count,summary from post where isDel = 0 order by id desc limit 0,10
+	</select>
+	
+	<select  id="findPostListById" resultClass="com.poison.resource.model.Post" resultMap="resultPost" >
+		select id,uid,begin_date,end_date,`name`,isDel,content,type,reading_count,summary from post where isDel = 0 and  <![CDATA[ id< #id# ]]>  order by id desc limit 0,10
+	</select>
+	
+	<select id="findPostListByUsersId"  parameterClass="java.util.Map" resultMap="resultPost">
+		select id,uid,begin_date,end_date,`name`,isDel,content,type,reading_count,summary from post where isDel = 0 and uid in
+		<iterate property="usersIdList" open="(" close=")"  conjunction=",">
+			#usersIdList[]#
+		</iterate>
+		<isNotNull prepend="AND" property="resId">
+			<![CDATA[ id< #resId# ]]>
+		</isNotNull>
+		<isNotNull prepend="AND" property="type">
+			<![CDATA[ type= #type# ]]>
+		</isNotNull>
+		order by id desc limit 0,10
+	</select>
+	
+	<!--根据用户id查询长文章列表  -->
+	<select id="findPostListByUserId"  parameterClass="java.util.Map" resultMap="resultPost">
+		select id,uid,begin_date,end_date,`name`,isDel,content,type,reading_count,summary from post where isDel = 0 and 
+		uid =#userId#
+		<isNotNull prepend="AND" property="resId">
+			<![CDATA[ id< #resId# ]]>
+		</isNotNull>
+		<isNotNull prepend="AND" property="type">
+			<![CDATA[ type= #type# ]]>
+		</isNotNull>
+		order by id desc limit 0,10
+	</select>
+</sqlMap>

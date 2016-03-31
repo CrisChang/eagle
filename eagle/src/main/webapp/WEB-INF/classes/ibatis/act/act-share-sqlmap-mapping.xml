@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd" >
+<sqlMap namespace="actshare">
+	
+	<typeAlias alias="actshare" type="com.poison.act.model.ActShare" />
+	
+	<resultMap id="shareResult" class="actshare">
+		<result column="id" property="id" jdbcType="BIGINT" />
+		<result column="user_id" property="userId" jdbcType="BIGINT" />
+		<result column="resource_id" property="resourceId" jdbcType="BIGINT" />
+		<result column="share_to_zone" property="shareToZone" jdbcType="VARCHAR" />
+		<result column="share_context" property="shareContext" jdbcType="VARCHAR" />
+		<result column="share_date" property="shareDate" jdbcType="BIGINT" />
+		<result column="share_ip" property="shareIp" jdbcType="VARCHAR" />
+	</resultMap>
+	
+	<select id="findActShare" parameterClass="long" resultMap="collectResult" >
+		select * from act_share where user_id = #userId#
+	</select>
+	
+	<select id="findActShareCount" parameterClass="long" resultClass="int" >
+		select * from act_share where resource_id = #resourceId#
+	</select>
+	
+	<update id="updateActShare" parameterClass="actShare" >
+		update act_share set is_collect =#isCollect# where user_id=#userId#
+	</update>
+	
+	<insert id="insertintoActShare" parameterClass="actShare">
+		insert into act_collect(id,user_id,resource_id,is_collect,collect_date,latest_revision_date) values(#id#,#userId#,#resourceId#,#isCollect#,#collectDate#,#latestRevisionDate#)
+	</insert>
+</sqlMap>

@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:aop="http://www.springframework.org/schema/aop"
+	xmlns:tx="http://www.springframework.org/schema/tx"
+	xsi:schemaLocation="
+			http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-3.2.xsd
+			http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop-3.2.xsd
+			http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx-3.2.xsd"
+	default-autowire="byName">
+
+	<bean id="bkInfoDAO" class="com.poison.store.dao.impl.BkInfoDAOImpl" parent="baseStoreSqlMapClientDAO"/>
+	<bean id="mvInfoDAO" class="com.poison.store.dao.impl.MvInfoDAOImpl" parent="baseStoreSqlMapClientDAO"/>
+	<bean id="bkOnlineReadDAO" class="com.poison.store.dao.impl.BkOnlineReadDAOImpl" parent="baseStoreSqlMapClientDAO"/>
+	<bean id="mvStillsDAO" class="com.poison.store.dao.impl.MvStillDAOImpl" parent="baseStoreSqlMapClientDAO"/>
+	<bean id="bigSelectingDAO" class="com.poison.store.dao.impl.BigSelectingDAOImpl" parent="baseStoreSqlMapClientDAO"/>
+	<bean id="popChartsDAO" class="com.poison.store.dao.impl.PopChartsDAOImpl" parent="baseStoreSqlMapClientDAO"/>
+	<bean id="chartsDbDAO" class="com.poison.store.dao.impl.ChartsDbDAOImpl" parent="baseStoreSqlMapClientDAO"/>
+	<!--网络小说  -->
+	<bean id="netBookDAO" class="com.poison.store.dao.impl.NetBookDAOImpl" parent="baseStoreSqlMapClientDAO"/>
+	<!-- 电影角色 -->
+	<bean id="mvActorDAO" class="com.poison.store.dao.impl.MvActorDAOImpl" parent="baseStoreSqlMapClientDAO"/>
+	<!-- 图书、电影热搜榜信息 -->
+	<bean id="bkSearchDAO" class="com.poison.store.dao.impl.BkSearchDAOImpl" parent="baseStoreSqlMapClientDAO"/>
+	<bean id="mvSearchDAO" class="com.poison.store.dao.impl.MvSearchDAOImpl" parent="baseStoreSqlMapClientDAO"/>
+</beans>

@@ -1,0 +1,352 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd" >
+<sqlMap namespace="ucenter">
+	
+	<typeAlias alias="user" type="com.poison.ucenter.model.UserInfo" />
+	
+	<resultMap id="UsersResult" class="user">
+		<result column="user_id" property="userId" jdbcType="BIGINT" />
+		<result column="login_name" property="loginName" jdbcType="VARCHAR" />
+		<result column="password" property="password" jdbcType="VARCHAR" />
+		<result column="password_md5" property="passwordMd5" jdbcType="VARCHAR" />
+		<result column="mobilephone" property="mobilePhone" jdbcType="VARCHAR" />
+		<result column="name" property="name" jdbcType="VARCHAR" />
+		<result column="face_address" property="faceAddress" jdbcType="VARCHAR" />
+		<result column="birthday" property="birthday" jdbcType="BIGINT" />
+		<result column="sex" property="sex" jdbcType="VARCHAR" />
+		<result column="level" property="level" jdbcType="INT" />
+		<result column="two_dimension_code" property="twoDimensionCode" jdbcType="VARCHAR" />
+		<result column="ip" property="ip" jdbcType="VARCHAR" />
+		<result column="push_token" property="pushToken" jdbcType="VARCHAR" />
+		<result column="affective_states" property="affectiveStates" jdbcType="VARCHAR" />
+		<result column="residence" property="residence" jdbcType="VARCHAR" />
+		<result column="profession" property="profession" jdbcType="VARCHAR" />
+		<result column="create_Date" property="createDate" jdbcType="BIGINT" />
+		<result column="latest_login_date" property="lastestLoginDate" jdbcType="BIGINT" />
+		<result column="latest_revision_date" property="lastestRevisionDate" jdbcType="BIGINT" />
+		<result column="state" property="state" jdbcType="VARCHAR" />
+		<result column="age" property="age" jdbcType="VARCHAR" />
+		<result column="constellation" property="constellation" jdbcType="VARCHAR" />
+		<result column="is_operation" property="isOperation" jdbcType="VARCHAR" />
+	</resultMap>
+	
+	<select id="findUserInfo" resultMap="UsersResult" parameterClass="long">
+		select user_id,login_name,`password`,password_md5,mobilephone,`name`,face_address,birthday,sex,two_dimension_code,`level`,ip,create_date,latest_login_date,latest_revision_date,push_token,affective_states,residence,profession,state,age,constellation,is_operation from user_info where user_id=#userId#
+	</select>
+	
+	<select id="findUserNameIsExist" resultMap="UsersResult" parameterClass="user">
+		select user_id,login_name,`password`,password_md5,mobilephone,`name`,face_address,birthday,sex,two_dimension_code,`level`,ip,create_date,latest_login_date,latest_revision_date,push_token,affective_states,residence,profession,state,constellation,age,is_operation from user_info where name=#name# and user_id != #userId#
+	</select>
+	
+	<select id="findUserInfoByMobilPhone" resultMap="UsersResult" parameterClass="java.lang.String">
+		select user_id,login_name,`password`,password_md5,mobilephone,`name`,face_address,birthday,sex,two_dimension_code,`level`,ip,create_date,latest_login_date,latest_revision_date,push_token,affective_states,residence,profession,state,age,constellation,is_operation from user_info where mobilephone=#mobilePhone#
+	</select>
+	
+	<select id="findUserInfoByLoginName" resultMap="UsersResult" parameterClass="java.lang.String">
+		select user_id,login_name,`password`,password_md5,mobilephone,`name`,face_address,birthday,sex,two_dimension_code,`level`,ip,create_date,latest_login_date,latest_revision_date,push_token,affective_states,residence,profession,state,constellation,age,is_operation from user_info where login_name=#loginName#
+	</select>
+	
+	<!--查找用户的当前状态  -->
+	<select id="findUserStateByUserId" resultClass="java.lang.String" parameterClass="long">
+		select state from user_info where user_id=#userId#
+	</select>
+	
+	<select id="findUserInfoByName" resultMap="UsersResult" parameterClass="java.lang.String">
+		select user_id,login_name,`password`,password_md5,mobilephone,`name`,face_address,birthday,sex,two_dimension_code,`level`,ip,create_date,latest_login_date,latest_revision_date,push_token,affective_states,residence,profession,state,age,constellation,is_operation from user_info where name=#name#
+	</select>
+	
+	<select id="findRegistListByMobileList" resultMap="UsersResult" parameterClass="java.util.Map">
+		select user_id,login_name,`password`,password_md5,mobilephone,`name`,face_address,birthday,sex,two_dimension_code,`level`,ip,create_date,latest_login_date,latest_revision_date,push_token,affective_states,residence,profession,state,constellation,age,is_operation from user_info where mobilephone in
+		<iterate property="mobileList" open="(" close=")"  conjunction=",">
+		#mobileList[]#
+		</iterate>
+		order by create_date desc
+	</select>
+	
+	<select id="findFriendsAttentionList" resultMap="UsersResult" parameterClass="java.util.Map">
+		select user_id,login_name,`password`,password_md5,mobilephone,`name`,face_address,birthday,sex,two_dimension_code,`level`,ip,create_date,latest_login_date,latest_revision_date,push_token,affective_states,residence,profession,state,age,constellation,is_operation from user_info where user_id in
+		<iterate property="friendIdList" open="(" close=")"  conjunction=",">
+		#friendIdList[]#
+		</iterate>
+		group by user_id
+	</select>
+	
+	<select id="findUserListByUseridList" resultMap="UsersResult" parameterClass="java.util.Map">
+		select user_id,login_name,`password`,password_md5,mobilephone,`name`,face_address,birthday,sex,two_dimension_code,`level`,ip,create_date,latest_login_date,latest_revision_date,push_token,affective_states,residence,profession,state,age,constellation,is_operation from user_info where user_id in
+		<iterate property="useridList" open="(" close=")"  conjunction=",">
+		#useridList[]#
+		</iterate>
+		group by user_id
+	</select>
+	
+	<update id="updateUserInfo" parameterClass="user" >
+		update user_info set name =#name# ,face_address=#faceAddress# ,birthday=#birthday# ,sex=#sex#,latest_revision_date=#lastestRevisionDate#,affective_states=#affectiveStates#,residence=#residence#,profession=#profession#,age=#age#,constellation=#constellation# where user_id=#userId#
+	</update>
+
+	<!-- 更新用户头像-->
+	<update id="updateUserFaceUrl" parameterClass="java.util.Map" >
+		update user_info set face_address=#faceUrl# where user_id=#userId#
+	</update>
+	
+	<!--更新密码  -->
+	<update id="editPassword" parameterClass="java.util.Map" >
+		update user_info set `password` =#newPassword# ,password_md5=#newPasswordRdm#,latest_revision_date=#sysTime# where user_id=#uid#
+	</update>
+	
+	<update id="updateTwoDimensionCode" parameterClass="user" >
+		update user_info set two_dimension_code =#twoDimensionCode# where user_id=#userId#
+	</update>
+	
+	<insert id="insertintoUserInfo" parameterClass="user" >
+		insert into user_info(login_name,password,mobilephone,name,face_address,birthday,sex,level,two_dimension_code,ip,push_token,create_date,latest_login_date,latest_revision_date,affective_states,residence,profession,constellation,age) values(#loginName#,#password#,#mobilePhone#,#name#,#faceAddress#,#birthday#,#sex#,#level#,#twoDimensionCode#,#ip#,#pushToken#,#createDate#,#lastestLoginDate#,#lastestRevisionDate#,#affectiveStates#,#residence#,#profession#,#constellation#,#age#)
+		<selectKey resultClass="int" keyProperty="userId" >
+		     SELECT @@IDENTITY
+		</selectKey>
+	</insert>
+
+	<!--绑定手机号  -->
+	<update id="bindingMobile" parameterClass="java.util.Map" >
+		update user_info set mobilephone=#mobilePhone#,`password` =#newPassword# ,password_md5=#newPasswordRdm#,latest_revision_date=#sysTime# where user_id=#userId#
+	</update>
+
+
+	<typeAlias alias="attention" type="com.poison.ucenter.model.UserAttention" />
+	
+	<resultMap id="AttentionResult" class="attention">
+		<result column="attention_id" property="attentionId" jdbcType="BIGINT" />
+		<result column="user_id" property="userId" jdbcType="BIGINT" />
+		<result column="user_attention_id" property="userAttentionId" jdbcType="BIGINT" />
+		<result column="is_attention" property="isAttention" jdbcType="INT" />
+		<result column="type" property="type" jdbcType="VARCHAR" />
+		<result column="attention_date" property="attentionDate" jdbcType="BIGINT" />
+		<result column="latest_revision_date" property="latestRevisionDate" jdbcType="BIGINT" />
+	</resultMap>
+	
+	<select id="findUserAttentionCount" resultClass="int" parameterClass="long">
+		select count(1) from user_attention where user_id=#userId# and is_attention=1
+	</select>
+	
+	<select id="findUserFensCount" resultClass="int" parameterClass="long">
+		select count(1) from user_attention where user_attention_id=#userId# and is_attention=1
+	</select>
+	
+	<select id="findUserAttentionIsExist" resultMap="AttentionResult" parameterClass="attention">
+		select attention_id,user_id,user_attention_id,is_attention,type,attention_date,latest_revision_date from user_attention where user_id=#userId# and user_attention_id = #userAttentionId#
+	</select>
+	
+	<select id="findUserAttentionEachOther" resultMap="AttentionResult" parameterClass="long">
+		select attention_id,user_id,user_attention_id,is_attention,type,attention_date,latest_revision_date from user_attention where user_id = #userId# and is_attention=1 and user_attention_id in
+( select user_id from user_attention where  user_attention_id = #userId# and is_attention=1) 
+	</select>
+	
+	<update id="updateAttention" parameterClass="attention"  >
+		update user_attention set user_id =#userId# ,user_attention_id=#userAttentionId# ,is_attention=#isAttention#,latest_revision_date=#latestRevisionDate# where attention_id=#attentionId#
+	</update>
+	
+	<insert id="insertAttention" parameterClass="attention">
+		insert into user_attention(user_id,user_attention_id,is_attention,type,attention_date,latest_revision_date) values(#userId#,#userAttentionId#,1,#type#,#attentionDate#,#latestRevisionDate#)
+	</insert>
+	
+	<parameterMap class="java.util.HashMap" id="attentionParameterMap">  
+	  <parameter property="userId"/>  
+	  <parameter property="pageIndex"/>
+	  <parameter property="pageSize"/>  
+	 </parameterMap>
+ 
+	<select id="findUserAttention" parameterMap="attentionParameterMap" resultMap="AttentionResult" >
+		select attention_id,user_id,user_attention_id,is_attention,type,attention_date,latest_revision_date from user_attention where user_id = ? and is_attention=1 order by attention_date desc limit ?,?
+	</select>
+	
+	<select id="findUserAttentionTalentedPersons" parameterClass="java.util.Map" resultMap="AttentionResult" >
+		select attention_id,user_id,user_attention_id,is_attention,type,attention_date,latest_revision_date from user_attention where user_id =#userId# and type = #type# and is_attention=1
+	</select>
+	
+	<parameterMap class="java.util.HashMap" id="parameterMap">  
+	  <parameter property="userId"/>  
+	  <parameter property="pageIndex"/>
+	  <parameter property="pageSize"/>  
+	 </parameterMap>
+	<select id="findAttentionList" parameterMap="parameterMap"  resultClass="long" >
+		select user_attention_id from user_attention where user_id = ? and is_attention=1 order by attention_date desc limit ?,?
+	</select>
+	
+	<select id="findUserAttentionList" parameterClass="java.util.Map" resultClass="long" >
+		select user_attention_id from user_attention where is_attention=1 
+		<isNotNull prepend="AND" property="userIdList">
+			user_id in
+			<iterate property="userIdList" open="(" close=")"  conjunction=",">
+			#userIdList[]#
+			</iterate>
+		</isNotNull> 
+	</select>
+	
+	<parameterMap class="java.util.HashMap" id="fensParameterMap">  
+	  <parameter property="AttentionId"/>  
+	  <parameter property="pageIndex"/>
+	  <parameter property="pageSize"/>  
+	 </parameterMap>
+	<select id="findUserFens" parameterMap="fensParameterMap" resultMap="AttentionResult" >
+		select attention_id,user_id,user_attention_id,is_attention,type,attention_date,latest_revision_date from user_attention where user_attention_id = ? and is_attention=1 order by latest_revision_date desc limit ?,?
+	</select>
+	
+	<typeAlias alias="usersummary" type="com.poison.ucenter.model.UserSummary" />
+	
+	<resultMap id="SummaryResult" class="usersummary">
+		<result column="user_id" property="userId" jdbcType="BIGINT" />
+		<result column="sign" property="sign" jdbcType="VARCHAR" />
+		<result column="interest" property="interest" jdbcType="VARCHAR" />
+		<result column="introduction" property="introduction" jdbcType="VARCHAR" />
+		<result column="latest_revision_date" property="latestRevisionDate" jdbcType="BIGINT" />
+		<result column="identification" property="identification" jdbcType="VARCHAR" />
+	</resultMap>
+	
+	<select id="findUserSummary" parameterClass="long" resultMap="SummaryResult" >
+		select user_id,sign,interest,introduction,latest_revision_date,identification from user_summary where user_id = #userId#
+	</select>
+	<!-- 根据用户id集合查询用户的简介信息 -->
+	<select id="findUserSummarysByUserids" resultMap="SummaryResult" parameterClass="java.util.Map">
+		select user_id,sign,interest,introduction,latest_revision_date,identification from user_summary where user_id in
+		<iterate property="useridList" open="(" close=")"  conjunction=",">
+		#useridList[]#
+		</iterate>
+	</select>
+	
+	<update id="updateUserSummary" parameterClass="usersummary" >
+		update user_summary set sign =#sign# ,interest=#interest# ,introduction=#introduction#,latest_revision_date=#latestRevisionDate# where user_id=#userId#
+	</update>
+	
+	<insert id="insertintoUserSummary" parameterClass="usersummary">
+		insert into user_summary(user_id,sign,interest,introduction,latest_revision_date) values(#userId#,#sign#,#interest#,#introduction#,#latestRevisionDate#)
+	</insert>
+	
+	<typeAlias alias="versionupdate" type="com.poison.eagle.entity.VersionInfo" />
+	
+	<resultMap id="VersionResult" class="versionupdate">
+		<result column="id" property="id" jdbcType="BIGINT" />
+		<result column="app_name" property="appName" jdbcType="VARCHAR" />
+		<result column="version" property="version" jdbcType="VARCHAR" />
+		<result column="url" property="url" jdbcType="VARCHAR" />
+		<result column="is_update" property="isUpdate" jdbcType="INT" />
+		<result column="build_time" property="buildTime" jdbcType="BIGINT" />
+		<result column="update_time" property="updateTime" jdbcType="BIGINT" />
+		<result column="ios_appstore_version" property="iosAppstoreVersion" jdbcType="VARCHAR" />
+		<result column="ios_fir_version" property="iosFirVersion" jdbcType="VARCHAR" />
+		<result column="android_store_version" property="androidStoreVersion" jdbcType="VARCHAR" />
+		<result column="android_fir_version" property="androidFirVersion" jdbcType="VARCHAR" />
+	</resultMap>
+	
+	<select id="findIsUpdateVersion"  resultMap="VersionResult" >
+		select id,app_name,version,url,build_time,is_update,update_time,ios_appstore_version,ios_fir_version,android_store_version,android_fir_version from version_info where is_update = 1
+	</select>
+	
+	<select id="findIsSearchDuyao"  resultClass="int" >
+		select is_search_duyao from version_info
+	</select>
+	
+	<typeAlias alias="talentzone" type="com.poison.ucenter.model.TalentZone" />
+	
+	<resultMap id="talentzoneResult" class="talentzone">
+		<result column="id" property="id" jdbcType="BIGINT" />
+		<result column="zone_name" property="zoneName" jdbcType="VARCHAR" />
+		<result column="logo_address" property="logoAddress" jdbcType="VARCHAR" />
+		<result column="zone_description" property="zoneDescription" jdbcType="TEXT" />
+		<result column="other" property="other" jdbcType="TEXT" />
+		<result column="is_del" property="isDel" jdbcType="INT" />
+		<result column="type" property="type" jdbcType="VARCHAR" />
+		<result column="zone_sign" property="zoneSign" jdbcType="TEXT" />
+		<result column="create_date" property="createDate" jdbcType="BIGINT" />
+		<result column="latest_revision_date" property="latestRevisionDate" jdbcType="BIGINT" />
+	</resultMap>
+	
+	<select id="findTalentZoneInfo"  parameterClass="long" resultMap="talentzoneResult">
+		select id,zone_name,logo_address,zone_description,other,is_del,type,zone_sign,create_date,latest_revision_date from talentzone where id = #id#
+	</select>
+	
+	<select id="findTalentZoneInfoByType"  parameterClass="java.lang.String" resultMap="talentzoneResult">
+		select id,zone_name,logo_address,zone_description,other,is_del,type,zone_sign,create_date,latest_revision_date from talentzone where type = #type# and is_del = 0
+	</select>
+	
+	<select id="findAllTalentZone"  parameterClass="java.lang.String" resultMap="talentzoneResult">
+		select id,zone_name,logo_address,zone_description,other,is_del,type,zone_sign,create_date,latest_revision_date from talentzone
+	</select>
+	
+	
+	<typeAlias alias="talentzonelink" type="com.poison.ucenter.model.TalentZoneLink" />
+	
+	<resultMap id="talentzonelinkResult" class="talentzonelink">
+		<result column="id" property="id" jdbcType="BIGINT" />
+		<result column="talentzone_id" property="talentZoneId" jdbcType="BIGINT" />
+		<result column="user_id" property="userId" jdbcType="BIGINT" />
+		<result column="is_del" property="isDel" jdbcType="INT" />
+		<result column="create_date" property="createDate" jdbcType="BIGINT" />
+		<result column="latest_revision_date" property="latestRevisionDate" jdbcType="BIGINT" />
+	</resultMap>
+	
+	<select id="findTalentZoneLinkList"  parameterClass="long" resultMap="talentzonelinkResult">
+		select id,talentzone_id,user_id,is_del,create_date,latest_revision_date from talentzone_link where talentzone_id = #talentZoneId#
+	</select>
+	
+	<typeAlias alias="userBig" type="com.poison.ucenter.model.UserBigValue" />
+	
+	<resultMap id="UserBigValueResult" class="userBig">
+		<result column="user_id" property="userId" jdbcType="BIGINT" />
+		<result column="big_level" property="bigLevel" jdbcType="INT" />
+		<result column="big_value" property="bigValue" jdbcType="FLOAT" />
+		<result column="self_test" property="selfTest" jdbcType="FLOAT" />
+		<result column="is_delete" property="isDelete" jdbcType="INT" />
+	</resultMap>
+	
+	<insert id="insertintoUserBigValue" parameterClass="userBig">
+		insert into user_big(user_id,big_level,big_value,self_test,is_delete) values(#userId#,#bigLevel#,#bigValue#,#selfTest#,#isDelete#)
+	</insert>
+	
+	<update id="updateUserBigValue" parameterClass="userBig" >
+		update user_big set big_value =#bigValue#,big_level=#bigLevel#,self_test = #selfTest# where user_id=#userId#
+	</update>
+	
+	<select id="findUserBigValue"  parameterClass="long" resultMap="UserBigValueResult">
+		select * from user_big where user_id = #userId#
+	</select>
+	
+	<select id="findUserBigBeyondCount"  parameterClass="float" resultClass="float">
+		select count(1) from user_big where   <![CDATA[ self_test < #selfTest# ]]> 
+	</select>
+	
+	<select id="findUserBigCount"  resultClass="float">
+		select count(1) from user_big
+	</select>
+	
+	<typeAlias alias="userAlbum" type="com.poison.ucenter.model.UserAlbum" />
+	
+	<resultMap id="userAlbumResult" class="userAlbum">
+		<result column="id" property="id" jdbcType="BIGINT" />
+		<result column="user_id" property="userId" jdbcType="BIGINT" />
+		<result column="title" property="title" jdbcType="VARCHAR" />
+		<result column="content" property="content" jdbcType="TEXT" />
+		<result column="type" property="type" jdbcType="VARCHAR" />
+		<result column="is_delete" property="isDelete" jdbcType="INT" />
+		<result column="create_date" property="createDate" jdbcType="BIGINT" />
+		<result column="latest_revision_date" property="latestRevisionDate" jdbcType="BIGINT" />
+	</resultMap>
+	
+	<insert id="insertintoUserAlbum" parameterClass="userAlbum">
+		insert into user_album(id,user_id,title,content,type,is_delete,create_date,latest_revision_date) values(#id#,#userId#,#title#,#content#,#type#,#isDelete#,#createDate#,#latestRevisionDate#)
+	</insert>
+	
+	<select id="findUserAlbumById"  parameterClass="long" resultMap="userAlbumResult">
+		select id,user_id,title,content,type,is_delete,create_date,latest_revision_date from user_album where id = #id# and is_delete = 0
+	</select>
+	
+	<select id="findUserAlbumByUid"  parameterClass="long" resultMap="userAlbumResult">
+		select id,user_id,title,content,type,is_delete,create_date,latest_revision_date from user_album where user_id = #userId# and is_delete = 0
+	</select>
+	
+	<select id="findUserAlbumByTitle"  parameterClass="userAlbum" resultMap="userAlbumResult">
+		select id,user_id,title,content,type,is_delete,create_date,latest_revision_date from user_album where title = #title# and user_id=#userId# and is_delete = 0
+	</select>
+	
+	<update id="updateAlbum" parameterClass="userAlbum" >
+		update user_album set title =#title#,content=#content#,is_delete = #isDelete#,latest_revision_date = #latestRevisionDate# where id=#id#
+	</update>
+	
+</sqlMap>

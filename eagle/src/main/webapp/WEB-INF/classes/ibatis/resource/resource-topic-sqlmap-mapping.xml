@@ -1,0 +1,236 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd" >
+<sqlMap namespace="topic">
+
+    <typeAlias alias="Topic" type="com.poison.resource.model.Topic"/>   
+   <!--   话题表 -->
+	<resultMap id="topicResult" class="Topic">
+		<result column="id" property="id" jdbcType="BIGINT"/>
+		<result column="userid" property="userid" jdbcType="BIGINT"/>
+		<result column="title" property="title" jdbcType="VARCHAR"/>
+		<result column="cover" property="cover" jdbcType="VARCHAR"/>
+		<result column="tags" property="tags" jdbcType="VARCHAR"/>
+		<result column="description" property="description" jdbcType="VARCHAR"/>
+		<result column="readcount" property="readcount" jdbcType="BIGINT"/>
+		<result column="falsereading" property="falsereading" jdbcType="BIGINT"/>
+		<result column="is_delete" property="isDelete" jdbcType="INT"/>
+		<result column="createdate" property="createDate" jdbcType="BIGINT"/>
+		<result column="latestrevisiondate" property="latestRevisionDate" jdbcType="BIGINT"/>
+		<result column="score" property="score" jdbcType="INT"/>
+		<result column="allscore" property="allscore" jdbcType="INT"/>
+	</resultMap>
+	
+	<!-- 创建话题-->
+	<insert id="insertTopic" parameterClass="Topic">
+		insert into topic(id,userid,title,cover,tags,description,readcount,falsereading,is_delete,createdate,latestrevisiondate,score,allscore)
+		values(#id#,#userid#,#title#,#cover#,#tags#,#description#,#readcount#,#falsereading#,#isDelete#,#createDate#,#latestRevisionDate#,#score#,#allscore#)
+	</insert>
+	<!-- 根据话题名称查找话题 -->
+	<select id="findTopic"  parameterClass="java.util.Map" resultClass="Topic">
+		select id,userid,title,cover,tags,description,readcount,falsereading,is_delete,createdate,latestrevisiondate,score,allscore from topic where title = #title# and is_delete = 0
+	</select>
+	<!-- 根据话题id查找话题 -->
+	<select id="findTopicByID"  parameterClass="java.util.Map" resultClass="Topic">
+		select id,userid,title,cover,tags,description,readcount,falsereading,is_delete,createdate,latestrevisiondate,score,allscore from topic where id = #id# and is_delete = 0
+	</select>
+	<!-- 根据用户id查询话题列表 -->
+	<select id="findTopicsByUserId"  parameterClass="java.util.Map" resultMap="topicResult">
+		select id,userid,title,cover,tags,description,readcount,falsereading,is_delete,createdate,latestrevisiondate,score,allscore from topic where userid = #userid# and is_delete = 0
+	</select>
+	<!-- 删除话题 根据id-->
+	<update id="deleteTopic" parameterClass="java.util.Map">
+		update topic set is_delete=1 where id=#id# and userid=#userid#
+	</update>
+	<!-- 编辑话题 -->
+	<update id="updateTopic" parameterClass="Topic" >
+		update topic set cover=#cover#,tags=#tags#,description=#description#,latestrevisiondate=#latestRevisionDate# where id=#id# and userid=#userid# and is_delete = 0
+	</update>
+	<!-- 增加话题阅读量 -->
+	<update id="addTopicReadcount" parameterClass="Topic">
+      	update topic set readcount=readcount+1,falsereading=falsereading+#falsereading#,latestrevisiondate=#latestRevisionDate#
+      	where id=#id#
+     </update>
+     <!-- 根据话题id集合查询话题列表 -->
+    <select id="findTopicsByIds" resultMap="topicResult" parameterClass="java.util.Map">
+		select id,userid,title,cover,tags,description,readcount,falsereading,is_delete,createdate,latestrevisiondate,score,allscore from topic where id in
+		<iterate property="topicids" open="(" close=")"  conjunction=",">
+		#topicids[]#
+		</iterate>
+		and is_delete = 0 group by id
+	</select>
+	<!-- 根据排行分值查询话题列表-热门 -->
+    <select id="findTopicsOrderbyScore" resultMap="topicResult" parameterClass="java.util.Map">
+		select id,userid,title,cover,tags,description,readcount,falsereading,is_delete,createdate,latestrevisiondate,score,allscore from topic where score>0 and is_delete=0 order by score desc limit #start#,#pageSize#
+	</select>
+	<!-- 根据排行分值查询话题列表 -全部-->
+    <select id="findTopicsOrderbyAllScore" resultMap="topicResult" parameterClass="java.util.Map">
+		select id,userid,title,cover,tags,description,readcount,falsereading,is_delete,createdate,latestrevisiondate,score,allscore from topic where allscore>0 and is_delete=0 order by allscore desc limit #start#,#pageSize#
+	</select>
+    
+	
+	<typeAlias alias="TopicLink" type="com.poison.resource.model.TopicLink" />
+	
+	<resultMap id="TopicLinkResult" class="TopicLink">
+		<result column="id" property="id" jdbcType="BIGINT" />
+		<result column="userid" property="userid" jdbcType="BIGINT" />
+		<result column="topicid" property="topicid" jdbcType="BIGINT" />
+		<result column="type" property="type" jdbcType="VARCHAR" />
+		<result column="resid" property="resid" jdbcType="BIGINT" />
+		<result column="restype" property="restype" jdbcType="VARCHAR" />
+		<result column="praisecount" property="praisecount" jdbcType="INT" />
+		<result column="commentcount" property="commentcount" jdbcType="INT" />
+		<result column="is_del" property="isDel" jdbcType="INT" />
+		<result column="createdate" property="createDate" jdbcType="BIGINT" />
+		<result column="latestrevisiondate" property="latestRevisionDate" jdbcType="BIGINT" />
+		<result column="is_operation" property="isOperation" jdbcType="INT" />
+ 	</resultMap>
+ 	
+ 	<!-- 根据id查询自建表中的信息-->
+	<select id="findTopicIsExist" resultMap="TopicLinkResult" parameterClass="TopicLink">
+		select id,userid,topicid,type,resid,restype,praisecount,commentcount,is_del,createdate,latestrevisiondate,is_operation from topic_link where resid =#resid# and topicid=#topicid# and is_del=0
+	</select>
+	
+	<!-- 根据话题id查询某个话题关联列表 -->
+	<select id="findTopicLinkInfoByTopicid"  resultMap="TopicLinkResult"  parameterClass="java.util.Map">
+		select id,userid,topicid,type,resid,restype,praisecount,commentcount,is_del,createdate,latestrevisiondate,is_operation from topic_link where topicid=#topicid# and is_del=0
+		<isNotNull prepend="AND" property="resId">
+			<![CDATA[ resid< #resId# ]]>
+		</isNotNull>
+		<isNotNull prepend="AND" property="isOperation">
+			is_operation= #isOperation#
+		</isNotNull>
+		order by latestrevisiondate desc
+		<isNotNull  property="pageSize">
+			limit 0,#pageSize#
+		</isNotNull>
+	</select>
+	
+	<!--插入一个topiclink-->
+	<insert id="addTopicLink" parameterClass="TopicLink">
+		insert into topic_link (id,userid,topicid,type,resid,restype,praisecount,commentcount,is_del,createdate,latestrevisiondate,is_operation) 
+		values (#id#,#userid#,#topicid#,#type#,#resid#,#restype#,#praisecount#,#commentcount#,#isDel#,#createDate#,#latestRevisionDate#,#isOperation#)
+	</insert>
+	
+	 <!-- 修改topiclink信息的删除状态 -->
+     <update id="deleteTopicLink" parameterClass="TopicLink">
+      	update topic_link set is_del=1,latestrevisiondate=#latestRevisionDate#
+      	where id=#id#
+     </update>
+     <!-- 增加赞数量 -->
+      <update id="addTopicLinkPraisecount" parameterClass="TopicLink">
+      	update topic_link set praisecount=praisecount+1,latestrevisiondate=#latestRevisionDate#
+      	where id=#id#
+     </update>
+     
+     <!-- 增加评论数量 -->
+      <update id="addTopicLinkCommentcount" parameterClass="TopicLink">
+      	update topic_link set commentcount=commentcount+1,latestrevisiondate=#latestRevisionDate#
+      	where id=#id#
+     </update>
+     
+     <select id="findTopicLinkById"  parameterClass="long" resultClass="TopicLink">
+		select id,userid,topicid,type,resid,restype,praisecount,commentcount,is_del,createdate,latestrevisiondate,is_operation from topic_link where id=#id#
+	</select>
+	
+	<!-- 查询某个话题关联的资源数量 -->
+	<select id="getTopicLinkCountByTopicId"  parameterClass="long" resultClass="long">
+		select count(1) from topic_link where topicid=#topicid# and is_del=0
+	</select>
+	
+	<!-- 根据话题id查询某个话题关联列表按赞的数量排序 -->
+	<select id="findTopicLinkByTopicidOrderbyPraisecount"  resultMap="TopicLinkResult"  parameterClass="java.util.Map">
+		select id,userid,topicid,type,resid,restype,praisecount,commentcount,is_del,createdate,latestrevisiondate,is_operation from topic_link where topicid=#topicid# and is_del=0
+		order by praisecount desc
+		<isNotNull  property="pageSize">
+			limit 0,#pageSize#
+		</isNotNull>
+	</select>
+	
+	<!-- 根据话题id查询某个话题关联列表按评论的数量排序 -->
+	<select id="findTopicLinkByTopicidOrderbyCommentcount"  resultMap="TopicLinkResult"  parameterClass="java.util.Map">
+		select id,userid,topicid,type,resid,restype,praisecount,commentcount,is_del,createdate,latestrevisiondate,is_operation from topic_link where topicid=#topicid# and is_del=0
+		order by commentcount desc
+		<isNotNull  property="pageSize">
+			limit 0,#pageSize#
+		</isNotNull>
+	</select>
+	<!-- 删除一个关联 根据资源id-->
+	<update id="deleteTopicLinkByResid" parameterClass="TopicLink">
+		update topic_link set is_del=1,latestrevisiondate=#latestRevisionDate# where resid=#resid# and userid=#userid#
+	</update>
+	<!-- 根据资源id更新最新更新时间 -->
+	<update id="updateTopicLinkLatestrevisiondateByResid" parameterClass="TopicLink">
+		update topic_link set latestrevisiondate=#latestRevisionDate# where resid=#resid#
+	</update>
+	
+	
+	<typeAlias alias="TopicTalk" type="com.poison.resource.model.Topic"/>   
+   <!--   话题表用于讨论数查询 -->
+	<resultMap id="topicTalkResult" class="TopicTalk">
+		<result column="topicid" property="id" jdbcType="BIGINT"/>
+		<result column="talkcount" property="talkcount" jdbcType="BIGINT"/>
+	</resultMap>
+	
+	<!-- 话题表用于话题id查询 -->
+	<resultMap id="topicIdResult" class="TopicTalk">
+		<result column="topicid" property="id" jdbcType="BIGINT"/>
+	</resultMap>
+	
+	<!-- 根据讨论数查询话题排行 -->
+	<select id="findTopicRanking"  resultMap="topicTalkResult"  parameterClass="java.util.Map">
+		select topicid,count(topicid) as talkcount from topic_link where is_del=0 and createdate>=#starttime# and <![CDATA[ createdate<=#endtime# ]]> group by topicid order by talkcount desc limit #start#,20
+	</select>
+	
+	<!-- 根据讨论数查询话题排行 (排除一些话题id)-->
+	<select id="findTopicRankingExceptTopicids"  resultMap="topicTalkResult"  parameterClass="java.util.Map">
+		select topicid,count(topicid) as talkcount from topic_link where is_del=0 
+		<isNotNull prepend="AND" property="topicids">
+		topicid not in
+		<iterate property="topicids" open="(" close=")"  conjunction=",">
+		#topicids[]#
+		</iterate>
+		</isNotNull>
+		and createdate>=#starttime# and <![CDATA[ createdate<=#endtime# ]]> group by topicid order by talkcount desc limit #start#,#pagesize#
+	</select>
+	
+	<!-- 查询话题有讨论数的话题id集合 -->
+	<select id="findTopicRankingAll"  resultMap="topicIdResult"  parameterClass="java.util.Map">
+		select distinct topicid from topic_link where is_del=0 and createdate>=#starttime# and <![CDATA[ createdate<=#endtime# ]]>
+	</select>
+	
+	<!-- 查询话题有排行分值的话题id集合 热门话题分值-->
+	<select id="findScoreTopicIds"  resultMap="topicIdResult">
+		select id as topicid from topic where score>0 and is_delete=0
+	</select>
+	
+	<!-- 查询话题有排行分值的话题id集合  全部话题分值-->
+	<select id="findAllScoreTopicIds"  resultMap="topicIdResult">
+		select id as topicid from topic where allscore>0 and is_delete=0
+	</select>
+	
+	<!-- 根据讨论数查询话题排行的数量 -->
+	<select id="findTopicRankingCount"  resultClass="long"  parameterClass="java.util.Map">
+		select count(distinct topicid) from topic_link where is_del=0 and createdate>=#starttime# and <![CDATA[ createdate<=#endtime# ]]>
+	</select>
+	
+	<!-- 查询话题讨论数根据id集合 -->
+	<select id="findTopicTalkCount"  resultMap="topicTalkResult"  parameterClass="java.util.Map">
+		select topicid,count(topicid) as talkcount from topic_link where topicid in
+		<iterate property="topicids" open="(" close=")"  conjunction=",">
+		#topicids[]#
+		</iterate>
+		and is_del=0 group by topicid
+	</select>
+	
+	<!-- 根据总讨论数查询话题排行，排除一些话题id的 -->
+	<select id="findTopicRankingByAllTalkCount"  resultMap="topicTalkResult"  parameterClass="java.util.Map">
+		select topicid,count(topicid) as talkcount from topic_link where is_del=0
+		<isNotNull prepend="AND" property="topicids">
+		topicid not in
+		<iterate property="topicids" open="(" close=")"  conjunction=",">
+		#topicids[]#
+		</iterate>
+		</isNotNull>
+		group by topicid order by talkcount desc limit #start#,#pageSize#
+	</select>
+</sqlMap>

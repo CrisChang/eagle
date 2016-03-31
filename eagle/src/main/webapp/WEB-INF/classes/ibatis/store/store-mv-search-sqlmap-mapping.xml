@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd" >
+<sqlMap namespace="mvsearch">
+	
+	<typeAlias alias="mvSearch" type="com.poison.store.model.MvSearch" />
+	
+	<resultMap id="mvSearchResult" class="mvSearch">
+		<result column="id" property="id" jdbcType="BIGINT" />
+		<result column="createtime" property="createtime" jdbcType="VARCHAR" />
+		<result column="method" property="method" jdbcType="VARCHAR" />
+		<result column="isDel" property="isDel" jdbcType="INT" />
+		<result column="movieId" property="movieId" jdbcType="BIGINT" />
+		<result column="movieType" property="movieType" jdbcType="VARCHAR" />
+		<result column="movieName" property="movieName" jdbcType="VARCHAR" />
+		<result column="searchNum" property="searchNum" jdbcType="INT" />
+	</resultMap>
+	
+	
+	<resultMap id="mvSearchNumResult" class="mvSearch">
+		<result column="movieId" property="movieId" jdbcType="BIGINT" />
+		<result column="movieType" property="movieType" jdbcType="VARCHAR" />
+		<result column="movieName" property="movieName" jdbcType="VARCHAR" />
+		<result column="searchNumSum" property="searchNum" jdbcType="INT" />
+	</resultMap>
+	
+	<select id="findMvRanking" resultMap="mvSearchNumResult" parameterClass="java.util.Map">
+	<!-- select movieId,movieType,movieName,sum(searchNum) as searchNumSum from mv_search where isDel=0 and createtime>=#starttime# and <![CDATA[ createtime<=#endtime# ]]> group by movieId order by searchNumSum desc limit #start#,#pagesize# -->
+		select movieId,movieType,movieName,sum(searchNum) as searchNumSum from mv_search where isDel=0 and createtime='2015-07-21' group by movieId order by searchNumSum desc limit #start#,#pagesize#
+	</select>
+	
+</sqlMap>

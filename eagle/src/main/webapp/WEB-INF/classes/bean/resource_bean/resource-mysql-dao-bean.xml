@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:aop="http://www.springframework.org/schema/aop"
+	xmlns:tx="http://www.springframework.org/schema/tx"
+	xsi:schemaLocation="
+			http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-3.2.xsd
+			http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop-3.2.xsd
+			http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx-3.2.xsd"
+	default-autowire="byName">
+
+	<bean id="bookListDAO" class="com.poison.resource.dao.impl.BookListDAOImpl" parent="baseresourceSqlMapClientDAO"/> 
+    <!-- <bean id="filmListDAO" class="com.poison.resource.dao.impl.FilmListDAOImpl" parent="baseresourceSqlMapClientDAO"/> -->
+    <bean id="serializeDAO" class="com.poison.resource.dao.impl.SerialzeDAOImpl" parent="baseresourceSqlMapClientDAO"/>
+	<bean id="diaryDAO" class="com.poison.resource.dao.impl.DiaryDAOImpl" parent="baseresourceSqlMapClientDAO"/>
+	<bean id="postDAO" class="com.poison.resource.dao.impl.PostDAOImpl" parent="baseresourceSqlMapClientDAO"/>
+	<bean id="bkCommentDAO" class="com.poison.resource.dao.impl.BkCommentDAOImpl" parent="baseresourceSqlMapClientDAO"/>
+	<bean id="myBkDAO" class="com.poison.resource.dao.impl.MyBkDAOImpl" parent="baseresourceSqlMapClientDAO"/>
+	<bean id="myMovieDAO" class="com.poison.resource.dao.impl.MyMovieDAOImpl" parent="baseresourceSqlMapClientDAO"/>
+	<bean id="mvListLinkDAO" class="com.poison.resource.dao.impl.MvListLinkDAOImpl" parent="baseresourceSqlMapClientDAO"/>
+	<bean id="mvCommentDAO" class="com.poison.resource.dao.impl.MvCommentDAOImpl" parent="baseresourceSqlMapClientDAO"/>
+	<bean id="movieListDAO" class="com.poison.resource.dao.impl.MovieListDAOImpl" parent="baseresourceSqlMapClientDAO"/> 
+	<bean id="bookListLinkDAO" class="com.poison.resource.dao.impl.BookListLinkDAOImpl" parent="baseresourceSqlMapClientDAO"/>
+	<bean id="bookTalkDAO" class="com.poison.resource.dao.impl.BookTalkDAOImpl" parent="baseresourceSqlMapClientDAO"/>
+	<bean id="bkAvgMarkDAO" class="com.poison.resource.dao.impl.BkAvgMarkDAOImpl" parent="baseresourceSqlMapClientDAO"/>
+	<!-- 电影/影单 -->
+	<bean id="movieTalkDAO" class="com.poison.resource.dao.impl.MovieTalkDAOImpl" parent="baseresourceSqlMapClientDAO"/>
+	<bean id="serializeListDAO" class="com.poison.resource.dao.impl.SerializeListDAOImpl" parent="baseresourceSqlMapClientDAO"/>
+	<bean id="serializeListLinkDAO" class="com.poison.resource.dao.impl.SerializeListLinkDAOImpl" parent="baseresourceSqlMapClientDAO"/>
+	<bean id="mvAvgMarkDAO" class="com.poison.resource.dao.impl.MvAvgMarkDAOImpl" parent="baseresourceSqlMapClientDAO"/>
+	<!-- 逼格相关 -->
+	<bean id="bigDAO" class="com.poison.resource.dao.impl.BigDAOImpl" parent="baseresourceSqlMapClientDAO"/>
+	
+	<bean id="tagDAO" class="com.poison.resource.dao.impl.TagDAOImpl" parent="baseresourceSqlMapClientDAO"/>
+	
+	<bean id="userTagDAO" class="com.poison.resource.dao.impl.UserTagDAOImpl" parent="baseresourceSqlMapClientDAO"/>
+	
+	<bean id="resReportDAO" class="com.poison.resource.dao.impl.ResReportDAOImpl" parent="baseresourceSqlMapClientDAO"/>
+	
+	<bean id="tagCategoryDAO" class="com.poison.resource.dao.impl.TagCategoryDAOImpl" parent="baseresourceSqlMapClientDAO"/>
+	
+	<bean id="resLinkDAO" class="com.poison.resource.dao.impl.ResLinkDAOImpl" parent="baseresourceSqlMapClientDAO"/>
+		
+	<bean id="resStatisticDAO" class="com.poison.resource.dao.impl.ResStatisticDAOImpl" parent="baseresourceSqlMapClientDAO"/>
+
+	<bean id="sensitiveWordDAO" class="com.poison.resource.dao.impl.SensitiveWordDAOImpl" parent="baseresourceSqlMapClientDAO"/>
+	
+	<bean id="resCollectNumDAO" class="com.poison.resource.dao.impl.ResCollectNumDAOImpl" parent="baseresourceSqlMapClientDAO"/>
+	
+	<!--图解电影  -->
+	<bean id="graphicFilmDAO" class="com.poison.resource.dao.impl.GraphicFilmDAOImpl" parent="baseresourceSqlMapClientDAO"/>
+	<!-- 话题 -->
+	<bean id="topicDAO" class="com.poison.resource.dao.impl.TopicDAOImpl" parent="baseresourceSqlMapClientDAO"/>
+	
+	<bean id="topicLinkDAO" class="com.poison.resource.dao.impl.TopicLinkDAOImpl" parent="baseresourceSqlMapClientDAO"/>
+	<!-- 新的长文章 -->
+	<bean id="articleDAO" class="com.poison.resource.dao.impl.ArticleDAOImpl" parent="baseresourceSqlMapClientDAO"/>
+	<bean id="articleDraftDAO" class="com.poison.resource.dao.impl.ArticleDraftDAOImpl" parent="baseresourceSqlMapClientDAO"/>
+	<!-- 根据评论数量的资源排行 -->
+	<bean id="resourceRankingDAO" class="com.poison.resource.dao.impl.ResourceRankingDAOImpl" parent="baseresourceSqlMapClientDAO"/>
+	<!-- 精选 -->
+	<bean id="selectedDAO" class="com.poison.resource.dao.impl.SelectedDAOImpl" parent="baseresourceSqlMapClientDAO"/>
+	<!-- 精选资源 -->
+	<bean id="selectedResDAO" class="com.poison.resource.dao.impl.SelectedResDAOImpl" parent="baseresourceSqlMapClientDAO"/>
+	<!-- 排行榜：原创榜，上周回幕榜 -->
+	<bean id="rankingListDAO" class="com.poison.resource.dao.impl.RankingListDAOImpl" parent="baseresourceSqlMapClientDAO"/>
+</beans>

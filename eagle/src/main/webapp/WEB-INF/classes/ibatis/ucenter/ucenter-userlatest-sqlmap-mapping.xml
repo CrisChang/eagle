@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd" >
+<sqlMap namespace="userlatest">
+	
+	<typeAlias alias="userlatest" type="com.poison.ucenter.model.UserLatest" />
+	
+	<resultMap id="UserlatestResult" class="userlatest">
+		<result column="userid" property="userid" jdbcType="BIGINT" />
+		<result column="resourceid" property="resourceid" jdbcType="BIGINT" />
+		<result column="type" property="type" jdbcType="VARCHAR" />
+		<result column="isdel" property="isdel" jdbcType="INT" />
+		<result column="createtime" property="createtime" jdbcType="BIGINT" />
+		<result column="updatetime" property="updatetime" jdbcType="BIGINT" />
+		<result column="pushtime" property="pushtime" jdbcType="BIGINT" />
+	</resultMap>
+	
+	<!-- 插入一条信息 -->
+	<insert id="insertUserlatest" parameterClass="userlatest">
+		insert into user_latest(userid,resourceid,type,isdel,createtime,updatetime,pushtime)
+		values(#userid#,#resourceid#,#type#,#isdel#,#createtime#,#updatetime#,#pushtime#)
+	</insert>
+	<!-- 修改 更新书影评文字的最新信息 -->
+	<update id="updateUserlatest" parameterClass="userlatest">
+		update user_latest set resourceid=#resourceid#,type=#type#,updatetime=#updatetime#,pushtime=#pushtime# where userid=#userid#
+	</update>
+	<!-- 根据userid查询 -->
+	<select id="findUserlatestByUserid" resultMap="UserlatestResult" parameterClass="long">
+		select * from user_latest where userid=#userid# and isdel=0
+	</select>
+	
+</sqlMap>

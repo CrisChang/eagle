@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+
+<!DOCTYPE sqlMapConfig PUBLIC "-//iBATIS.com//DTD SQL Map Config 2.0//EN" "http://www.ibatis.com/dtd/sql-map-config-2.dtd">
+<sqlMapConfig>
+    <settings cacheModelsEnabled="true" enhancementEnabled="false" lazyLoadingEnabled="false" maxRequests="3000" maxSessions="3000" maxTransactions="3000" useStatementNamespaces="false"/>
+    
+    <sqlMap resource="ibatis/ucenter/ucenter-user-sqlmap-mapping.xml"/>
+    <sqlMap resource="ibatis/ucenter/ucenter-third-party-sqlmap-mapping.xml"/>
+    <sqlMap resource="ibatis/ucenter/ucenter-statistics-sqlmap-mapping.xml"/>
+	<sqlMap resource="ibatis/ucenter/ucenter-feedback-sqlmap-mapping.xml"/>
+	<sqlMap resource="ibatis/ucenter/ucenter-group-sqlmap-mapping.xml"/>
+	<sqlMap resource="ibatis/easemob/easemob-user-sqlmap-mapping.xml"/>
+	<sqlMap resource="ibatis/ucenter/ucenter-apply-sqlmap-mapping.xml"/>
+	<sqlMap resource="ibatis/ucenter/ucenter-advert-sqlmap-mapping.xml"/>
+	<sqlMap resource="ibatis/ucenter/ucenter-userlatest-sqlmap-mapping.xml"/>
+
+	<!-- 作者详情-->
+	<sqlMap resource="ibatis/ucenter/ucenter-author-sqlmap-mapping.xml"/>
+	<!-- 小说用户-->
+	<sqlMap resource="ibatis/ucenter/ucenter-story-user-sqlmap-mapping.xml"/>
+	<!-- 小说第三方-->
+	<sqlMap resource="ibatis/ucenter/ucenter-story-third-sqlmap-mapping.xml"/>
+</sqlMapConfig>

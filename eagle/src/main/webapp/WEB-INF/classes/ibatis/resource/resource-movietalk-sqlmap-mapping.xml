@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd" >
+<sqlMap namespace="movietalk">
+
+	<typeAlias alias="MovieTalk" type="com.poison.resource.model.MovieTalk" />
+
+	<resultMap id="movieResult" class="MovieTalk">
+		<result column="id" property="id" jdbcType="Long" />
+		<result column="user_id" property="uid" jdbcType="Long" />
+		<result column="movie_id" property="movieId" jdbcType="INT" />
+		<result column="content" property="content" jdbcType="VARCHAR" />
+		<result column="is_del" property="isDel" jdbcType="INT" />
+		<result column="type" property="type" jdbcType="INT" />
+		<result column="create_time" property="createTime" jdbcType="Long" />
+	</resultMap>
+	<!-- 插入单个电影 -->
+	<insert id="addMovieTalk" parameterClass="MovieTalk">
+		insert into movie_talk (id,movie_id,user_id,content,is_del,type,create_time)
+		values (#id#,#movieId#,#uid#,#content#,#isDel#,#type#,#createTime#)
+		<selectKey resultClass="long" keyProperty="id" >
+		     SELECT @@IDENTITY AS id
+		</selectKey>
+	</insert>
+
+	<!-- 模糊查询 -->
+	<select id="findMovieTalkList" resultMap="movieResult"
+		parameterClass="java.util.Map">
+		select * from movie_talk where is_del = 0 and movie_id = #movieId#
+		<isNotNull prepend="AND" property="id">
+			<![CDATA[ id< #id# ]]>
+		</isNotNull>
+		 order by id desc 
+	</select>
+	
+	<update id="delMovieTalk" parameterClass="java.lang.Long">
+		update movie_talk set is_del = 1 where id = #id#
+	</update>
+
+</sqlMap>

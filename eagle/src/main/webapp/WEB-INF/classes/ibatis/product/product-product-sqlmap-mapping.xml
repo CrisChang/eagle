@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd" >
+<sqlMap namespace="product">
+	<!-- 商品表 -->
+	<typeAlias alias="product" type="com.poison.product.model.Product"/>
+	<resultMap id="productResult" class="product">
+		<result column="id" property="id" jdbcType="BIGINT"/>
+		<result column="title" property="title" jdbcType="VARCHAR" nullValue=""/>
+		<result column="remark" property="remark" jdbcType="VARCHAR" nullValue=""/>
+		<result column="price" property="price" jdbcType="BIGINT" nullValue="0"/>
+		<result column="virtualprice" property="virtualprice" jdbcType="BIGINT" nullValue="0"/>
+		<result column="image" property="image" jdbcType="VARCHAR" nullValue=""/>
+		<result column="stockamount" property="stockamount" jdbcType="INT" nullValue="0"/>
+		<result column="packamount" property="packamount" jdbcType="INT" nullValue="0"/>
+		<result column="giveamount" property="giveamount" jdbcType="INT" nullValue="0"/>
+		<result column="isdel" property="isdel" jdbcType="TINYINT" nullValue="0"/>
+		<result column="ptype" property="ptype" jdbcType="VARCHAR" nullValue=""/>
+		<result column="createtime" property="createtime" jdbcType="BIGINT" nullValue="0"/>
+		<result column="updatetime" property="updatetime" jdbcType="BIGINT" nullValue="0"/>
+	</resultMap>
+	<!-- 生成一条商品信息 -->
+	<insert id="insertIntoProduct" parameterClass="product">
+		insert into product(id,title,remark,price,virtualprice,image,stockamount,packamount,giveamount,isdel,ptype,createtime,updatetime) values (#id#,#title#,#remark#,#price#,#virtualprice#,#image#,#stockamount#,#packamount#,#giveamount#,#isdel#,#ptype#,#createtime#,#updatetime#)
+	</insert>
+	<!-- 按商品类型查询商品列表 -->
+	<select id="findProductsByType" parameterClass="java.lang.String" resultMap="productResult">
+		select * from product  where ptype = #ptype# and isdel=0
+	</select>
+	<!-- 根据商品id查询商品信息 -->
+	<select id="findProductByPid" parameterClass="long" resultMap="productResult">
+		select * from product  where id = #pid# and isdel=0
+	</select>
+	<!-- 根据商品价格和商品类型查询 -->
+	<select id="findProductByPriceAndType" parameterClass="java.util.Map" resultMap="productResult">
+		select * from product  where packamount = #goldamount# and ptype=#ptype# and isdel=0
+	</select>
+	
+	<!-- 订单表 -->
+	<typeAlias alias="productOrder" type="com.poison.product.model.ProductOrder"/>
+	<resultMap id="productOrderResult" class="productOrder">
+		<result column="id" property="id" jdbcType="BIGINT"/>
+		<result column="pid" property="pid" jdbcType="BIGINT"/>
+		<result column="num" property="num" jdbcType="INT"/>
+		<result column="uid" property="uid" jdbcType="BIGINT" nullValue="0"/>
+		<result column="ordernum" property="ordernum" jdbcType="VARCHAR" nullValue=""/>
+		<result column="amount" property="amount" jdbcType="BIGINT" nullValue="0"/>
+		<result column="virtualamount" property="virtualamount" jdbcType="BIGINT" nullValue="0"/>
+		<result column="tn" property="tn" jdbcType="VARCHAR" nullValue=""/>
+		<result column="paystatus" property="paystatus" jdbcType="TINYINT" nullValue="0"/>
+		<result column="title" property="title" jdbcType="VARCHAR" nullValue=""/>
+		<result column="status" property="status" jdbcType="TINYINT" nullValue="0"/>
+		<result column="isdel" property="isdel" jdbcType="TINYINT" nullValue="0"/>
+		<result column="createtime" property="createtime" jdbcType="BIGINT" nullValue="0"/>
+		<result column="updatetime" property="updatetime" jdbcType="BIGINT" nullValue="0"/>
+		<result column="paytime" property="paytime" jdbcType="BIGINT" nullValue="0"/>
+		<result column="remark" property="remark" jdbcType="VARCHAR" nullValue=""/>
+		<result column="paymode" property="paymode" jdbcType="VARCHAR" nullValue=""/>
+		<result column="ptype" property="ptype" jdbcType="VARCHAR" nullValue=""/>
+	</resultMap>
+	<insert id="insertIntoProductOrder" parameterClass="productOrder">
+		insert into product_order(id,pid,num,uid,ordernum,amount,virtualamount,tn,paystatus,title,isdel,status,createtime,updatetime,paytime,remark,paymode,ptype) values (#id#,#pid#,#num#,#uid#,#ordernum#,#amount#,#virtualamount#,#tn#,#paystatus#,#title#,#isdel#,#status#,#createtime#,#updatetime#,#paytime#,#remark#,#paymode#,#ptype#)
+	</insert>
+	<!-- 更新订单的支付状态 -->
+	<update id="updateProductOrderPaystatus" parameterClass="productOrder">
+		update product_order set paystatus=#paystatus#,status=#status#,updatetime=#updatetime#,paytime=#paytime#,paymode=#paymode#,tn=#tn# where ordernum=#ordernum#
+	</update>
+	<!-- 根据订单id查询订单信息 -->
+	<select id="findProductOrderById" parameterClass="long" resultMap="productOrderResult">
+		select * from product_order  where id = #id# and isdel=0
+	</select>
+	<!-- 根据tn号查询订单信息(主要用于苹果支付查询,用于苹果支付的原始收据的MD5加密数据查询) -->
+	<select id="findProductOrderByTn" parameterClass="java.lang.String" resultMap="productOrderResult">
+		select * from product_order  where tn = #tn# and isdel=0
+	</select>
+</sqlMap>

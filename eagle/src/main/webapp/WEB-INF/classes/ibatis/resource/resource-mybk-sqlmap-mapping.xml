@@ -1,0 +1,171 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd" >
+<sqlMap namespace="resmybk">
+
+    <typeAlias alias="mybk" type="com.poison.resource.model.MyBk" />
+	
+	<resultMap id="MyBkResult" class="mybk">
+		<result column="id" property="id" jdbcType="INT" />
+		<result column="create_id" property="createId" jdbcType="BIGINT" />
+		<result column="book_url" property="bookUrl" jdbcType="VARCHAR" />
+		<result column="book_pic" property="bookPic" jdbcType="VARCHAR" />
+		<result column="name" property="name" jdbcType="VARCHAR" />
+		<result column="score" property="score" jdbcType="FLOAT" />
+		<result column="author_name" property="authorName" jdbcType="VARCHAR" />
+		<result column="translator" property="translator" jdbcType="VARCHAR" />
+		<result column="press" property="press" jdbcType="BIGINT" />
+		<result column="original_name" property="originalName" jdbcType="VARCHAR" />
+		<result column="subtitle" property="subtitle" jdbcType="VARCHAR" />
+		<result column="publishing_time" property="publishingTime" jdbcType="VARCHAR" />
+		<result column="number" property="number" jdbcType="INT" />
+		<result column="price" property="price" jdbcType="VARCHAR" />
+		<result column="binding" property="binding" jdbcType="VARCHAR" />
+		<result column="series_name" property="seriesName" jdbcType="VARCHAR" />
+		<result column="tags" property="tags" jdbcType="VARCHAR" />
+		<result column="content" property="content" jdbcType="TEXT" />
+		<result column="author_info" property="authorInfo" jdbcType="TEXT" />
+		<result column="catalog" property="catalog" jdbcType="TEXT" />
+		<result column="series_info" property="seriesInfo" jdbcType="TEXT" />
+		<result column="isbn" property="isbn" jdbcType="VARCHAR" />
+		<result column="coll_time" property="collTime" jdbcType="BIGINT" />
+	</resultMap>
+	
+	<!-- 插入一本书-->
+	<insert id="insertMyBk" parameterClass="mybk">
+		insert into c_my_bk(book_url,create_id,book_pic,name,score,author_name,translator,press,original_name,subtitle,publishing_time,number,price,binding,series_name,tags,content,author_info,catalog,series_info,isbn,coll_time)
+		values(#bookUrl#,#createId#,#bookPic#,#name#,#score#,#authorName#,#translator#,#press#,#originalName#,#subtitle#,#publishingTime#,#number#,#price#,#binding#,#seriesName#,#tags#,#content#,#authorInfo#,#catalog#,#seriesInfo#,#isbn#,#collTime#)
+		 <selectKey resultClass="int" keyProperty="id" >
+		     SELECT @@IDENTITY AS id
+		   </selectKey>
+	</insert>
+	
+	<!-- 查询用户是否已经添过这条信息 -->
+	<select id="findBookLinkIsExistByUser"  parameterClass="mybk" resultMap="MyBkResult">
+		select * from c_my_bk where create_id=#createId# and name=#name#
+	</select>
+	
+	<!-- 精确查询用户自己库中的这个书名 -->
+	<select id="findMyBkList"  parameterClass="java.util.Map" resultMap="MyBkResult">
+		select * from c_my_bk where create_id=#userId# and name=#name# limit 0,10
+	</select>
+	
+	<!-- 模糊查询用户自己库中的这个书名 -->
+	<select id="findLikeMyBkList"  parameterClass="java.util.Map" resultMap="MyBkResult">
+		select * from c_my_bk where create_id=#userId# and name like concat('%', #name#, '%') limit 0,10
+	</select>
+	
+	<!-- 根据ID查询这本书的详情 -->
+	<select id="findMyBkInfo"  parameterClass="int" resultMap="MyBkResult">
+		select * from c_my_bk where id=#id#
+	</select>
+	
+	
+	<typeAlias alias="tagdb" type="com.poison.resource.model.Tag" />
+	
+	<resultMap id="tagDbResult" class="tagdb">
+		<result column="id" property="id" jdbcType="BIGINT" />
+		<result column="tag_name" property="tagName" jdbcType="VARCHAR" />
+		<result column="tag_group" property="tagGroup" jdbcType="VARCHAR" />
+		<result column="type" property="type" jdbcType="VARCHAR" />
+		<result column="is_delete" property="isDelete" jdbcType="INT" />
+		<result column="is_top" property="isTop" jdbcType="INT" />
+		<result column="resource_link_type" property="resourceLinkType" jdbcType="VARCHAR" />
+		<result column="resid" property="resid" jdbcType="BIGINT" />
+		<result column="restype" property="restype" jdbcType="VARCHAR" />
+		<result column="cover" property="cover" jdbcType="VARCHAR" />
+		<result column="introduce" property="introduce" jdbcType="VARCHAR" />
+	</resultMap>
+	
+	<select id="findTagById"  parameterClass="long" resultMap="tagDbResult">
+		select * from tag_db where id=#id#
+	</select>
+	
+	<select id="findHotTagListByTagGroup"  parameterClass="java.lang.String" resultMap="tagDbResult">
+		select * from tag_db where tag_group = #tagGroup# and type = 1 order by is_top
+	</select>
+	
+	<select id="findAllTagListByTagGroup"  parameterClass="java.lang.String" resultMap="tagDbResult">
+		select * from tag_db where tag_group = #tagGroup# and is_delete=0 order by is_top
+	</select>
+	
+	<select id="findTagByType"  parameterClass="java.lang.String" resultMap="tagDbResult">
+		select * from tag_db where  type = #type# and is_delete=0 order by tag_group,is_top
+	</select>
+	<select id="findTagByTypeOrderById"  parameterClass="java.lang.String" resultMap="tagDbResult">
+		select * from tag_db where  type = #type# and is_delete=0 order by id desc
+	</select>
+	
+	<select id="findTaggroupByTagName"  parameterClass="java.util.Map" resultMap="tagDbResult">
+		select * from tag_db where tag_name = #tagName# and type  = #type# and is_delete=0
+	</select>
+	
+	<typeAlias alias="userTag" type="com.poison.resource.model.UserTag" />
+	
+	<resultMap id="userTagResult" class="userTag">
+		<result column="id" property="id" jdbcType="BIGINT" />
+		<result column="user_id" property="userId" jdbcType="BIGINT" />
+		<result column="tag_id" property="tagId" jdbcType="BIGINT" />
+		<result column="tag_name" property="tagName" jdbcType="VARCHAR" />
+		<result column="create_date" property="createDate" jdbcType="BIGINT" />
+		<result column="latest_revision_date" property="latestRevisionDate" jdbcType="BIGINT" />
+		<result column="is_delete" property="isDelete" jdbcType="INT" />
+		<result column="select_count" property="selectCount" jdbcType="INT" />
+		<result column="type" property="type" jdbcType="VARCHAR" />
+	</resultMap>
+	
+	<insert id="insertUserTag" parameterClass="userTag">
+		insert into user_tag(id,user_id,tag_id,tag_name,is_delete,select_count,type,create_date,latest_revision_date)values(#id#,#userId#,#tagId#,#tagName#,#isDelete#,#selectCount#,#type#,#createDate#,#latestRevisionDate#)
+	</insert>
+	
+	<select id="findUserTagById"  parameterClass="long" resultMap="userTagResult">
+		select id,user_id,tag_id,tag_name,create_date,latest_revision_date,is_delete,select_count,type from user_tag where id=#id#
+	</select>
+	
+	<select id="findUserTagByTagName"  parameterClass="java.util.Map" resultMap="userTagResult">
+		select id,user_id,tag_id,tag_name,create_date,latest_revision_date,is_delete,select_count,type from user_tag where tag_name=#tagName# and user_id=#userId# and is_delete = 0
+	</select>
+	
+	<select id="findUserTagList"  parameterClass="long" resultMap="userTagResult">
+		select id,user_id,tag_id,tag_name,create_date,latest_revision_date,is_delete,select_count,type from user_tag where user_id=#userId# and is_delete=0
+	</select>
+	
+	<update id="updateUserTagCount" parameterClass="java.util.Map" >
+		update user_tag set select_count=select_count+1,latest_revision_date=#latestRevisionDate# where id=#id#
+	</update>
+	
+	<update id="updateUserTagCountAndIsDel" parameterClass="java.util.Map" >
+		update user_tag set is_delete=0,select_count=select_count+1,latest_revision_date=#latestRevisionDate# where id=#id#
+	</update>
+	
+	<update id="deleteUserTagById" parameterClass="long" >
+		update user_tag set is_delete=1 where id=#id#
+	</update>
+	
+	<select id="findUserHistoryTagListByUid"  parameterClass="long" resultMap="userTagResult">
+		select id,user_id,tag_id,tag_name,create_date,latest_revision_date,is_delete,select_count,type from user_tag where user_id=#userId# and is_delete = 0 order by latest_revision_date desc
+	</select>
+	
+	<select id="findUserFavoriteTagListByUid"  parameterClass="long" resultMap="userTagResult">
+		select id,user_id,tag_id,tag_name,create_date,latest_revision_date,is_delete,select_count,type from user_tag where user_id=#userId# and is_delete = 0 order by select_count desc
+	</select>
+	
+	<typeAlias alias="tagcategory" type="com.poison.resource.model.TagCategory" />
+	
+	<resultMap id="tagCategoryResult" class="tagcategory">
+		<result column="id" property="id" jdbcType="BIGINT" />
+		<result column="tag_category" property="tagCategory" jdbcType="VARCHAR" />
+		<result column="tag_level" property="tagLevel" jdbcType="INT" />
+		<result column="cover_page" property="coverPage" jdbcType="VARCHAR" />
+		<result column="type" property="type" jdbcType="VARCHAR" />
+	</resultMap>
+	
+	<select id="findTagCategoryByLevel"  resultMap="tagCategoryResult">
+		select * from tag_category order by tag_level desc
+	</select>
+	
+	<select id="findTagCategoryByType"  resultMap="tagCategoryResult" parameterClass="java.lang.String">
+		select * from tag_category where type = #type#
+	</select>
+	
+	
+</sqlMap>

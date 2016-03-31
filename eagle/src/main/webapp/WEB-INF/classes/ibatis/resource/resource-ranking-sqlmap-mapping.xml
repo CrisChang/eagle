@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd" >
+<sqlMap namespace="resRanking">
+
+	<typeAlias alias="ranking" type="com.poison.resource.model.Ranking"/>   
+
+	<resultMap id="rankingResult" class="ranking">
+		<result column="id" property="id" jdbcType="BIGINT"/>
+		<result column="ranktype" property="ranktype" jdbcType="VARCHAR"/>
+		<result column="isdel" property="isdel" jdbcType="TINYINT"/>
+		<result column="resid" property="resid" jdbcType="BIGINT"/>
+		<result column="restype" property="restype" jdbcType="VARCHAR"/>
+		<result column="score" property="score" jdbcType="BIGINT" />
+		<result column="createtime" property="createtime" jdbcType="BIGINT" />
+		<result column="updatetime" property="updatetime" jdbcType="BIGINT" />
+	</resultMap>
+   <select id="findRanking"  parameterClass="java.util.Map" resultMap="rankingResult">
+		select * from ranking where ranktype=#ranktype# and isdel=0 
+		<isNotNull prepend="AND" property="restype">
+			restype=#restype#
+		</isNotNull>
+		order by score desc limit #start#,#pagesize#
+	</select>
+	
+
+    <typeAlias alias="resourceRanking" type="com.poison.resource.model.ResourceRanking"/>   
+
+	<resultMap id="resRankingResult" class="resourceRanking">
+		<result column="resource_id" property="resId" jdbcType="BIGINT"/>
+		<result column="type" property="resType" jdbcType="VARCHAR"/>
+		<result column="commentAmount" property="commentAmount" jdbcType="BIGINT"/>
+	</resultMap>
+   <select id="findResRanking"  parameterClass="java.util.Map" resultMap="resRankingResult">
+		select resource_id,type,count(resource_id) as commentAmount from act_comment where resource_id>0 and is_delete=0 and comment_date>=#starttime# and <![CDATA[ comment_date<=#endtime# ]]> group by resource_id order by commentAmount desc limit #start#,20
+	</select>
+</sqlMap>

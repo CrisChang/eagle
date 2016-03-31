@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd" >
+<sqlMap namespace="author">
+
+    <typeAlias alias="author" type="com.poison.ucenter.model.Author" />
+
+    <resultMap id="authorResult" class="author">
+        <result column="id" property="id" jdbcType="BIGINT" />
+        <result column="mobilephone" property="mobilephone" jdbcType="VARCHAR" />
+        <result column="mail" property="mail" jdbcType="VARCHAR" />
+        <result column="name" property="name" jdbcType="VARCHAR" />
+        <result column="password" property="password" jdbcType="VARCHAR" />
+        <result column="password_md5" property="passwordMd5" jdbcType="VARCHAR" />
+        <result column="face_url" property="faceUrl" jdbcType="VARCHAR" />
+        <result column="introduce" property="introduce" jdbcType="VARCHAR" />
+        <result column="is_init" property="isInit" jdbcType="INT" />
+        <result column="state" property="state" jdbcType="INT" />
+        <result column="contact_way1" property="contactWay1" jdbcType="VARCHAR" />
+        <result column="contact_way2" property="contactWay2" jdbcType="VARCHAR" />
+        <result column="contact_way3" property="contactWay3" jdbcType="VARCHAR" />
+        <result column="create_date" property="createDate" jdbcType="BIGINT" />
+        <result column="latest_revision_date" property="latestRevisionDate" jdbcType="BIGINT" />
+    </resultMap>
+
+    <!-- 修改 更新书影评文字的最新信息 -->
+    <update id="updateAuthorPassword" parameterClass="java.util.Map">
+        update author set password=#password#,is_init=1,latest_revision_date=#latestRevisionDate# where id = #id#
+    </update>
+
+    <!-- 修改作者信息 -->
+    <update id="updateAuthorInfo" parameterClass="java.util.Map">
+        update author set `name`=#name#,contact_way1=#qqAddress#,latest_revision_date=#latestRevisionDate# where id = #id#
+    </update>
+
+    <!-- 根据userid查询 -->
+    <select id="findAuthorByid" resultMap="authorResult" parameterClass="long">
+        select * from author where id=#id#
+    </select>
+
+    <!-- 根据邮箱或者电话查询用户信息 -->
+    <select id="findAuthorByMailOrPhonenum" resultMap="authorResult" parameterClass="java.util.Map">
+        select * from author where password =#password#
+        <isNotNull prepend="AND" property="mobilephone">
+            mobilephone= #mobilephone#
+        </isNotNull>
+        <isNotNull prepend="AND" property="mail">
+            mail= #mail#
+        </isNotNull>
+    </select>
+
+    <!-- 根据手机查询手机是否注册 -->
+    <select id="findAuthorByPhonenum" resultMap="authorResult" parameterClass="java.lang.String">
+        select * from author where mobilephone=#mobilephone#
+    </select>
+
+    <!-- 根据手机查询邮箱是否注册 -->
+    <select id="findAuthorByMail" resultMap="authorResult" parameterClass="java.lang.String">
+        select * from author where mail=#mail#
+    </select>
+
+</sqlMap>

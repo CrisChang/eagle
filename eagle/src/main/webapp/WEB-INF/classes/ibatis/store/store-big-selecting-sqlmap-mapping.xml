@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd" >
+<sqlMap namespace="bigSelect">
+	
+	<typeAlias alias="bigSelecting" type="com.poison.store.model.BigSelecting" />
+	
+	<resultMap id="bigSelectingResult" class="bigSelecting">
+		<result column="id" property="id" jdbcType="BIGINT" />
+		<result column="title" property="title" jdbcType="VARCHAR" />
+		<result column="type" property="type" jdbcType="INT" />
+		<result column="a_item" property="aItem" jdbcType="TEXT" />
+		<result column="a_answer" property="aAnswer" jdbcType="TEXT" />
+		<result column="a_score" property="aScore" jdbcType="FLOAT" />
+		<result column="b_item" property="bItem" jdbcType="TEXT" />
+		<result column="b_answer" property="bAnswer" jdbcType="TEXT" />
+		<result column="b_score" property="bScore" jdbcType="FLOAT" />
+		<result column="c_item" property="cItem" jdbcType="TEXT" />
+		<result column="c_answer" property="cAnswer" jdbcType="TEXT" />
+		<result column="c_score" property="cScore" jdbcType="FLOAT" />
+		<result column="d_item" property="dItem" jdbcType="TEXT" />
+		<result column="d_answer" property="dAnswer" jdbcType="TEXT" />
+		<result column="d_score" property="dScore" jdbcType="FLOAT" />
+		<result column="other_item" property="otherItem" jdbcType="TEXT" />
+		<result column="is_delete" property="isDelete" jdbcType="FLOAT" />
+		<result column="create_date" property="createDate" jdbcType="BIGINT" />
+	</resultMap>
+	
+	<select id="findAllBigSelecting" resultMap="bigSelectingResult">
+		select * from big_selecting where is_delete = 0 limit 0,10
+	</select>
+	
+	<select id="findBigSelectingById" parameterClass="long" resultMap="bigSelectingResult">
+		select * from big_selecting where id=#id# and is_delete = 0
+	</select>
+	
+</sqlMap>

@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd" >
+<sqlMap namespace="easemob">
+	
+	<typeAlias alias="easemobUser" type="com.poison.easemob.model.EasemobUser" />
+	
+	<resultMap id="easemobUserResult" class="easemobUser">
+		<result column="user_id" property="userId" jdbcType="BIGINT" />
+		<result column="easemob_id" property="easemobId" jdbcType="VARCHAR" />
+		<result column="create_date" property="createDate" jdbcType="BIGINT" />
+	</resultMap>
+	
+	<insert id="insertEasemobUser" parameterClass="easemobUser">
+		insert into easemob_user(user_id,easemob_id,create_date) values(#userId#,#easemobId#,#createDate#)
+	</insert>
+	
+	<select id="findEasemobByUid" resultMap="easemobUserResult" parameterClass="long">
+		select user_id,easemob_id,create_date from easemob_user where user_id=#userId#
+	</select>
+	
+</sqlMap>

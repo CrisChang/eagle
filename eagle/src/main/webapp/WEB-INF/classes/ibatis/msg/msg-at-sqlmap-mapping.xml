@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd" >
+<sqlMap namespace="msgat">
+	
+	<typeAlias alias="msgat" type="com.poison.msg.model.MsgAt" />
+	
+		<resultMap id="atResult" class="msgat">
+		<result column="at_id" property="atId" jdbcType="BIGINT" />
+		<result column="user_id" property="userId" jdbcType="BIGINT" />
+		<result column="user_at_id" property="userAtId" jdbcType="BIGINT" />
+		<result column="resource_id" property="resourceId" jdbcType="BIGINT" />
+		<result column="is_delete" property="isDelete" jdbcType="INT" />
+		<result column="is_read" property="isRead" jdbcType="INT" />
+		<result column="at_date" property="atDate" jdbcType="BIGINT" />
+		<result column="type" property="type" jdbcType="VARCHAR" />
+	</resultMap>
+	
+	<insert id="insertintoMsgAt" parameterClass="msgat">
+		insert into msg_at(at_id,user_id,user_at_id,resource_id,is_delete,is_read,at_date,type) values(#atId#,#userId#,#userAtId#,#resourceId#,#isDelete#,#isRead#,#atDate#,#type#)
+		<!-- <selectKey resultClass="long" keyProperty="atId" >
+		     SELECT @@IDENTITY AS at_id
+	   </selectKey> -->
+	</insert>
+	
+	<select id="findAtList"  parameterClass="java.util.Map" resultMap="atResult">
+		select * from msg_at where user_at_id = #userId# and is_delete = 0
+		<isNotNull prepend="AND" property="resId">
+			<![CDATA[ at_id< #resId# ]]>
+		</isNotNull>
+		order by at_id desc limit 0,20
+	</select>
+	
+	<select id="findAtById"  parameterClass="long" resultMap="atResult">
+		select * from msg_at where at_id = #atId#
+	</select>
+	
+</sqlMap>

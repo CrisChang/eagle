@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd" >
+<sqlMap namespace="actsubscribe">
+	
+	<typeAlias alias="actsubscribe" type="com.poison.act.model.ActSubscribe" />
+	
+	<resultMap id="subscribeResult" class="actsubscribe">
+		<result column="id" property="id" jdbcType="BIGINT" />
+		<result column="user_id" property="userId" jdbcType="BIGINT" />
+		<result column="resource_id" property="resourceId" jdbcType="BIGINT" />
+		<result column="is_subscribe" property="isSubscribe" jdbcType="INT" />
+		<result column="type" property="type" jdbcType="VARCHAR" />
+		<result column="subscribe_date" property="subscribeDate" jdbcType="BIGINT" />
+		<result column="latest_revision_date" property="latestRevisionDate" jdbcType="BIGINT" />
+	</resultMap>
+	
+	<select id="findActSubscribeList" parameterClass="java.util.Map" resultMap="subscribeResult" >
+		select * from act_subscribe where user_id = #userId# and is_subscribe=1
+		<isNotNull prepend="AND" property="type">
+			<![CDATA[ type = #type# ]]>
+		</isNotNull>
+	</select>
+	
+	<select id="findSubscribeListByResId" parameterClass="long" resultMap="subscribeResult" >
+		select * from act_subscribe where resource_id =#resId# and is_subscribe = 1
+	</select>
+	
+	<select id="findActSubscribeCount" parameterClass="long" resultClass="int" >
+	</select>
+	
+	<update id="updateActSubscribe" parameterClass="actsubscribe" >
+		update act_subscribe set is_subscribe =#isSubscribe#,latest_revision_date =#latestRevisionDate# where user_id=#userId# and resource_id = #resourceId#
+	</update>
+	
+	<insert id="insertintoActSubscribe" parameterClass="actsubscribe">
+		insert into act_subscribe(id,user_id,resource_id,is_subscribe,type,subscribe_date,latest_revision_date) values(#id#,#userId#,#resourceId#,#isSubscribe#,#type#,#subscribeDate#,#latestRevisionDate#)
+	</insert>
+	
+	<select id="findSubscribeIsExist" parameterClass="java.util.Map" resultMap="subscribeResult" >
+		select * from act_subscribe where user_id=#userId# and resource_id = #resId#
+	</select>
+	
+</sqlMap>

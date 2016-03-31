@@ -1,0 +1,106 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd" >
+<sqlMap namespace="booktalk">
+
+	<typeAlias alias="BookTalk" type="com.poison.resource.model.BookTalk" />
+
+	<resultMap id="bookResult" class="BookTalk">
+		<result column="id" property="id" jdbcType="Long" />
+		<result column="user_id" property="uid" jdbcType="Long" />
+		<result column="book_id" property="bookId" jdbcType="INT" />
+		<result column="content" property="content" jdbcType="VARCHAR" />
+		<result column="is_del" property="isDel" jdbcType="INT" />
+		<result column="type" property="type" jdbcType="INT" />
+		<result column="page" property="page" jdbcType="INT" />
+		<result column="res_type" property="resType" jdbcType="VARCHAR" />
+		<result column="create_time" property="createTime" jdbcType="Long" />
+	</resultMap>
+	<!-- 插入单个电影 -->
+	<insert id="addBookTalk" parameterClass="BookTalk">
+		insert into book_talk (id,book_id,user_id,content,is_del,type,page,create_time,res_type)
+		values (#id#,#bookId#,#uid#,#content#,#isDel#,#type#,#page#,#createTime#,#resType#)
+		<selectKey resultClass="long" keyProperty="id" >
+		     SELECT @@IDENTITY AS id
+		</selectKey>
+	</insert>
+
+	<!-- 根据page和id查询第一部分 -->
+	<select id="findBookTalkListByPageAndId_1" resultMap="bookResult"
+		parameterClass="java.util.Map">
+		SELECT * FROM book_talk where book_id = #bookId# AND is_del = 0 AND res_type = #resType#
+		 AND page = #page# 
+		 <isNotNull prepend="AND" property="userId">
+			user_id = #userId#
+		</isNotNull> 
+		<isNotNull prepend="AND" property="page">
+			<![CDATA[ id < #id# ]]>
+		</isNotNull> 
+		  ORDER BY page ASC,id desc LIMIT 15
+		 <!-- GROUP BY page  ORDER BY page asc limit 0,15)a) order by page asc -->
+	</select>
+	<!-- 根据page和id查询第二部分 -->
+	<select id="findBookTalkListByPageAndId_2" resultMap="bookResult"
+		parameterClass="java.util.Map">
+		SELECT * FROM book_talk where book_id = #bookId# AND is_del = 0 AND res_type = #resType#
+		<isNotNull prepend="AND" property="userId">
+			user_id = #userId#
+		</isNotNull> 
+		<isNotNull prepend="AND" property="page">
+			<![CDATA[ page > #page# ]]>
+		</isNotNull>
+		  ORDER BY page ASC,id desc LIMIT 15
+		 <!-- GROUP BY page  ORDER BY page asc limit 0,15)a) order by page asc -->
+	</select>
+	<!-- 模糊查询 -->
+	<select id="findBookTalkList" resultMap="bookResult"
+		parameterClass="java.util.Map">
+		select * from book_talk where book_id = #bookId# and is_del = 0 and page  in (select a.p from (
+		select page as p from book_talk WHERE is_del = 0 and book_id = #bookId# and res_type = #resType#
+		<isNotNull prepend="AND" property="page">
+			<![CDATA[ page > #page# ]]>
+		</isNotNull> 
+		 GROUP BY page  ORDER BY page asc limit 0,15)a) order by page asc
+	</select>
+	
+	<select id="findSomeBookTalkList" resultMap="bookResult"
+		parameterClass="java.util.Map">
+		select * from book_talk where book_id = #bookId#  and res_type = #resType#  and is_del = 0 limit 0,4
+	</select>
+	
+	<!--根据id查询书摘详情 -->
+	<select id="findBookTalkById" resultMap="bookResult"
+		parameterClass="long">
+		select * from book_talk where id = #id#
+	</select>
+	
+	<!-- 模糊查询 -->
+	<select id="findBookTalkListByUser" resultMap="bookResult"
+		parameterClass="java.util.Map">
+		select * from book_talk where book_id = #bookId# and is_del = 0 and user_id = #uid# and page  in (select a.p from (
+		select page as p from book_talk WHERE is_del = 0 and book_id = #bookId# and user_id = #uid# and res_type = #resType#
+		<isNotNull prepend="AND" property="id">
+			<![CDATA[ page > #page# ]]>
+		</isNotNull> 
+		 GROUP BY page  ORDER BY page asc limit 0,15)a) order by page asc
+	</select>
+	
+	<!--查询用户的书摘列表  -->
+	<select id="findBookTalkListByUserId" resultClass="java.lang.Long" parameterClass="java.util.Map">
+		select * from(select MAX(id) id from book_talk where user_id = #userId#  and is_del = 0
+		group by book_id order by id desc) a  
+		<isNotNull prepend="WHERE" property="lastId">
+				<![CDATA[ id < #lastId# ]]>
+			</isNotNull> 
+		 limit 0,10
+	</select>
+	
+	<!--查询用户一本书的书摘页数  -->
+	<select id="findUserOneBookTalkCount" resultClass="int" parameterClass="java.util.Map">
+		select count(1) from book_talk where user_id = #userId# and book_id =#bookId# and is_del = 0
+	</select>
+	
+	<update id="delBookTalk" parameterClass="java.lang.Long">
+		update book_talk set is_del = 1 where id = #id#
+	</update>
+
+</sqlMap>

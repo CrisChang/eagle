@@ -1,0 +1,217 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd" >
+<sqlMap namespace="film">
+
+     <typeAlias alias="MyMovie" type="com.poison.resource.model.MyMovie" />
+	
+	<resultMap id="MvResult" class="MyMovie">
+		<result column="id" property="id" jdbcType="Long" />
+		<result column="u_id" property="uid" jdbcType="Long" />
+		<result column="movie_url" property="movieUrl" jdbcType="VARCHAR" />
+		<result column="movie_pic" property="moviePic" jdbcType="VARCHAR" />
+		<result column="name" property="name" jdbcType="VARCHAR" />
+		<result column="score" property="score" jdbcType="FLOAT" />
+		<result column="director" property="director" jdbcType="VARCHAR" />
+		<result column="screenwriter" property="screeWriter" jdbcType="VARCHAR" />
+		<result column="actor" property="actor" jdbcType="VARCHAR" />
+		<result column="tags" property="tags" jdbcType="VARCHAR" />
+		<result column="user_tags" property="userTags" jdbcType="VARCHAR" />
+		<result column="pro_countries" property="proCountries" jdbcType="VARCHAR" />
+		<result column="language" property="language" jdbcType="VARCHAR" />
+		<result column="release_date" property="releaseDate" jdbcType="VARCHAR" />
+		<result column="about" property="about" jdbcType="VARCHAR" />
+		<result column="number" property="number" jdbcType="INT" />
+		<result column="film_time" property="filmTime" jdbcType="VARCHAR" />
+		<result column="alias" property="alias" jdbcType="VARCHAR" />
+		<result column="imdb_link" property="imdbLink" jdbcType="VARCHAR" />
+		<result column="describe" property="describe" jdbcType="String" />
+		<result column="coll_time" property="collTime" jdbcType="Long" />
+ 	</resultMap>
+ 		<!-- 插入单个电影 -->
+		<insert id="addMyMovie" parameterClass="MyMovie">
+			insert into movie(u_id,movie_url,movie_pic,name,score,director,screenwriter,actor,tags,user_tags,pro_countries,language,release_date,about,number,film_time,alias,imdb_link,describe,coll_time)
+			values(#uid#,#movieUrl#,#moviePic#,#name#,#score#,#director#,#screeWriter#,#actor#,#tags#,#userTags#,#proCountries#,#language#,#releaseDate#,#about#,#number#,#filmTime#,#alias#,#imdbLink#,#describe#,#collTime#)
+			<selectKey resultClass="int" keyProperty="id" >
+		     SELECT @@IDENTITY AS id
+		   </selectKey>
+		</insert>
+		
+		<!-- 模糊查询 -->
+		<select id="findMyMovieLikeList" resultMap="MvResult" parameterClass="java.lang.String">
+			select  *  from movie where name like '%$name$%'
+		</select>
+		
+		<!-- 精准查询 -->
+		<select id="findMyMovieList" resultMap="MvResult" parameterClass="java.lang.String">
+			select * from movie where name=#name#
+		</select>
+		
+		<!-- 查询书是否存在库中 -->
+		<select id="findMyMovieIsExist" resultMap="MvResult">
+			select * from movie where name=#name# and u_id=#uid#
+		</select>
+		
+		<!-- 根据id查询自建表中的信息-->
+		<select id="findMyMovieInfo" resultMap="MvResult">
+			select * from movie where id=#id#
+		</select>
+		
+		
+	<typeAlias alias="MvListLink" type="com.poison.resource.model.MvListLink" />
+	
+	<resultMap id="MvListLinkResult" class="MvListLink">
+		<result column="id" property="id" jdbcType="BIGINT" />
+		<result column="film_list_id" property="filmListId" jdbcType="BIGINT" />
+		<result column="movie_id" property="movieId" jdbcType="INT" />
+		<result column="is_delete" property="isDel" jdbcType="INT" />
+		<result column="is_db" property="isDB" jdbcType="INT" />
+		<result column="description" property="description" jdbcType="VARCHAR" />
+		<result column="friendinfo" property="friendInfo" jdbcType="VARCHAR" />
+		<result column="address" property="address" jdbcType="VARCHAR" />
+		<result column="tags" property="tags" jdbcType="VARCHAR" />
+		<result column="create_date" property="createDate" jdbcType="BIGINT" />
+		<result column="latest_revision_date" property="latestRevisionDate" jdbcType="BIGINT" />
+ 	</resultMap>
+ 	
+ 	<!-- 根据id查询自建表中的信息-->
+		<select id="findMovieIsExist" resultMap="MvListLinkResult">
+			select id,film_list_id,movie_id,is_delete,is_db,create_date,latest_revision_date,friendinfo,address,tags,description from mvlist_link where film_list_id =#filmListId# and movie_id=#movieId# and is_delete=0 limit 0,1
+		</select>
+		
+		<!-- 根据uid查询用户的影单列表 -->
+		<select id="findMovieListInfo"  resultMap="MvListLinkResult"  parameterClass="java.util.Map">
+			select id,film_list_id,movie_id,is_delete,is_db,create_date,latest_revision_date,friendinfo,address,tags,description from mvlist_link where film_list_id=#filmListId# and is_delete=0
+			<isNotNull prepend="AND" property="resId">
+				<![CDATA[ id< #resId# ]]>
+			</isNotNull>
+			order by id desc
+			<isNotNull  property="pageSize">
+				limit 0,#pageSize#
+			</isNotNull>
+		</select>
+	
+			<!--影单中插入一个电影-->
+	<insert id="addMovieListLink" parameterClass="MvListLink">
+		insert into mvlist_link (id,film_list_id,movie_id,is_delete,is_db,create_date,latest_revision_date) 
+		values (#id#,#filmListId#,#movieId#,#isDel#,#isDB#,#createDate#,#latestRevisionDate#)
+	</insert>
+	
+	 <!-- 修改影单信息 -->
+     <update id="updateMovieListLink" parameterClass="MvListLink">
+      	update mvlist_link set is_delete=#isDel#,latest_revision_date=#latestRevisionDate#
+      	where id=#id#
+     </update>
+     
+      <update id="updateMovieListLinkRemark" parameterClass="java.util.Map">
+      	update mvlist_link set description=#description#,friendinfo=#friendinfo#,address=#address#,tags=#tags#,latest_revision_date=#latestRevisionDate#
+      	where id=#id#
+     </update>
+     
+     <select id="findMovieLinkIsExistById"  parameterClass="long" resultMap="MvListLinkResult">
+		select id,film_list_id,movie_id,is_delete,is_db,create_date,latest_revision_date,friendinfo,address,tags,description from mvlist_link where id=#id#
+	</select>
+	
+	<!-- 查询某个影单下的电影数量 -->
+	<select id="getMovieCountByListId"  parameterClass="long" resultClass="int">
+		select count(1) from mvlist_link where film_list_id=#listid# and is_delete=0
+	</select>
+	
+ 	<select id="getMovieListLinkByStartIndex" parameterClass="java.util.Map" resultMap="MvListLinkResult" >
+		select * from mvlist_link where film_list_id=#listid# and is_delete=0 limit #start#,#pageSize#
+	</select>
+	<!-- 查询一个影单中有多少部电影 -->
+	<select id="findMovieLinkCount"  parameterClass="long" resultClass="int">
+		select count(1) from (select count(1) from mvlist_link where film_list_id = #movieListId# and is_delete = 0 GROUP BY movie_id)a
+	</select>
+ 	
+ 	  <typeAlias alias="MovieList" type="com.poison.resource.model.MovieList"/> 
+ 	  
+ 	   <resultMap id="MovieListResult" class="MovieList">
+		<result column="id" property="id" jdbcType="BIGINT"/>
+		<result column="filmlist_name" property="filmListName" jdbcType="VARCHAR"/>
+		<result column="reason" property="reason" jdbcType="TEXT"/>
+		<result column="is_del" property="isDel" jdbcType="INT"/>
+		<result column="type" property="type" jdbcType="INT"/>
+		<result column="tag" property="tag" jdbcType="VARCHAR"/>
+		<result column="cover" property="cover" jdbcType="VARCHAR"/>
+		<result column="u_id" property="uid" jdbcType="BIGINT"/>
+		<result column="is_publishing" property="isPublishing" jdbcType="INT"/>
+		<result column="create_date" property="createDate" jdbcType="BIGINT"/>
+		<result column="latest_revision_date" property="latestRevisionDate" jdbcType="BIGINT"/>
+	</resultMap>
+	
+	<!-- 根据uid查询默认列表 -->
+	<select id="queryDefaultFilmList"  resultMap="MovieListResult" parameterClass="long">
+		select id,filmlist_name,reason,is_del,type,u_id,tag,is_publishing,create_date,latest_revision_date,cover from movielist where u_id=#userId# and type=0 and is_del = 0
+	</select>
+	
+	<!-- 根据id查询一个影单 -->
+	<select id="findMovieListById"  resultMap="MovieListResult" parameterClass="long">
+		select id,filmlist_name,reason,is_del,type,u_id,tag,is_publishing,create_date,latest_revision_date,cover from movielist where id=#id#
+	</select>
+	
+	<!-- 根据影单名查询用户影单 -->
+	<select id="queryUserMvListByName"  resultMap="MovieListResult"  parameterClass="MovieList">
+		select id,filmlist_name,reason,is_del,type,u_id,tag,is_publishing,create_date,latest_revision_date,cover from movielist where u_id=#uid# and filmlist_name = #filmListName# and is_del=0
+	</select>
+	
+	<!-- 查询系统推荐的影单列表 -->
+	<select id="queryServerMvList"  resultMap="MovieListResult" parameterClass="java.util.Map">
+		select id,filmlist_name,reason,is_del,type,u_id,tag,is_publishing,create_date,latest_revision_date,cover from movielist where type=2  and is_del = 0 and tag like concat('%', #tags#, '%')
+		<isNotNull prepend="AND" property="resId">
+			<![CDATA[ id< #resId# ]]>
+		</isNotNull>
+		order by id desc
+	</select>
+	
+	<!-- 根据uid查询用户的影单列表 -->
+	<select id="queryFilmListByUid"  resultMap="MovieListResult"  parameterClass="java.util.Map">
+		select id,filmlist_name,reason,is_del,type,u_id,tag,is_publishing,create_date,latest_revision_date,cover from movielist where u_id=#userId# and is_del=0
+		<isNotNull prepend="AND" property="resId">
+			<![CDATA[ id< #resId# ]]>
+		</isNotNull>
+		order by id desc 
+	</select>
+	
+		<!-- 查询发布的影单列表 -->
+	<select id="findPublishMvList"  resultMap="MovieListResult" parameterClass="long">
+		select id,filmlist_name,reason,is_del,type,u_id,tag,is_publishing,create_date,latest_revision_date,cover from movielist where is_publishing=0 and is_del=0
+		<isNotNull prepend="AND" property="resId">
+			<![CDATA[ id< #resId# ]]>
+		</isNotNull>
+		order by id desc limit 0,10
+	</select>
+	
+	<!-- 根据影单id集合查询影单列表 -->
+	<select id="findMvListsByIds"  resultMap="MovieListResult" parameterClass="java.util.Map">
+		select id,filmlist_name,reason,is_del,type,u_id,tag,is_publishing,create_date,latest_revision_date,cover from movielist where id in
+		<iterate property="mvlistids" open="(" close=")"  conjunction=",">
+		#mvlistids[]#
+		</iterate>
+		and is_del = 0
+	</select>
+	
+		<!--新建影单-->
+	<insert id="newFilmlist" parameterClass="MovieList">
+		insert into movielist (id,filmlist_name,reason,is_del,type,tag,u_id,is_publishing,create_date,latest_revision_date) 
+		values (#id#,#filmListName#,#reason#,#isDel#,#type#,#tag#,#uid#,#isPublishing#,#createDate#,#latestRevisionDate#)
+	</insert>
+	
+	 <!-- 修改影单 -->
+     <update id="updateMovieList" parameterClass="MovieList">
+      	update movielist set cover=#cover#,filmlist_name=#filmListName#,reason=#reason#,is_del=#isDel#,tag=#tag#,is_publishing=#isPublishing#,latest_revision_date=#latestRevisionDate#
+      	where id=#id# and type !=0
+     </update>
+     
+      <!-- 修改影单 -->
+     <update id="updateMovieListCommentCount" parameterClass="java.util.Map">
+      	update movielist set comment_count=comment_count+1,latest_revision_date=#latestRevisionDate#
+      	where id=#id# 
+     </update>
+     
+      <!-- 修改影单封面 -->
+     <update id="updateMovieListPic" parameterClass="java.util.Map">
+      	update movielist set cover=#cover#,latest_revision_date=#latestRevisionDate#
+      	where id=#id# 
+     </update>
+</sqlMap>

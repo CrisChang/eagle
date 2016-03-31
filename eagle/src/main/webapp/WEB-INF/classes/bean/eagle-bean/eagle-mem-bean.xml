@@ -1,0 +1,228 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:aop="http://www.springframework.org/schema/aop"
+	xmlns:tx="http://www.springframework.org/schema/tx"
+	xsi:schemaLocation="
+			http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-3.2.xsd
+			http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop-3.2.xsd
+			http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx-3.2.xsd"
+	default-autowire="byName">
+	
+    <!-- jedis pool配置 --> 
+   <!-- <bean id="jedisPool" class="redis.clients.jedis.JedisPool" destroy-method="destroy">
+        <constructor-arg value="112.126.68.72" />  
+        <constructor-arg type="int" value="20001" />  
+    </bean>  
+    
+    <bean id="jedisSimpleClient" class="com.keel.common.cache.redis.JedisSimpleClient">
+	</bean> -->
+	
+	<bean id="resourceVisitPool" class="redis.clients.jedis.JedisPool" destroy-method="destroy">
+		<constructor-arg>
+			<value>112.126.68.72</value>
+		</constructor-arg>
+		<constructor-arg>
+			<value>10002</value>
+		</constructor-arg>
+    </bean>  
+    
+    <bean id="resourceVisitClient"  class="com.keel.common.cache.redis.JedisSimpleClient" >
+    	<property name="jedisPool" >
+    	<ref bean="resourceVisitPool"/>
+    		<!-- <bean class="redis.clients.jedis.JedisPool"></bean> -->
+    	</property>
+	</bean>
+	
+	<bean id="userTagPool" class="redis.clients.jedis.JedisPool" destroy-method="destroy">
+		<constructor-arg>
+	      <value>112.126.68.72</value>
+	  	</constructor-arg>
+	  	<constructor-arg>
+	      <value>10003</value>
+	  	</constructor-arg>
+    </bean>  
+    
+    <bean id="userTagClient"  class="com.keel.common.cache.redis.JedisSimpleClient" >
+    	<property name="jedisPool"  ref="userTagPool"/>
+	</bean>
+	<bean id="resourcePool" class="redis.clients.jedis.JedisPool" destroy-method="destroy">
+		<constructor-arg>
+	      <value>112.126.68.72</value>
+	  	</constructor-arg>
+	  	<constructor-arg>
+	      <value>10005</value>
+	  	</constructor-arg>
+    </bean>  
+    
+    <bean id="resourceClient"  class="com.keel.common.cache.redis.JedisSimpleClient" >
+    	<property name="jedisPool"  ref="resourcePool"/>
+	</bean>
+	
+	<bean id="momentsPool" class="redis.clients.jedis.JedisPool" destroy-method="destroy">
+		<constructor-arg>
+	      <value>112.126.68.72</value>
+	  	</constructor-arg>
+	  	<constructor-arg>
+	      <value>10006</value>
+	  	</constructor-arg>
+    </bean>  
+    
+    <bean id="momentsClient"  class="com.keel.common.cache.redis.JedisSimpleClient" >
+    	<property name="jedisPool"  ref="momentsPool"/>
+	</bean>
+	
+	<bean id="resourceHashPool" class="redis.clients.jedis.JedisPool" destroy-method="destroy">
+		<constructor-arg>
+	      <value>112.126.68.72</value>
+	  	</constructor-arg>
+	  	<constructor-arg>
+	      <value>10007</value>
+	  	</constructor-arg>
+    </bean>  
+    
+    <bean id="resourceHashClient"  class="com.keel.common.cache.redis.JedisSimpleClient" >
+    	<property name="jedisPool"  ref="resourceHashPool"/>
+	</bean>
+	
+	<bean id="relationToUserandresPool" class="redis.clients.jedis.JedisPool" destroy-method="destroy">
+		<constructor-arg>
+	      <value>112.126.68.72</value>
+	  	</constructor-arg>
+	  	<constructor-arg>
+	      <value>10008</value>
+	  	</constructor-arg>
+    </bean>  
+    
+    <bean id="relationToUserandresClient"  class="com.keel.common.cache.redis.JedisSimpleClient" >
+    	<property name="jedisPool"  ref="relationToUserandresPool"/>
+	</bean>
+	
+	<!-- 用户的资源缓存 -->
+	<bean id="userInfoHashPool" class="redis.clients.jedis.JedisPool" destroy-method="destroy">
+		<constructor-arg>
+	      <value>112.126.68.72</value>
+	  	</constructor-arg>
+	  	<constructor-arg>
+	      <value>10009</value>
+	  	</constructor-arg>
+    </bean>  
+    
+    <bean id="userInfoHashClient"  class="com.keel.common.cache.redis.JedisSimpleClient" >
+    	<property name="jedisPool"  ref="userInfoHashPool"/>
+	</bean>
+		
+	<!-- 电影图书的资源缓存 -->
+	<bean id="storeHashPool" class="redis.clients.jedis.JedisPool" destroy-method="destroy">
+		<constructor-arg>
+	      <value>112.126.68.72</value>
+	  	</constructor-arg>
+	  	<constructor-arg>
+	      <value>10010</value>
+	  	</constructor-arg>
+    </bean>  
+    
+    <bean id="storeHashClient"  class="com.keel.common.cache.redis.JedisSimpleClient" >
+    	<property name="jedisPool"  ref="storeHashPool"/>
+	</bean>
+		
+	<bean name="sessionMemcachedClientBuilder" class="net.rubyeye.xmemcached.XMemcachedClientBuilder">
+                <constructor-arg name="addressList">
+					<value>112.126.68.72:12001 112.126.68.72:12002</value>
+				</constructor-arg>
+                <property name="connectionPoolSize" value="2"></property>
+                <property name="connectTimeout" value="60000"></property>
+                <property name="opTimeout" value="5000"></property>
+                <property name="commandFactory">
+                        <bean class="net.rubyeye.xmemcached.command.TextCommandFactory"></bean>
+                </property>
+                <property name="sessionLocator">
+                        <bean class="net.rubyeye.xmemcached.impl.KetamaMemcachedSessionLocator"></bean>
+                </property>
+                <property name="transcoder">
+                        <bean class="net.rubyeye.xmemcached.transcoders.SerializingTranscoder" />
+                </property>
+    </bean>
+
+    <bean name="sessionMemcachedClient" factory-bean="sessionMemcachedClientBuilder"
+                factory-method="build" destroy-method="shutdown"/>
+     
+     <bean name="ucenterMemcachedClientBuilder" class="net.rubyeye.xmemcached.XMemcachedClientBuilder">
+                <constructor-arg name="addressList">
+					<value>112.126.68.72:12001 112.126.68.72:12002</value>
+				</constructor-arg>
+                <property name="connectionPoolSize" value="2"></property>
+                <property name="connectTimeout" value="60000"></property>
+                <property name="opTimeout" value="5000"></property>
+                <property name="commandFactory">
+                        <bean class="net.rubyeye.xmemcached.command.TextCommandFactory"></bean>
+                </property>
+                <property name="sessionLocator">
+                        <bean class="net.rubyeye.xmemcached.impl.KetamaMemcachedSessionLocator"></bean>
+                </property>
+                <property name="transcoder">
+                        <bean class="net.rubyeye.xmemcached.transcoders.SerializingTranscoder" />
+                </property>
+    </bean>
+     
+     <bean name="ucenterMemcachedClient" factory-bean="ucenterMemcachedClientBuilder"
+                factory-method="build" destroy-method="shutdown"/>
+                
+      <bean name="operationMemcachedClientBuilder" class="net.rubyeye.xmemcached.XMemcachedClientBuilder">
+                <constructor-arg name="addressList">
+					<value>112.126.68.72:20001</value>
+				</constructor-arg>
+                <property name="connectionPoolSize" value="2"></property>
+                <property name="connectTimeout" value="60000"></property>
+                <property name="opTimeout" value="5000"></property>
+                <property name="commandFactory">
+                        <bean class="net.rubyeye.xmemcached.command.TextCommandFactory"></bean>
+                </property>
+                <property name="sessionLocator">
+                        <bean class="net.rubyeye.xmemcached.impl.KetamaMemcachedSessionLocator"></bean>
+                </property>
+                <property name="transcoder">
+                        <bean class="net.rubyeye.xmemcached.transcoders.SerializingTranscoder" />
+                </property>
+    </bean>
+     
+     <bean name="operationMemcachedClient" factory-bean="operationMemcachedClientBuilder"
+                factory-method="build" destroy-method="shutdown"/>
+                
+    <bean name="storeMemcachedClientBuilder" class="net.rubyeye.xmemcached.XMemcachedClientBuilder">
+                <constructor-arg name="addressList">
+					<value>112.126.68.72:20003</value>
+				</constructor-arg>
+                <property name="connectionPoolSize" value="2"></property>
+                <property name="connectTimeout" value="60000"></property>
+                <property name="opTimeout" value="5000"></property>
+                <property name="commandFactory">
+                        <bean class="net.rubyeye.xmemcached.command.TextCommandFactory"></bean>
+                </property>
+                <property name="sessionLocator">
+                        <bean class="net.rubyeye.xmemcached.impl.KetamaMemcachedSessionLocator"></bean>
+                </property>
+                <property name="transcoder">
+                        <bean class="net.rubyeye.xmemcached.transcoders.SerializingTranscoder" />
+                </property>
+    </bean>
+     
+     <bean name="storeMemcachedClient" factory-bean="storeMemcachedClientBuilder"
+                factory-method="build" destroy-method="shutdown"/>
+                
+    <bean id="esClient" class="com.keel.common.es.ElasticsearchClientFactory">
+	  <property name="clusterName">
+	    <value>resources</value>
+	  </property>
+	  <property name="transportSniff">
+	  	<value>false</value>
+	  </property>
+	  <property name="nodesAddress">
+	    <list>
+	      <value>112.126.68.72:9350</value>
+	    </list>
+	  </property>
+	</bean>
+
+</beans>

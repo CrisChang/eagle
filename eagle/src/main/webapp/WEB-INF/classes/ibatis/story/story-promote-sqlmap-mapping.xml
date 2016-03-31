@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd" >
+<sqlMap namespace="storyPromote">
+
+	<typeAlias alias="StoryPromote" type="com.poison.story.model.StoryPromote" />
+	<typeAlias alias="dateTypeHandler" type="com.keel.utils.time.DateTypeHandler"/>
+	<!-- 小说详情 -->
+	<resultMap id="storyPromoteResult" class="com.poison.story.model.StoryPromote">
+		<!-- 记录id -->
+		<result column="id" property="id" jdbcType="BIGINT" />
+		<!-- 小说id -->
+		<result column="story_id" property="storyId" jdbcType="BIGINT" />
+		<!-- 小说推广语 -->
+		<result column="promote_words" property="promoteWords" jdbcType="VARCHAR" />
+		<!-- 小说推广封面 -->
+		<result column="promote_cover" property="promoteCover" jdbcType="VARCHAR" />
+		<!-- 推广封面链接地址 -->
+		<result column="cover_link" property="coverLink" jdbcType="VARCHAR" />
+		<!-- 推广类型 -->
+		<result column="type" property="type" jdbcType="VARCHAR" />
+		<!-- 排序字段 -->
+		<result column="rank" property="rank" jdbcType="INT" />
+		<!-- 删除标识 -->
+		<result column="is_delete" property="deleteFlag" jdbcType="TINYINT" />
+		<result column="create_date" property="createTime" jdbcType="BIGINT" typeHandler="dateTypeHandler"/>
+		<result column="creator_id" property="creatorId" jdbcType="BIGINT" />
+		<result column="creator_name" property="creatorName" jdbcType="VARCHAR" />
+		<result column="latest_revision_date" property="updateTime" jdbcType="BIGINT" typeHandler="dateTypeHandler"/>
+		<result column="update_id" property="updateId" jdbcType="BIGINT" />
+		<result column="update_name" property="updateName" jdbcType="VARCHAR" />
+	</resultMap>
+
+	<insert id="saveStoryPromote" parameterClass="com.poison.story.model.StoryPromote">
+		INSERT INTO `story_promote` 
+			(`id`, `story_id`, `promote_words`, `promote_cover`, `cover_link`, 
+			`type`, `rank`, `is_delete`, `create_date`, `creator_id`, `creator_name`, 
+			`update_id`, `latest_revision_date`, `update_name`) 
+			VALUES (
+			#id#, #storyId#, #promoteWords#, #promoteCover#, #coverLink#, #type#, 
+			#rank#, #deleteFlag#, #createTime#, #creatorId#, #creatorName#, #updateId#, #updateTime#, #updateName#);
+	</insert>
+	
+	<select id="getStoryPromoteByCondition" parameterClass="java.util.Map" resultMap="storyPromoteResult">
+		select id,story_id,promote_words,promote_cover,cover_link,type,rank,is_delete,create_date,creator_id,creator_name,latest_revision_date,
+		update_id,update_name
+		from story_promote
+		where 1=1 and is_delete = 0
+		<isNotEmpty property="promote.type">
+			and type = #promote.type#
+		</isNotEmpty>
+		order by rank,latest_revision_date DESC
+		limit #start#,#pageSize#
+		
+	</select>
+
+</sqlMap>

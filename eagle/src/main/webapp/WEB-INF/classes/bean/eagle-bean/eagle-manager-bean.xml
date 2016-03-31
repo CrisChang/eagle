@@ -1,0 +1,204 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<beans xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:aop="http://www.springframework.org/schema/aop" xmlns:tx="http://www.springframework.org/schema/tx"
+	xmlns="http://www.springframework.org/schema/beans"
+	xsi:schemaLocation="
+			http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-3.2.xsd
+			http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop-3.2.xsd
+			http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx-3.2.xsd"
+	default-autowire="byName">
+
+	<bean id="helloworldManager" class="com.poison.eagle.manager.HelloworldManager" />
+	<bean id="userPOIManager" class="com.poison.eagle.manager.UserPOIManager" />
+	<bean id="crawlersManager" class="com.poison.eagle.manager.CrawlersManager" />
+	<bean id="scanAddressManager" class="com.poison.eagle.manager.ScanAddressManager" />
+	<bean id="plusInterManager" class="com.poison.eagle.manager.PlusInterManager" />
+	<bean id="fansListManager" class="com.poison.eagle.manager.FansListManager" />
+	<bean id="resourceManager" class="com.poison.eagle.manager.ResourceManager" />
+	<bean id="resourceLinkManager" class="com.poison.eagle.manager.ResourceLinkManager" /> 
+    <bean id="searchManager" class="com.poison.eagle.manager.SearchManager" />
+    <bean id="searchApiManager" class="com.poison.eagle.manager.SearchApiManager" /> 
+	<bean id="diaryManager" class="com.poison.eagle.manager.DiaryManager" />
+	<bean id="postManager" class="com.poison.eagle.manager.PostManager" >
+	<property name="savePath">
+			<value>D:/data/img_temp/</value>
+	</property> 
+	</bean>
+	<bean id="articleManager" class="com.poison.eagle.manager.ArticleManager" />
+	<bean id="versionManager" class="com.poison.eagle.manager.VersionManager" />
+
+	<bean id="userAutoVerifyManager" class="com.poison.eagle.manager.UserAutoVerifyManager" />
+	<!-- <bean id="sendMessageManager" class="com.poison.eagle.manager.SendMessageManager" />  -->
+	
+	<!-- 连载 -->
+	<bean id="serializeManager" class="com.poison.eagle.manager.SerializeManager" />
+	<bean id="serializeListManager" class="com.poison.eagle.manager.SerializeListManager" />
+	
+	<!-- 用户 -->
+	<bean id="userRegLoginManager" class="com.poison.eagle.manager.UserRegLoginManager" />
+	<bean id="userInfoManager" class="com.poison.eagle.manager.UserInfoManager" />
+	
+	<!-- 书评/书单 -->
+	<bean id="bookManager" class="com.poison.eagle.manager.BookManager" />
+	<bean id="bookListManager" class="com.poison.eagle.manager.BookListManager" />
+	
+	<!-- 影评/影单 -->
+	<bean id="movieManager" class="com.poison.eagle.manager.MovieManager" />
+	<bean id="movieListManager" class="com.poison.eagle.manager.MovieListManager" />
+	<bean id="mvBkManager" class="com.poison.eagle.manager.MvBkManager"/>
+	
+	<!-- 达人圈 -->
+	<bean id="talentZoneManager" class="com.poison.eagle.manager.TalentZoneManager" />
+	<!-- 收藏/订阅 -->
+	<bean id="actManager" class="com.poison.eagle.manager.ActManager" />
+	<!-- 逼格 -->
+	<bean id="bigManager" class="com.poison.eagle.manager.BigManager" />
+	<!-- 晒一晒 -->
+	<bean id="shareManager" class="com.poison.eagle.manager.ShareManager" >
+	<property name="savePath">
+			<value>D:/data/img_temp/</value>
+	</property> 
+	</bean>
+	<!-- 标签 -->
+	<bean id="tagManager" class="com.poison.eagle.manager.TagManager" />
+	<!-- <bean id="doubanManager" class="com.poison.eagle.manager.DoubanManager" /> -->
+	<!-- 反馈 -->
+	<bean id="reportManager" class="com.poison.eagle.manager.ReportManager" /> 
+	<!-- 环信 -->
+	<bean id="easemobUserManager" class="com.poison.eagle.easemobmanager.EasemobUserManager" />
+	<!-- 缓存 -->
+	<bean id="jedisManager" class="com.poison.eagle.manager.JedisManager" />  
+	<!-- 异步修改缓存 -->
+	<bean id="updateJedisManager" class="com.poison.eagle.manager.UpdateJedisManager" />  
+	<!-- 异步推送消息 -->
+	<bean id="pushMessageManager" class="com.poison.eagle.manager.PushMessageManager" />  
+	<!-- 缓存外链 -->
+	<bean id="jedisApiManager" class="com.poison.eagle.manager.JedisApiManager" /> 
+	<!-- 首页 -->
+	<bean id="indexManager" class="com.poison.eagle.manager.IndexManager" /> 
+	<!-- 友盟推送 -->
+	<bean id="pushManager" class="com.poison.eagle.manager.otherinterface.PushManager" >
+		<property name="appkey">
+			<value>548671c7fd98c5590200033c</value>
+		</property>
+		<property name="appMasterSecret">
+			<value>7lbz2nffeuf8f1gueu06v3zu9qxsgpdb</value>
+		</property>
+		<property name="storyappkey">
+			<value>8eefe8299294ba578a0760f1</value>
+		</property>
+		<property name="storyappMasterSecret">
+			<value>846ac235af1468fd197852b4</value>
+		</property>
+	</bean> 
+	
+	<!-- 打赏 -->
+	<bean id="tipManager" class="com.poison.eagle.manager.TipManager" /> 
+	<!-- 二维码 -->
+	<bean id="qrCodeManager" class="com.poison.eagle.manager.QRCodeManager" >
+		<property name="savePath">
+			<value>D:/data/img_temp/</value>
+		</property> 
+		<property name="webServer">
+			<value>http://pre.duyao001.com</value>
+		</property> 
+	</bean>
+
+
+	<bean id="stringProperties" class="com.poison.eagle.entity.StringProperties" >
+		<property name="webServer">
+			<value>http://pre.duyao001.com</value>
+		</property>
+	</bean>
+
+	<!-- 2014-11-28 add by yandongzhe 打赏业务 -->
+	<bean id="paycenterManager" class="com.poison.eagle.manager.PaycenterManager" />
+	<!-- 2014-12-25 add by yandongzhe 敏感词汇 -->
+	<!--<bean id="sensitiveManager" class="com.poison.eagle.manager.SensitiveManager" />	-->
+	
+	
+	<!-- 资源缓存 -->
+	<bean id="resourceJedisManager" class="com.poison.eagle.manager.ResourceJedisManager" />
+	<!-- 朋友跟资源的关系缓存 -->
+	<bean id="relationToUserAndResManager" class="com.poison.eagle.manager.RelationToUserAndResManager" />
+	<!-- 消息中心 -->
+	<bean id="messageCenterManager" class="com.poison.eagle.manager.MessageCenterManager" />
+	<!-- 消息提醒 -->
+	<bean id="messageNoticManager" class="com.poison.eagle.manager.MessageNoticManager" />
+	<!-- 用户的缓存 -->
+	<bean id="userJedisManager" class="com.poison.eagle.manager.UserJedisManager" />
+	<!-- store缓存 -->
+	<bean id="storeJedisManager" class="com.poison.eagle.manager.StoreJedisManager" />
+	<!-- 资源统计缓存 -->
+	<bean id="resStatJedisManager" class="com.poison.eagle.manager.ResStatJedisManager" />
+	
+	
+	<!-- web端manager -->
+	<bean id="userLoginManager" class="com.poison.eagle.manager.web.UserLoginManager" />
+	<bean id="bookWebManager" class="com.poison.eagle.manager.web.BookWebManager" /> 
+	<bean id="serializeWebManager" class="com.poison.eagle.manager.web.SerializeWebManager" >
+		<property name="savePath">
+			<value>D:/data/img_temp/</value>
+	</property> 
+	</bean>
+ 	<bean id="articleWebManager" class="com.poison.eagle.manager.web.ArticleWebManager" >
+		<property name="savePath">
+			<value>D:/data/img_temp/</value>
+		</property> 
+	</bean>
+	<bean id="diaryWebManager" class="com.poison.eagle.manager.web.DiaryWebManager" />
+	<bean id="movieWebManager" class="com.poison.eagle.manager.web.MovieWebManager" />
+ 	<bean id="graphicFilmWebManager" class="com.poison.eagle.manager.web.GraphicFilmWebManager" >
+		<property name="savePath">
+			<value>D:/data/img_temp/</value>
+		</property> 
+	</bean> 
+	
+	<!-- wapPkmanager -->
+	<bean id="bigePKManager" class="com.poison.eagle.manager.bige.BigePKManager" />
+	<!-- wap逼格manager -->
+	<bean id="bigeManager" class="com.poison.eagle.manager.bige.BigeManager" />
+	<!-- 话题manager -->
+	<bean id="topicManager" class="com.poison.eagle.manager.TopicManager" />
+	<!-- 群组manager -->
+	<bean id="groupManager" class="com.poison.eagle.manager.GroupManager" />
+	<!-- 消息开关manager  -->
+	<bean id="switchManager" class="com.poison.eagle.manager.SwitchManager" />
+	<!-- 排行榜manager -->
+	<bean id="rankingManager" class="com.poison.eagle.manager.RankingManager" />
+	<!-- 精选 -->
+	<bean id="selectedManager" class="com.poison.eagle.manager.SelectedManager" />
+	<!-- 精选资源 -->
+	<bean id="selectedResManager" class="com.poison.eagle.manager.SelectedResManager" />
+	<!-- 内部评论接口 -->
+	<bean id="insertServerManager" class="com.poison.eagle.manager.InsertServerManager" />
+	<!-- 广告信息 -->
+	<bean id="advertManager" class="com.poison.eagle.manager.AdvertManager" />
+	<!-- PK manager -->
+	<bean id="pkManager" class="com.poison.eagle.manager.PkManager" />
+	<!-- 活动 manager -->
+	<bean id="activityManager" class="com.poison.eagle.manager.ActivityManager" />
+	<!-- 奖励任务 -->
+	<!-- 
+	<bean id="questManager" class="com.poison.eagle.manager.QuestManager" />
+	--> 
+	<!-- new 敏感词匹配manager -->
+	<bean id="sensitiveWordManager" class="com.poison.eagle.manager.util.SensitiveWordManager" init-method="initMethod" />
+	<!-- new 提示词匹配manager -->
+ 	<!-- <bean id="promptTagManager" class="com.poison.eagle.manager.util.PromptTagManager" init-method="initMethod" /> -->
+	<!-- 长文章相关-->
+	<!-- 相关阅读-->
+	<bean id="resourceRelationManager" class="com.poison.eagle.manager.ResourceRelationManager" />
+	<!-- 小说相关-->
+	<bean id="storyManager" class="com.poison.eagle.manager.StoryManager" />
+	<bean id="storyCommentManager" class="com.poison.eagle.manager.StoryCommentManager" />
+	<bean id="storyResourceManager" class="com.poison.eagle.manager.StoryResourceManager" />
+	<!-- 商品相关 -->
+	<bean id="productManager" class="com.poison.eagle.manager.ProductManager" />
+	<!-- 小说投票相关-->
+	<!--<bean id="actVoteManager" class="com.poison.eagle.manager.ActVoteManager" />-->
+	<bean id="storyUserManager" class="com.poison.eagle.manager.StoryUserManager" />
+	<!-- 小说的推送链接-->
+	<bean id="storyPushManager" class="com.poison.eagle.manager.StoryPushManager" />
+</beans>

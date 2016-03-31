@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd" >
+<sqlMap namespace="storyShelf">
+
+    <typeAlias alias="StoryShelf" type="com.poison.story.model.StoryShelf"/>
+    <!--   小说详情 -->
+    <resultMap id="storyShelfResult" class="StoryShelf">
+        <result column="id" property="id" jdbcType="BIGINT"/>
+        <result column="story_id" property="storyId" jdbcType="BIGINT"/>
+        <result column="user_id" property="userId" jdbcType="BIGINT"/>
+        <result column="name" property="name" jdbcType="VARCHAR"/>
+        <result column="introduce" property="introduce" jdbcType="VARCHAR"/>
+        <result column="type" property="type" jdbcType="VARCHAR"/>
+        <result column="cover" property="cover" jdbcType="VARCHAR"/>
+        <result column="other_url" property="otherUrl" jdbcType="VARCHAR"/>
+        <result column="create_date" property="createDate" jdbcType="BIGINT"/>
+        <result column="latest_revision_date" property="latestRevisionDate" jdbcType="BIGINT"/>
+    </resultMap>
+
+
+    <!-- 查询用户的书架详情-->
+    <select id="findStoryShelfById"  parameterClass="long" resultMap="storyShelfResult">
+        select id,story_id,user_id,`name`,introduce,type,create_date,latest_revision_date,cover,other_url from story_shelf where id=#id# and is_delete = 0 and `type` = 0
+    </select>
+
+    <!-- 查询用户是否加入书架-->
+    <select id="findStoryShelfByUidAndStoryId"  parameterClass="java.util.Map" resultMap="storyShelfResult">
+        select id,story_id,user_id,`name`,introduce,type,create_date,latest_revision_date,cover,other_url from story_shelf where user_id=#userId# and story_id = #storyId# and is_delete = 0 and `type` = '0'
+    </select>
+
+    <!-- 查询用户的书架-->
+    <select id="findShelfByUserId"  parameterClass="long" resultMap="storyShelfResult">
+        select id,story_id,user_id,`name`,introduce,type,create_date,latest_revision_date,cover,other_url from story_shelf where user_id=#userId# and is_delete = 0 and `type` = 0
+        order by latest_revision_date
+    </select>
+
+    <!-- 查找小说详情根据类型-->
+    <select id="findShelfByType"  parameterClass="java.util.Map" resultMap="storyShelfResult">
+        select id,story_id,user_id,`name`,introduce,type,create_date,latest_revision_date,cover,other_url from story_shelf where `type`=#type# and is_delete = 0
+        order by `range` desc,latest_revision_date desc limit #pageIndex#,#pageSize#
+    </select>
+
+    <!-- 查找小说在书架的-->
+    <select id="findStoryShelfByStoryId"  parameterClass="long" resultClass="long">
+        select user_id from story_shelf where story_id=#storyId# and is_delete = 0 GROUP BY user_id
+    </select>
+
+    <!-- 插入书架-->
+    <insert id="insertStoryShelf" parameterClass="StoryShelf" >
+        insert into story_shelf(id,story_id,user_id,name,introduce,type,cover,other_url,create_date,latest_revision_date) values
+        (#id#,#storyId#,#userId#,#name#,#introduce#,#type#,#cover#,#otherUrl#,#createDate#,#latestRevisionDate#)
+    </insert>
+
+    <!-- 删除书架-->
+    <update id="deleteStoryShelf" parameterClass="java.util.Map">
+        update story_shelf set is_delete=1,latest_revision_date=#latestRevisionDate# where story_id=#storyId# and user_id=#userId# and `type`=0
+    </update>
+
+</sqlMap>

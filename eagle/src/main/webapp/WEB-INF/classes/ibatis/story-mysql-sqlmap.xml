@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+
+<!DOCTYPE sqlMapConfig PUBLIC "-//iBATIS.com//DTD SQL Map Config 2.0//EN" "http://www.ibatis.com/dtd/sql-map-config-2.dtd">
+<sqlMapConfig>
+    <settings cacheModelsEnabled="true" enhancementEnabled="false" lazyLoadingEnabled="false" maxRequests="3000" maxSessions="3000" maxTransactions="3000" useStatementNamespaces="false"/>
+    <!-- 小说详情-->
+    <sqlMap resource="ibatis/story/story-info-sqlmap-mapping.xml"/>
+    <!-- 章节详情-->
+    <sqlMap resource="ibatis/story/story-chapter-sqlmap-mapping.xml"/>
+    <!-- 书架详情-->
+    <sqlMap resource="ibatis/story/story-shelf-sqlmap-mapping.xml"/>
+    <!-- 小说统计详情-->
+    <sqlMap resource="ibatis/story/story-statistic-sqlmap-mapping.xml"/>
+    <!-- 章节付费信息 -->
+    <sqlMap resource="ibatis/story/story-pay-sqlmap-mapping.xml"/>
+    <!-- 小说运营 -->
+    <sqlMap resource="ibatis/story/story-promote-sqlmap-mapping.xml"/>
+    <!-- 小说评论 -->
+    <sqlMap resource="ibatis/story/story-comment-sqlmap-mapping.xml"/>
+</sqlMapConfig>

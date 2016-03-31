@@ -1,0 +1,117 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<module type="JAVA_MODULE" version="4">
+  <component name="FacetManager">
+    <facet type="web" name="Web">
+      <configuration>
+        <descriptors>
+          <deploymentDescriptor name="web.xml" url="file://$MODULE_DIR$/webapp/WEB-INF/web.xml" />
+        </descriptors>
+        <webroots>
+          <root url="file://$MODULE_DIR$/webapp" relative="/" />
+        </webroots>
+      </configuration>
+    </facet>
+    <facet type="Spring" name="Spring">
+      <configuration>
+        <fileset id="fileset" name="Spring Application Context" removed="false">
+          <file>file://$MODULE_DIR$/webapp/WEB-INF/classes/bean/act-bean/act-client-bean.xml</file>
+          <file>file://$MODULE_DIR$/webapp/WEB-INF/classes/bean/act-bean/act-domain-bean.xml</file>
+          <file>file://$MODULE_DIR$/webapp/WEB-INF/classes/bean/act-bean/act-dao-env-bean.xml</file>
+          <file>file://$MODULE_DIR$/webapp/WEB-INF/classes/bean/act-bean/act-mysql-dao-bean.xml</file>
+          <file>file://$MODULE_DIR$/webapp/WEB-INF/classes/bean/act-bean/act-service-impl-bean.xml</file>
+          <file>file://$MODULE_DIR$/webapp/WEB-INF/classes/bean/msg-bean/msg-client-bean.xml</file>
+          <file>file://$MODULE_DIR$/webapp/WEB-INF/classes/bean/msg-bean/msg-domain-bean.xml</file>
+          <file>file://$MODULE_DIR$/webapp/WEB-INF/classes/bean/msg-bean/msg-dao-env-bean.xml</file>
+          <file>file://$MODULE_DIR$/webapp/WEB-INF/classes/bean/msg-bean/msg-mysql-dao-bean.xml</file>
+          <file>file://$MODULE_DIR$/webapp/WEB-INF/classes/bean/msg-bean/msg-service-impl-bean.xml</file>
+          <file>file://$MODULE_DIR$/webapp/WEB-INF/classes/bean/null.xml</file>
+          <file>file://$MODULE_DIR$/webapp/WEB-INF/classes/bean/eagle-bean/eagle-mem-bean.xml</file>
+          <file>file://$MODULE_DIR$/webapp/WEB-INF/classes/bean/eagle-bean/eagle-util-bean.xml</file>
+          <file>file://$MODULE_DIR$/webapp/WEB-INF/classes/bean/eagle-bean/eagle-manager-bean.xml</file>
+          <file>file://$MODULE_DIR$/webapp/WEB-INF/classes/bean/eagle-bean/eagle-framework-bean.xml</file>
+          <file>file://$MODULE_DIR$/webapp/WEB-INF/classes/bean/store-bean/store-client-bean.xml</file>
+          <file>file://$MODULE_DIR$/webapp/WEB-INF/classes/bean/store-bean/store-domain-bean.xml</file>
+          <file>file://$MODULE_DIR$/webapp/WEB-INF/classes/bean/store-bean/store-dao-env-bean.xml</file>
+          <file>file://$MODULE_DIR$/webapp/WEB-INF/classes/bean/store-bean/store-mysql-dao-bean.xml</file>
+          <file>file://$MODULE_DIR$/webapp/WEB-INF/classes/bean/store-bean/store-service-impl-bean.xml</file>
+          <file>file://$MODULE_DIR$/webapp/WEB-INF/classes/bean/easemob-bean/easemob-client-bean.xml</file>
+          <file>file://$MODULE_DIR$/webapp/WEB-INF/classes/bean/easemob-bean/easemob-domain-bean.xml</file>
+          <file>file://$MODULE_DIR$/webapp/WEB-INF/classes/bean/easemob-bean/easemob-dao-env-bean.xml</file>
+          <file>file://$MODULE_DIR$/webapp/WEB-INF/classes/bean/easemob-bean/easemob-mysql-dao-bean.xml</file>
+          <file>file://$MODULE_DIR$/webapp/WEB-INF/classes/bean/easemob-bean/easemob-service-impl-bean.xml</file>
+          <file>file://$MODULE_DIR$/webapp/WEB-INF/classes/bean/ucenter-bean/ucenter-client-bean.xml</file>
+          <file>file://$MODULE_DIR$/webapp/WEB-INF/classes/bean/ucenter-bean/ucenter-domain-bean.xml</file>
+          <file>file://$MODULE_DIR$/webapp/WEB-INF/classes/bean/ucenter-bean/ucenter-dao-env-bean.xml</file>
+          <file>file://$MODULE_DIR$/webapp/WEB-INF/classes/bean/ucenter-bean/ucenter-mysql-dao-bean.xml</file>
+          <file>file://$MODULE_DIR$/webapp/WEB-INF/classes/bean/ucenter-bean/ucenter-service-impl-bean.xml</file>
+          <file>file://$MODULE_DIR$/webapp/WEB-INF/classes/bean/resource_bean/resource-client-bean.xml</file>
+          <file>file://$MODULE_DIR$/webapp/WEB-INF/classes/bean/resource_bean/resource-domain-bean.xml</file>
+          <file>file://$MODULE_DIR$/webapp/WEB-INF/classes/bean/resource_bean/resource-dao-env-bean.xml</file>
+          <file>file://$MODULE_DIR$/webapp/WEB-INF/classes/bean/resource_bean/resource-mysql-dao-bean.xml</file>
+          <file>file://$MODULE_DIR$/webapp/WEB-INF/classes/bean/resource_bean/resource-service-impl-bean.xml</file>
+          <file>file://$MODULE_DIR$/webapp/WEB-INF/classes/bean/paycenter-bean/paycenter-client-bean.xml</file>
+          <file>file://$MODULE_DIR$/webapp/WEB-INF/classes/bean/paycenter-bean/paycenter-domain-bean.xml</file>
+          <file>file://$MODULE_DIR$/webapp/WEB-INF/classes/bean/paycenter-bean/paycenter-dao-env-bean.xml</file>
+          <file>file://$MODULE_DIR$/webapp/WEB-INF/classes/bean/paycenter-bean/paycenter-mysql-dao-bean.xml</file>
+          <file>file://$MODULE_DIR$/webapp/WEB-INF/classes/bean/paycenter-bean/paycenter-service-impl-bean.xml</file>
+          <file>file://$MODULE_DIR$/webapp/WEB-INF/eagle-servlet.xml</file>
+          <file>file://$MODULE_DIR$/webapp/WEB-INF/eagle-root-bean.xml</file>
+          <file>file://$MODULE_DIR$/resources/bean/act-bean/act-client-bean.xml</file>
+          <file>file://$MODULE_DIR$/resources/bean/act-bean/act-domain-bean.xml</file>
+          <file>file://$MODULE_DIR$/resources/bean/act-bean/act-dao-env-bean.xml</file>
+          <file>file://$MODULE_DIR$/resources/bean/act-bean/act-mysql-dao-bean.xml</file>
+          <file>file://$MODULE_DIR$/resources/bean/act-bean/act-service-impl-bean.xml</file>
+          <file>file://$MODULE_DIR$/resources/bean/msg-bean/msg-client-bean.xml</file>
+          <file>file://$MODULE_DIR$/resources/bean/msg-bean/msg-domain-bean.xml</file>
+          <file>file://$MODULE_DIR$/resources/bean/msg-bean/msg-dao-env-bean.xml</file>
+          <file>file://$MODULE_DIR$/resources/bean/msg-bean/msg-mysql-dao-bean.xml</file>
+          <file>file://$MODULE_DIR$/resources/bean/msg-bean/msg-service-impl-bean.xml</file>
+          <file>file://$MODULE_DIR$/resources/bean/null.xml</file>
+          <file>file://$MODULE_DIR$/resources/bean/eagle-bean/eagle-mem-bean.xml</file>
+          <file>file://$MODULE_DIR$/resources/bean/eagle-bean/eagle-util-bean.xml</file>
+          <file>file://$MODULE_DIR$/resources/bean/eagle-bean/eagle-manager-bean.xml</file>
+          <file>file://$MODULE_DIR$/resources/bean/eagle-bean/eagle-framework-bean.xml</file>
+          <file>file://$MODULE_DIR$/resources/bean/store-bean/store-client-bean.xml</file>
+          <file>file://$MODULE_DIR$/resources/bean/store-bean/store-domain-bean.xml</file>
+          <file>file://$MODULE_DIR$/resources/bean/store-bean/store-dao-env-bean.xml</file>
+          <file>file://$MODULE_DIR$/resources/bean/store-bean/store-mysql-dao-bean.xml</file>
+          <file>file://$MODULE_DIR$/resources/bean/store-bean/store-service-impl-bean.xml</file>
+          <file>file://$MODULE_DIR$/resources/bean/easemob-bean/easemob-client-bean.xml</file>
+          <file>file://$MODULE_DIR$/resources/bean/easemob-bean/easemob-domain-bean.xml</file>
+          <file>file://$MODULE_DIR$/resources/bean/easemob-bean/easemob-dao-env-bean.xml</file>
+          <file>file://$MODULE_DIR$/resources/bean/easemob-bean/easemob-mysql-dao-bean.xml</file>
+          <file>file://$MODULE_DIR$/resources/bean/easemob-bean/easemob-service-impl-bean.xml</file>
+          <file>file://$MODULE_DIR$/resources/bean/ucenter-bean/ucenter-client-bean.xml</file>
+          <file>file://$MODULE_DIR$/resources/bean/ucenter-bean/ucenter-domain-bean.xml</file>
+          <file>file://$MODULE_DIR$/resources/bean/ucenter-bean/ucenter-dao-env-bean.xml</file>
+          <file>file://$MODULE_DIR$/resources/bean/ucenter-bean/ucenter-mysql-dao-bean.xml</file>
+          <file>file://$MODULE_DIR$/resources/bean/ucenter-bean/ucenter-service-impl-bean.xml</file>
+          <file>file://$MODULE_DIR$/resources/bean/resource_bean/resource-client-bean.xml</file>
+          <file>file://$MODULE_DIR$/resources/bean/resource_bean/resource-domain-bean.xml</file>
+          <file>file://$MODULE_DIR$/resources/bean/resource_bean/resource-dao-env-bean.xml</file>
+          <file>file://$MODULE_DIR$/resources/bean/resource_bean/resource-mysql-dao-bean.xml</file>
+          <file>file://$MODULE_DIR$/resources/bean/resource_bean/resource-service-impl-bean.xml</file>
+          <file>file://$MODULE_DIR$/resources/bean/paycenter-bean/paycenter-client-bean.xml</file>
+          <file>file://$MODULE_DIR$/resources/bean/paycenter-bean/paycenter-domain-bean.xml</file>
+          <file>file://$MODULE_DIR$/resources/bean/paycenter-bean/paycenter-dao-env-bean.xml</file>
+          <file>file://$MODULE_DIR$/resources/bean/paycenter-bean/paycenter-mysql-dao-bean.xml</file>
+          <file>file://$MODULE_DIR$/resources/bean/paycenter-bean/paycenter-service-impl-bean.xml</file>
+        </fileset>
+      </configuration>
+    </facet>
+  </component>
+  <component name="NewModuleRootManager" inherit-compiler-output="true">
+    <exclude-output />
+    <content url="file://$MODULE_DIR$">
+      <sourceFolder url="file://$MODULE_DIR$/java" isTestSource="false" />
+    </content>
+    <orderEntry type="inheritedJdk" />
+    <orderEntry type="sourceFolder" forTests="false" />
+    <orderEntry type="library" name="jsp1" level="project" />
+    <orderEntry type="library" name="jsp4" level="project" />
+    <orderEntry type="library" name="jsp2" level="project" />
+    <orderEntry type="library" name="jsp3" level="project" />
+    <orderEntry type="library" name="jsp" level="project" />
+    <orderEntry type="library" name="lib" level="project" />
+  </component>
+</module>

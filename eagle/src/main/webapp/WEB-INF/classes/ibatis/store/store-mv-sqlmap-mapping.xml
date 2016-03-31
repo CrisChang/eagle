@@ -1,0 +1,77 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd" >
+<sqlMap namespace="movie">
+	
+	<typeAlias alias="mv" type="com.poison.store.model.MvInfo" />
+	
+	<resultMap id="MvResult" class="mv">
+		 <result column="id" property="id" jdbcType="BIGINT" />
+		<result column="movie_url" property="movieUrl" jdbcType="VARCHAR" />
+		<result column="movie_pic" property="moviePic" jdbcType="VARCHAR" />
+		<result column="name" property="name" jdbcType="VARCHAR" />
+		<result column="score" property="score" jdbcType="VARCHAR" />
+		<result column="director" property="director" jdbcType="VARCHAR" />
+		<result column="screenwriter" property="screenWriter" jdbcType="VARCHAR" />
+		<result column="actor" property="actor" jdbcType="VARCHAR" />
+		<result column="tags" property="tags" jdbcType="VARCHAR" />
+		<result column="user_tags" property="userTags" jdbcType="VARCHAR" />
+		<result column="pro_countries" property="proCountries" jdbcType="VARCHAR" />
+		<result column="language" property="language" jdbcType="VARCHAR" />
+		<result column="release_date" property="releaseDate" jdbcType="VARCHAR" />
+		<result column="about" property="about" jdbcType="VARCHAR" />
+		<result column="number" property="number" jdbcType="INT" />
+		<result column="film_time" property="filmTime" jdbcType="VARCHAR" />
+		<result column="alias" property="alias" jdbcType="VARCHAR" />
+		<result column="imdb_link" property="imdbLink" jdbcType="VARCHAR" />
+		<result column="describe" property="description" jdbcType="TEXT" />
+		<result column="coll_time" property="collTime" jdbcType="INT" />
+		<result column="box_office" property="boxOffice" jdbcType="VARCHAR" />
+		<result column="week_box_office" property="weekBoxOffice" jdbcType="VARCHAR" />
+		<result column="ranking_list" property="rankingList" jdbcType="VARCHAR" />
+		<result column="type" property="type" jdbcType="VARCHAR" />
+		<result column="release_date_sort" property="releaseDateSort" jdbcType="BIGINT" nullValue="0"/>
+		<result column="movie_pic2" property="moviePic2" jdbcType="VARCHAR" />
+		<result column="extend_field1" property="extendField1" jdbcType="VARCHAR" />
+ 	</resultMap>
+ 	<select id="findMvInfo" resultMap="MvResult" parameterClass="long">
+		select id,movie_url,movie_pic,`name`,score,director,screenwriter,actor,tags,user_tags,pro_countries,`language`,release_date,about,number,film_time,alias,imdb_link,`describe`,coll_time,box_office,week_box_office,type,ranking_list,release_date_sort,movie_pic2,extend_field1 from c_db_mv where id=#id#
+	</select>
+	
+	<select id="findMvURL" resultMap="MvResult" parameterClass="java.lang.String">
+		select id,movie_url,movie_pic,`name`,score,director,screenwriter,actor,tags,user_tags,pro_countries,`language`,release_date,about,number,film_time,alias,imdb_link,`describe`,coll_time,box_office,week_box_office,type,ranking_list,release_date_sort,movie_pic2,extend_field1 from c_db_mv  where movie_url=#movieUrl#
+	</select>
+	
+	<select id="findMvInfoByName" resultMap="MvResult" parameterClass="mv">
+		select id,movie_url,movie_pic,`name`,score,director,screenwriter,actor,tags,user_tags,pro_countries,`language`,release_date,about,number,film_time,alias,imdb_link,`describe`,coll_time,box_office,week_box_office,type,ranking_list,release_date_sort,movie_pic2,extend_field1 from c_db_mv where name like concat('%',#name#) and substr(release_date,1,4) = #releaseDate#
+	</select>
+	
+	<select id="findMvInfoByLikeName" resultMap="MvResult" parameterClass="java.lang.String">
+		select id,movie_url,movie_pic,`name`,score,director,screenwriter,actor,tags,user_tags,pro_countries,`language`,release_date,about,number,film_time,alias,imdb_link,`describe`,coll_time,box_office,week_box_office,type,ranking_list,release_date_sort,movie_pic2,extend_field1 from c_db_mv where name like concat('%', #name#, '%') limit 0,10
+	</select>
+	
+		<insert id="insertintoMvInfo" parameterClass="mv">
+		insert into c_db_mv(movie_url,movie_pic,name,score,director,screenwriter,actor,tags,user_tags,pro_countries,language,release_date,about,number,film_time,alias,imdb_link,`describe`,coll_time,release_date_sort) values(#movieUrl#,#moviePic#,#name#,#score#,#director#,#screenWriter#,#actor#,#tags#,#userTags#,#proCountries#,#language#,#releaseDate#,#about#,#number#,#filmTime#,#alias#,#imdbLink#,#description#,#collTime#,#releaseDateSort#)
+		 <selectKey resultClass="long" keyProperty="id" >
+		     SELECT @@IDENTITY AS id
+		   </selectKey>
+	</insert>
+	
+	<!--更新电影简介  -->
+	<update id="updateMvInfoDescribe" parameterClass="java.util.Map">
+		update c_db_mv set  `describe` = #describe# where id=#id#
+	</update>
+	
+	<!--更新电影简介  -->
+	<update id="updateMvInfoReleaseDateSort" parameterClass="java.util.Map">
+		update c_db_mv set  `release_date_sort` = #releaseDateSort# where id=#id#
+	</update>
+	
+	<!--更新电影简介  -->
+	<update id="updateMvInfoActor" parameterClass="java.util.Map">
+		update c_db_mv set  actor = #actor# where id=#id#
+	</update>
+	
+	<select id="findMvInfosByIds" resultMap="MvResult" parameterClass="java.util.Map">
+		select id,movie_url,movie_pic,`name`,score,director,screenwriter,actor,tags,user_tags,pro_countries,`language`,release_date,about,number,film_time,alias,imdb_link,`describe`,coll_time,box_office,week_box_office,type,ranking_list,release_date_sort,movie_pic2,extend_field1 from c_db_mv where id in ($ids$)
+	</select>
+</sqlMap>

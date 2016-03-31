@@ -1,0 +1,87 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd" >
+<sqlMap namespace="actpublish">
+	
+	<typeAlias alias="actpublish" type="com.poison.act.model.ActPublish" />
+	
+	<resultMap id="PublishResult" class="actpublish">
+		<result column="id" property="id" jdbcType="BIGINT" />
+		<result column="user_id" property="userId" jdbcType="BIGINT" />
+		<result column="resource_id" property="resourceId" jdbcType="BIGINT" />
+		<result column="type" property="type" jdbcType="VARCHAR" />
+		<result column="recommend_type" property="recommendType" jdbcType="VARCHAR" />
+		<result column="is_delete" property="isDelete" jdbcType="INT" />
+		<result column="publish_context" property="publishContext" jdbcType="VARCHAR" />
+		<result column="publish_date" property="publishDate" jdbcType="BIGINT" />
+		<result column="latest_revision_date" property="latestRevisionDate" jdbcType="BIGINT" />
+	</resultMap>
+	
+	
+	<insert id="insertintoActPublish" parameterClass="actpublish">
+		insert into act_publish(id,user_id,resource_id,publish_context,type,is_delete,publish_date,latest_revision_date) values(#id#,#userId#,#resourceId#,#publishContext#,#type#,#isDelete#,#publishDate#,#latestRevisionDate#)
+	</insert>
+	
+	<select id="findPublishList"  parameterClass="java.lang.Long" resultMap="PublishResult">
+		select id,user_id,resource_id,type,is_delete,publish_context,publish_date,latest_revision_date,recommend_type from act_publish where is_delete = 0
+		<isNotNull prepend="AND" property="resId">
+			<![CDATA[ id< #resId# ]]>
+		</isNotNull>
+		order by id desc limit 0,20
+	</select>
+	
+	<select id="findPublishById"  parameterClass="long" resultMap="PublishResult">
+		select id,user_id,resource_id,type,is_delete,publish_context,publish_date,latest_revision_date,recommend_type from act_publish where resource_id = #resId# and  is_delete = 0
+	</select>      
+	
+	<select id="findPublishCount"  parameterClass="long" resultClass="int">
+		select count(1) from act_publish where user_id = #userId# and  is_delete = 0
+	</select> 
+	
+	<select id="findOnePublish"  parameterClass="long" resultMap="PublishResult">
+		select id,user_id,resource_id,type,is_delete,publish_context,publish_date,latest_revision_date,recommend_type from act_publish where id = #id# 
+	</select>         
+	
+	<select id="findPublishByUidAndResIdAndType"  parameterClass="java.util.Map" resultMap="PublishResult">
+		select id,user_id,resource_id,type,is_delete,publish_context,publish_date,latest_revision_date,recommend_type from act_publish where user_id = #userId# and resource_id = #resId# and type = #type#
+	</select>                                                                     
+	
+	<update id="updatePublishInfo" parameterClass="actpublish" >
+		update act_publish set is_delete =#isDelete# ,latest_revision_date=#latestRevisionDate#  where id=#id#
+	</update>
+	
+		<select id="findPublishListByUid"  parameterClass="java.util.Map" resultMap="PublishResult">
+		select id,user_id,resource_id,type,is_delete,publish_context,publish_date,latest_revision_date,recommend_type from act_publish where is_delete = 0 and user_id =#userId#
+		<isNotNull prepend="AND" property="resId">
+			<![CDATA[ id< #resId# ]]>
+		</isNotNull>
+		order by id desc limit 0,20
+	</select>
+	
+	<select id="findPublishListByType"  parameterClass="java.util.Map" resultMap="PublishResult">
+		select id,user_id,resource_id,type,is_delete,publish_context,publish_date,latest_revision_date,recommend_type from act_publish where type =#type#  and is_delete = 0
+		<isNotNull prepend="AND" property="resId">
+			<![CDATA[ id< #resId# ]]>
+		</isNotNull>
+		order by id desc limit 0,20
+	</select>
+	
+	<select id="findPublishListByRecommendType"  parameterClass="java.lang.String" resultMap="PublishResult">
+		select id,user_id,resource_id,type,is_delete,publish_context,publish_date,latest_revision_date,recommend_type from act_publish where recommend_type =#recommendType#  and is_delete = 0
+	</select>
+	
+	<select id="findPublishListByUsersId"  parameterClass="java.util.Map" resultMap="PublishResult">
+		select id,user_id,resource_id,type,is_delete,publish_context,publish_date,latest_revision_date,recommend_type from act_publish where  is_delete = 0
+		<isNotNull prepend="AND" property="type">
+			type =#type#
+		</isNotNull>
+		<isNotNull prepend="AND" property="resId">
+			<![CDATA[ id< #resId# ]]>
+		</isNotNull>
+		and user_id in
+		<iterate property="usersId" open="(" close=")"  conjunction=",">
+		#usersId[]#
+		</iterate>
+		order by id desc limit 0,20
+	</select>
+	
+</sqlMap>
